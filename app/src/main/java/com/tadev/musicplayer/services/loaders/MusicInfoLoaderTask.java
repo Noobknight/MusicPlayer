@@ -28,6 +28,10 @@ public class MusicInfoLoaderTask extends AsyncTask<Void, Void, Music> {
         this.mOnMusicInfoLoadListener = mOnMusicInfoLoadListener;
     }
 
+<<<<<<< HEAD
+=======
+    public Music
+>>>>>>> ff2216645662b66664af787778d77a820a1fb95a
 
 
 
