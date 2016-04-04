@@ -20,6 +20,7 @@ public class MusicInfoLoaderTask extends AsyncTask<Void, Void, Music> {
     private final String TAG = "MusicInfoLoaderTask";
     private String idSong, urlTitle;
     private OnMusicInfoLoadListener mOnMusicInfoLoadListener;
+    private String DATA ="TAVO";
 
     public MusicInfoLoaderTask(String idSong, String urlTitle,
                                OnMusicInfoLoadListener mOnMusicInfoLoadListener) {
@@ -27,12 +28,6 @@ public class MusicInfoLoaderTask extends AsyncTask<Void, Void, Music> {
         this.urlTitle = urlTitle;
         this.mOnMusicInfoLoadListener = mOnMusicInfoLoadListener;
     }
-
-<<<<<<< HEAD
-=======
-    public Music
->>>>>>> ff2216645662b66664af787778d77a820a1fb95a
-
 
 
     @Override
