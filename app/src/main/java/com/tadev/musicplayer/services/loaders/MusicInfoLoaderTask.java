@@ -20,7 +20,6 @@ public class MusicInfoLoaderTask extends AsyncTask<Void, Void, Music> {
     private final String TAG = "MusicInfoLoaderTask";
     private String idSong, urlTitle;
     private OnMusicInfoLoadListener mOnMusicInfoLoadListener;
-    private String DATA ="TAVO";
 
     public MusicInfoLoaderTask(String idSong, String urlTitle,
                                OnMusicInfoLoadListener mOnMusicInfoLoadListener) {
