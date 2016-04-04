@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item android:title="@string/drawer_header_music">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/music_vietnam"
+                        android:checked="true"
+                        android:icon="@drawable/ic_one"
+                        android:title="@string/drawer_vietnam_music" />
+
+                    <item
+                        android:id="@+id/music_korea"
+                        android:icon="@drawable/ic_two"
+                        android:title="@string/drawer_korea_music" />
+                    <item
+                        android:id="@+id/music_us_uk"
+                        android:icon="@drawable/ic_three"
+                        android:title="@string/drawer_us_uk_music" />
+                </group>
+            </menu>
+        </item>
+        <item
+            android:id="@+id/music_artist"
+            android:icon="@drawable/icon_artist"
+            android:title="@string/drawer_artist" />
+
+        <item
+            android:id="@+id/music_ranking"
+            android:icon="@drawable/icon_rankings"
+            android:title="@string/drawer_rankings" />
+
+        <item
+            android:id="@+id/music_setting"
+            android:icon="@drawable/icon_settings"
+            android:title="@string/drawer_settings" />
+    </group>
+
+</menu>
