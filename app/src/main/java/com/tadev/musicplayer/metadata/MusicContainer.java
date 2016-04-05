@@ -2,6 +2,7 @@ package com.tadev.musicplayer.metadata;
 
 import com.tadev.musicplayer.constant.Constants;
 import com.tadev.musicplayer.models.BaseModel;
+import com.tadev.musicplayer.models.CurrentSongPlay;
 import com.tadev.musicplayer.models.MusicKorea;
 import com.tadev.musicplayer.models.MusicUSUK;
 import com.tadev.musicplayer.models.MusicVietNam;
@@ -19,6 +20,7 @@ public class MusicContainer {
     public List<MusicKorea> musicKoreaList;
     public List<MusicUSUK> musicUSUKList;
     public List<BaseModel> baseModelsMusic;
+    private CurrentSongPlay mCurrentSongPlay;
 
     public static MusicContainer getInstance() {
         if (mInstance == null) {
@@ -119,5 +121,12 @@ public class MusicContainer {
         this.baseModelsMusic = baseModelsMusic;
     }
 
+    public CurrentSongPlay getmCurrentSongPlay() {
+        return mCurrentSongPlay;
+    }
 
+    public MusicContainer setmCurrentSongPlay(CurrentSongPlay mCurrentSongPlay) {
+        this.mCurrentSongPlay = mCurrentSongPlay;
+        return this;
+    }
 }

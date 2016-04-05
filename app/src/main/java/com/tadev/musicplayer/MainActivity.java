@@ -1,6 +1,11 @@
 package com.tadev.musicplayer;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -12,18 +17,26 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.tadev.musicplayer.abstracts.BaseMenuActivity;
-import com.tadev.musicplayer.ui.fragments.MusicKoreaFragment;
-import com.tadev.musicplayer.ui.fragments.MusicUsUkFragment;
-import com.tadev.musicplayer.ui.fragments.MusicVietNamFragment;
+import com.tadev.musicplayer.callbacks.OnRegisterCallback;
+import com.tadev.musicplayer.interfaces.IServicePlayer;
+import com.tadev.musicplayer.models.CurrentSongPlay;
+import com.tadev.musicplayer.services.MusicPlayService;
+import com.tadev.musicplayer.ui.activities.fragments.MusicKoreaFragment;
+import com.tadev.musicplayer.ui.activities.fragments.MusicUsUkFragment;
+import com.tadev.musicplayer.ui.activities.fragments.MusicVietNamFragment;
 
 public class MainActivity extends BaseMenuActivity implements
-        FragmentManager.OnBackStackChangedListener {
+        FragmentManager.OnBackStackChangedListener, OnRegisterCallback
+        , IServicePlayer {
     private final String TAG = "MainActivity";
     private final String LAST_ITEM_CHECKED = "last_item_checked";
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
     private int mLastItemChecked;
+    private ServiceConnection mServiceConnection;
+    private Intent intentRegistedService;
+    private MusicPlayService mService;
 
 
     @Override
@@ -33,6 +46,7 @@ public class MainActivity extends BaseMenuActivity implements
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        bindService();
         mFragmentManager.addOnBackStackChangedListener(this);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.left_drawer);
@@ -172,8 +186,91 @@ public class MainActivity extends BaseMenuActivity implements
     }
 
     @Override
+    protected void onDestroy() {
+        if (mPlayServiceConnection != null || intentRegistedService != null) {
+            Log.i(TAG, "onDestroy here");
+            unbindService(mPlayServiceConnection);
+            stopService(intentRegistedService);
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public void onBackStackChanged() {
         Log.i(TAG, "onBackStackChanged ");
     }
 
+
+    @Override
+    public void onServiceRegister(Intent intent, ServiceConnection mServiceConnection) {
+//        bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
+//        this.mServiceConnection = mServiceConnection;
+    }
+
+    @Override
+    public void onServicePreparing(Intent intent) {
+        intentRegistedService = intent;
+        startService(intent);
+    }
+
+    @Override
+    public void onUnRegisterReceiver(boolean enable) {
+
+    }
+
+    private ServiceConnection mPlayServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mService = ((MusicPlayService.PlayBinder) service).getService();
+            mService.setOnMusicPlayListener(MainActivity.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+    };
+
+    private void bindService() {
+        Intent intent = new Intent();
+        intent.setClass(this, MusicPlayService.class);
+//        mOnRegisterCallback.onServiceRegister(intent, mPlayServiceConnection);
+        bindService(intent, mPlayServiceConnection, Context.BIND_AUTO_CREATE);
+//        mServiceCallBack.onServiceCallback(mPlayServiceConnection);
+    }
+
+    public MusicPlayService getService() {
+        return mService;
+    }
+
+
+    @Override
+    public void duration(int duration) {
+        Log.i(TAG, "duration " + duration);
+    }
+
+    @Override
+    public void position(int currentPosition) {
+
+    }
+
+    @Override
+    public void currentID(int currentId) {
+
+    }
+
+    @Override
+    public void onChange(int musicId) {
+
+    }
+
+    @Override
+    public void onPublish(int progress) {
+
+    }
+
+    @Override
+    public void currentSongPlay(CurrentSongPlay currentSongPlay) {
+
+    }
 }

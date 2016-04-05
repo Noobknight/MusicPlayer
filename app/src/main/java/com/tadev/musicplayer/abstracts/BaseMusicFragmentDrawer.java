@@ -28,7 +28,7 @@ import com.tadev.musicplayer.utils.design.support.Utils;
 /**
  * Created by Iris Louis on 31/03/2016.
  */
-public abstract class BaseMusicFragmentDrawerClone extends FlexibleBaseFragment<ObservableRecyclerView>
+public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<ObservableRecyclerView>
         implements MusicLoaderTask.OnTaskLoading {
     private final String TAG = "BaseMusicFragmentDrawer";
     protected ObservableRecyclerView recyclerView;

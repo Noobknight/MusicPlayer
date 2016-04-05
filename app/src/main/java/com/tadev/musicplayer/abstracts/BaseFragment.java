@@ -10,12 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tadev.musicplayer.MainActivity;
+
 /**
  * Created by Iris Louis on 01/04/2016.
  */
 public abstract class BaseFragment extends Fragment {
     protected Context context;
     protected BaseMenuActivity baseMenuActivity;
+    protected MainActivity mActivityMain;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,8 +38,8 @@ public abstract class BaseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
         getDataCallBack();
-        initViewData();
         setViewEvents();
+        initViewData();
     }
 
     @Override
@@ -45,6 +48,7 @@ public abstract class BaseFragment extends Fragment {
         if (context instanceof AppCompatActivity) {
             activity = (AppCompatActivity) context;
             baseMenuActivity = (BaseMenuActivity) activity;
+            mActivityMain = (MainActivity) activity;
         }
         super.onAttach(context);
     }
@@ -59,6 +63,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract String TAG();
 
-    protected void getDataCallBack(){}
+    protected void getDataCallBack() {
+    }
 
 }

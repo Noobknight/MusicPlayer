@@ -48,18 +48,18 @@
                         android:layout_height="wrap_content"
                         android:gravity="left"
                         android:singleLine="true"
+                        android:text="@string/music_name"
                         android:textColor="@color/material_black"
-                        android:textStyle="bold"
                         android:textSize="@dimen/text_title_size"
-                        android:text="@string/music_name" />
+                        android:textStyle="bold" />
 
                     <com.tadev.musicplayer.utils.design.TextViewTitle
                         android:id="@+id/list_item_card_small_tvSinger"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:textSize="@dimen/text_singer_size"
-                        android:text="@string/music_singer" />
+                        android:text="@string/music_singer"
+                        android:textSize="@dimen/text_singer_size" />
                 </LinearLayout>
 
                 <View
@@ -67,7 +67,6 @@
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="3dp"
-                    android:layout_marginRight="5dp"
                     android:background="@color/material_grey_700" />
 
                 <LinearLayout
@@ -81,16 +80,17 @@
                         android:id="@+id/list_item_card_small_tvDownloads"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
+                        android:drawableLeft="@drawable/ic_arrow_downward_black_18dp"
+                        android:drawablePadding="3dp"
                         android:text="@string/music_download" />
 
                     <TextView
                         android:id="@+id/list_item_card_small_tvMusicType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:textColor="@color/material_red_500"
-                        android:text="@string/music_type" />
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/music_type"
+                        android:textColor="@color/material_red_500" />
                 </LinearLayout>
 
             </LinearLayout>

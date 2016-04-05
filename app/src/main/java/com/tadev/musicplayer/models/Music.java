@@ -15,88 +15,88 @@ import javax.annotation.Generated;
 public class Music implements Parcelable {
     @SerializedName("music_id")
     @Expose
-    private String musicId;
+    protected String musicId;
     @SerializedName("music_title_url")
     @Expose
-    private String musicTitleUrl;
+    protected String musicTitleUrl;
     @SerializedName("music_title")
     @Expose
-    private String musicTitle;
+    protected String musicTitle;
     @SerializedName("music_artist")
     @Expose
-    private String musicArtist;
+    protected String musicArtist;
     @SerializedName("music_composer")
     @Expose
-    private String musicComposer;
+    protected String musicComposer;
     @SerializedName("music_album")
     @Expose
-    private String musicAlbum;
+    protected String musicAlbum;
     @SerializedName("music_production")
     @Expose
-    private String musicProduction;
+    protected String musicProduction;
     @SerializedName("music_year")
     @Expose
-    private String musicYear;
+    protected String musicYear;
     @SerializedName("music_listen")
     @Expose
-    private String musicListen;
+    protected String musicListen;
     @SerializedName("music_downloads")
     @Expose
-    private String musicDownloads;
+    protected String musicDownloads;
     @SerializedName("music_time")
     @Expose
-    private String musicTime;
+    protected String musicTime;
     @SerializedName("music_bitrate")
     @Expose
-    private String musicBitrate;
+    protected String musicBitrate;
     @SerializedName("music_length")
     @Expose
-    private String musicLength;
+    protected String musicLength;
     @SerializedName("music_32_filesize")
     @Expose
-    private String music32Filesize;
+    protected String music32Filesize;
     @SerializedName("music_filesize")
     @Expose
-    private String musicFilesize;
+    protected String musicFilesize;
     @SerializedName("music_320_filesize")
     @Expose
-    private String music320Filesize;
+    protected String music320Filesize;
     @SerializedName("music_m4a_filesize")
     @Expose
-    private String musicM4aFilesize;
+    protected String musicM4aFilesize;
     @SerializedName("music_lossless_filesize")
     @Expose
-    private String musicLosslessFilesize;
+    protected String musicLosslessFilesize;
     @SerializedName("music_username")
     @Expose
-    private String musicUsername;
+    protected String musicUsername;
     @SerializedName("music_lyric")
     @Expose
-    private String musicLyric;
+    protected String musicLyric;
     @SerializedName("music_img")
     @Expose
-    private String musicImg;
+    protected String musicImg;
     @SerializedName("file_url")
     @Expose
-    private String fileUrl;
+    protected String fileUrl;
     @SerializedName("file_32_url")
     @Expose
-    private String file32Url;
+    protected String file32Url;
     @SerializedName("file_320_url")
     @Expose
-    private String file320Url;
+    protected String file320Url;
     @SerializedName("file_m4a_url")
     @Expose
-    private String fileM4aUrl;
+    protected String fileM4aUrl;
     @SerializedName("file_lossless_url")
     @Expose
-    private String fileLosslessUrl;
+    protected String fileLosslessUrl;
     @SerializedName("full_url")
     @Expose
-    private String fullUrl;
+    protected String fullUrl;
     @SerializedName("music_genre")
     @Expose
-    private String musicGenre;
+    protected String musicGenre;
 
     public Music() {
     }
@@ -188,7 +188,7 @@ public class Music implements Parcelable {
      * @return The musicArtist
      */
     public String getMusicArtist() {
-        return musicArtist;
+        return musicArtist.replace(";", " ft");
     }
 
     /**

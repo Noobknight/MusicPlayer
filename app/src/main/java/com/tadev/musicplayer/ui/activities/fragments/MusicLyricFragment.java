@@ -1,6 +1,7 @@
-package com.tadev.musicplayer.ui.fragments;
+package com.tadev.musicplayer.ui.activities.fragments;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,20 +14,27 @@ import com.tadev.musicplayer.models.Lyric;
  */
 public class MusicLyricFragment extends BaseFragment {
     private static final String TAG = "MusicLyricFragment";
-    private static MusicLyricFragment sInstance;
+    //    private static MusicLyricFragment sInstance;
     private TextView txtLyric;
     private Lyric lyric;
 
-    public static MusicLyricFragment newInstance(Lyric lyric) {
-        if (sInstance == null) {
-            sInstance = new MusicLyricFragment();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(TAG, lyric);
-            sInstance.setArguments(bundle);
-        }
-        return sInstance;
-    }
+//    public static MusicLyricFragment newInstance(Lyric lyric) {
+//        if (sInstance == null) {
+//            sInstance = new MusicLyricFragment();
+//            Bundle bundle = new Bundle();
+//            bundle.putParcelable(TAG, lyric);
+//            sInstance.setArguments(bundle);
+//        }
+//        return sInstance;
+//    }
 
+    public static MusicLyricFragment newInstance(Lyric lyric) {
+        MusicLyricFragment fragment = new MusicLyricFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TAG, lyric);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected int setLayoutById() {
@@ -40,7 +48,12 @@ public class MusicLyricFragment extends BaseFragment {
 
     @Override
     protected void initViewData() {
+        boolean isEmptyLyric = lyric.getMusicLyric().isEmpty() || lyric.getMusicLyric() == null;
+        if (isEmptyLyric) {
+            txtLyric.setText(getResources().getString(R.string.lyric_empty));
+        }
         txtLyric.setText(lyric.getMusicLyric());
+        txtLyric.setMovementMethod(ScrollingMovementMethod.getInstance());
     }
 
     @Override

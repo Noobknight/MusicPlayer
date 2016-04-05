@@ -22,8 +22,11 @@ import java.net.URL;
  * Created by Iris Louis on 17/09/2015.
  */
 public class ImageUtils {
-
+    /**
+     * @param url: Pass your url to download
+     */
     public static byte[] downloadImage(String url) {
+
         byte[] imageRaw = null;
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
@@ -83,7 +86,9 @@ public class ImageUtils {
         return imgBase64;
     }
 
-
+    /**
+     * @param bmp : NonNull
+     */
     public static String convertImageToString(Bitmap bmp) {
         if (bmp != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -103,7 +108,6 @@ public class ImageUtils {
                 decodedString.length);
         return decodedByte;
     }
-
 
 
     public static Bitmap loadBitmap(String url) {

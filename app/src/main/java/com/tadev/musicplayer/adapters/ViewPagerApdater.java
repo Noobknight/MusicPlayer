@@ -1,39 +1,41 @@
 package com.tadev.musicplayer.adapters;
 
+import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
-import com.tadev.musicplayer.interfaces.ISongInfoListener;
 import com.tadev.musicplayer.models.Lyric;
 import com.tadev.musicplayer.models.Song;
-import com.tadev.musicplayer.ui.fragments.MusicLyricFragment;
-import com.tadev.musicplayer.ui.fragments.MusicPlayingFragment;
+import com.tadev.musicplayer.ui.activities.fragments.MusicLyricFragment;
+import com.tadev.musicplayer.ui.activities.fragments.MusicPlayingFragment;
 
 /**
  * Created by Iris Louis on 01/04/2016.
  */
-public class ViewPagerApdater extends FragmentPagerAdapter implements ISongInfoListener {
+public class ViewPagerApdater extends FragmentPagerAdapter {
     private final String TAG = "ViewPagerApdater";
-    private ISongInfoListener iSongInfoListener;
+    private Song song;
+    private Lyric lyric;
+    private Bitmap btmBlur;
 
-    public ViewPagerApdater(FragmentManager fm) {
+    public ViewPagerApdater(FragmentManager fm, Song song, Lyric lyric, Bitmap btm) {
         super(fm);
+        this.song = song;
+        this.lyric = lyric;
+        btmBlur = btm;
     }
 
-    public ViewPagerApdater(FragmentManager fragmentManager, ISongInfoListener iSongInfoListener) {
-        super(fragmentManager);
-        this.iSongInfoListener = iSongInfoListener;
-    }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return MusicPlayingFragment.newInstance(new Song());
+                MusicPlayingFragment fragment = MusicPlayingFragment.newInstance(song);
+                fragment.setBipmapBlur(btmBlur);
+                return fragment;
             case 1:
-                return MusicLyricFragment.newInstance(new Lyric());
+                return MusicLyricFragment.newInstance(lyric);
             default:
                 return null;
         }
@@ -44,8 +46,4 @@ public class ViewPagerApdater extends FragmentPagerAdapter implements ISongInfoL
         return 2;
     }
 
-    @Override
-    public void onDataMusicCallBack(Song song) {
-        Log.i(TAG, "onDataMusicCallBack " + song);
-    }
 }

@@ -41,12 +41,42 @@
             android:background="#8C000000"
             android:orientation="vertical">
 
-            <SeekBar
-                android:id="@+id/fragment_music_playing_seekbar"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:progress="50"
-                android:theme="@style/ThemeSeekbar" />
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/fragment_music_playing_txtCurrentTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3.95"
+                    android:layout_marginLeft="3dp"
+                    android:text="@string/time_update"
+                    android:textColor="@color/material_white" />
+
+                <SeekBar
+                    android:id="@+id/fragment_music_playing_seekbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.9"
+                    android:paddingBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    android:theme="@style/ThemeSeekbar" />
+
+                <TextView
+                    android:id="@+id/fragment_music_playing_txtTotalTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4.1"
+                    android:paddingRight="3dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/time_update"
+                    android:textColor="@color/material_white" />
+
+            </LinearLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -54,7 +84,7 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                android:paddingTop="5dp">
+                >
 
                 <ImageView
                     android:id="@+id/fragment_music_playing_imgShuffle"
@@ -80,10 +110,10 @@
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/fragment_music_playing_fabPlayPause"
-                        app:backgroundTint="@color/material_green_400"
-                        app:fabSize="normal"
                         android:layout_width="50dp"
-                        android:layout_height="50dp" />
+                        android:layout_height="50dp"
+                        app:backgroundTint="@color/material_green_400"
+                        app:fabSize="normal" />
 
                     <ImageView
                         android:id="@+id/fragment_music_playing_imgNext"

@@ -52,4 +52,42 @@ public class Utils {
     public static String getTitleUS(Context context){
         return context.getResources().getString(R.string.category_us_uk);
     }
+
+
+    public static String getTimeString(long millis) {
+        StringBuffer buf = new StringBuffer();
+
+        int hours = (int) (millis / (1000 * 60 * 60));
+        int minutes = (int) ((millis % (1000 * 60 * 60)) / (1000 * 60));
+        int seconds = (int) (((millis % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
+
+        buf.append(String.format("%02d", hours)).append(":")
+                .append(String.format("%02d", minutes)).append(":")
+                .append(String.format("%02d", seconds));
+
+        return buf.toString();
+    }
+
+    public static int getProgressPercentage(long currentDuration,
+                                            long totalDuration) {
+        Double percentage = (double) 0;
+
+        long currentSeconds = (int) (currentDuration / 1000);
+        long totalSeconds = (int) (totalDuration / 1000);
+
+        // calculating percentage
+        percentage = (((double) currentSeconds) / totalSeconds) * 100;
+
+        // return percentage
+        return percentage.intValue();
+    }
+
+    public static int progressToTimer(int progress, int totalDuration) {
+        int currentDuration = 0;
+        totalDuration = (int) (totalDuration / 1000);
+        currentDuration = (int) ((((double) progress) / 100) * totalDuration);
+
+        // return current duration in milliseconds
+        return currentDuration * 1000;
+    }
 }

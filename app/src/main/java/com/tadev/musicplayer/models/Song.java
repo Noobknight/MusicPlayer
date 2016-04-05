@@ -3,8 +3,6 @@ package com.tadev.musicplayer.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tadev.musicplayer.interfaces.ISongInfoListener;
-
 /**
  * Created by Iris Louis on 02/04/2016.
  */
@@ -18,51 +16,9 @@ public class Song implements Parcelable {
     private String file320Url;
     private String fileM4aUrl;
     private String musicLength;
-    private ISongInfoListener listener;
-
-    public Song(ISongInfoListener listener) {
-        this.listener = listener;
-    }
 
     public Song(){}
 
-    protected Song(Parcel in) {
-        String[] data = new String[9];
-        in.readStringArray(data);
-        this.musicId = data[0];
-        this.musicTitleUrl = data[1];
-        this.musicTitle = data[2];
-        this.musicArtist = data[3];
-        this.musicImg = data[4];
-        this.fileUrl = data[5];
-        this.file320Url = data[6];
-        this.fileM4aUrl = data[7];
-        this.musicLength = data[8];
-
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.readStringArray(new String[]{this.musicId, this.musicTitleUrl, this.musicTitle, this.musicArtist, this.musicImg
-                , this.fileUrl, this.file320Url, this.fileM4aUrl, this.musicLength});
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Song> CREATOR = new Creator<Song>() {
-        @Override
-        public Song createFromParcel(Parcel in) {
-            return new Song(in);
-        }
-
-        @Override
-        public Song[] newArray(int size) {
-            return new Song[size];
-        }
-    };
 
     public String getMusicId() {
         return musicId;
@@ -159,4 +115,46 @@ public class Song implements Parcelable {
                 ", musicLength='" + musicLength + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.musicId);
+        dest.writeString(this.musicTitleUrl);
+        dest.writeString(this.musicTitle);
+        dest.writeString(this.musicArtist);
+        dest.writeString(this.musicImg);
+        dest.writeString(this.fileUrl);
+        dest.writeString(this.file320Url);
+        dest.writeString(this.fileM4aUrl);
+        dest.writeString(this.musicLength);
+    }
+
+    protected Song(Parcel in) {
+        this.musicId = in.readString();
+        this.musicTitleUrl = in.readString();
+        this.musicTitle = in.readString();
+        this.musicArtist = in.readString();
+        this.musicImg = in.readString();
+        this.fileUrl = in.readString();
+        this.file320Url = in.readString();
+        this.fileM4aUrl = in.readString();
+        this.musicLength = in.readString();
+    }
+
+    public static final Creator<Song> CREATOR = new Creator<Song>() {
+        @Override
+        public Song createFromParcel(Parcel source) {
+            return new Song(source);
+        }
+
+        @Override
+        public Song[] newArray(int size) {
+            return new Song[size];
+        }
+    };
 }

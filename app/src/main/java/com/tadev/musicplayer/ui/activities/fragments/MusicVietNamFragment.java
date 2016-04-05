@@ -1,9 +1,9 @@
-package com.tadev.musicplayer.ui.fragments;
+package com.tadev.musicplayer.ui.activities.fragments;
 
 import android.view.View;
 
 import com.tadev.musicplayer.R;
-import com.tadev.musicplayer.abstracts.BaseMusicFragmentDrawerClone;
+import com.tadev.musicplayer.abstracts.BaseMusicFragmentDrawer;
 import com.tadev.musicplayer.common.Api;
 import com.tadev.musicplayer.constant.Constants;
 import com.tadev.musicplayer.models.BaseModel;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Iris Louis on 24/03/2016.
  */
-public class MusicVietNamFragment extends BaseMusicFragmentDrawerClone {
+public class MusicVietNamFragment extends BaseMusicFragmentDrawer {
     public static final String TAG = "MusicVietNamFragment";
 
 
