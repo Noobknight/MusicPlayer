@@ -48,12 +48,16 @@ public class MusicLyricFragment extends BaseFragment {
 
     @Override
     protected void initViewData() {
-        boolean isEmptyLyric = lyric.getMusicLyric().isEmpty() || lyric.getMusicLyric() == null;
-        if (isEmptyLyric) {
-            txtLyric.setText(getResources().getString(R.string.lyric_empty));
+        if (lyric != null) {
+            boolean isEmptyLyric = lyric.getMusicLyric().isEmpty() || lyric.getMusicLyric() == null;
+            if (isEmptyLyric) {
+                txtLyric.setText(getResources().getString(R.string.lyric_empty));
+            }
+            txtLyric.setText(lyric.getMusicLyric());
+            txtLyric.setMovementMethod(ScrollingMovementMethod.getInstance());
+        } else {
+            txtLyric.setText("Lyric not found");
         }
-        txtLyric.setText(lyric.getMusicLyric());
-        txtLyric.setMovementMethod(ScrollingMovementMethod.getInstance());
     }
 
     @Override

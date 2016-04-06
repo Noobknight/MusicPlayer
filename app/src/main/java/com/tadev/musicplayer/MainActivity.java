@@ -27,14 +27,12 @@ import com.tadev.musicplayer.ui.activities.fragments.MusicVietNamFragment;
 
 public class MainActivity extends BaseMenuActivity implements
         FragmentManager.OnBackStackChangedListener, OnRegisterCallback
-        , IServicePlayer {
+        , IServicePlayer{
     private final String TAG = "MainActivity";
-    private final String LAST_ITEM_CHECKED = "last_item_checked";
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
     private int mLastItemChecked;
-    private ServiceConnection mServiceConnection;
     private Intent intentRegistedService;
     private MusicPlayService mService;
 
@@ -155,6 +153,7 @@ public class MainActivity extends BaseMenuActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        final String LAST_ITEM_CHECKED = "last_item_checked";
         outState.putInt(LAST_ITEM_CHECKED, mLastItemChecked);
     }
 
@@ -273,4 +272,5 @@ public class MainActivity extends BaseMenuActivity implements
     public void currentSongPlay(CurrentSongPlay currentSongPlay) {
 
     }
+
 }

@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.models.BaseModel;
 import com.tadev.musicplayer.utils.design.CircleImageView;
@@ -71,7 +71,10 @@ public class BaseMusicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             BaseModel music = (BaseModel) musics.get(position - 1);
             if (music != null) {
                 if (!music.getArtist_face_url().isEmpty()) {
-                    Picasso.with(context).load(music.getArtist_face_url()).placeholder(R.drawable.icon_loading_image)
+                    Glide.with(context).load(music.getArtist_face_url())
+                            .into(((ItemViewHolder) viewHolder).imgArtistFace);
+                } else {
+                    Glide.with(context).load(R.drawable.icon_music_placeholder)
                             .into(((ItemViewHolder) viewHolder).imgArtistFace);
                 }
                 ((ItemViewHolder) viewHolder).tvTitle.setText(music.getMusic_title());
@@ -81,7 +84,7 @@ public class BaseMusicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 ((ItemViewHolder) viewHolder).cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onItemClickListener.onItemClick(v, position-1);
+                        onItemClickListener.onItemClick(v, position - 1);
                     }
                 });
             }

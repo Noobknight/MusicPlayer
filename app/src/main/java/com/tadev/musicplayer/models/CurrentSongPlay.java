@@ -1,6 +1,5 @@
 package com.tadev.musicplayer.models;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,10 +9,7 @@ import android.os.Parcelable;
 public class CurrentSongPlay implements Parcelable {
 
     public String musicId;
-    public Bitmap btmImage;
-    public String title;
-    public String artist;
-    public String fileUrl;
+    public Song song;
 
     public boolean equals(String id) {
         if (id.equals(musicId)) {
@@ -23,6 +19,9 @@ public class CurrentSongPlay implements Parcelable {
     }
 
 
+    public CurrentSongPlay() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -31,21 +30,12 @@ public class CurrentSongPlay implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.musicId);
-        dest.writeParcelable(this.btmImage, flags);
-        dest.writeString(this.title);
-        dest.writeString(this.artist);
-        dest.writeString(this.fileUrl);
-    }
-
-    public CurrentSongPlay() {
+        dest.writeParcelable(this.song, flags);
     }
 
     protected CurrentSongPlay(Parcel in) {
         this.musicId = in.readString();
-        this.btmImage = in.readParcelable(Bitmap.class.getClassLoader());
-        this.title = in.readString();
-        this.artist = in.readString();
-        this.fileUrl = in.readString();
+        this.song = in.readParcelable(Song.class.getClassLoader());
     }
 
     public static final Creator<CurrentSongPlay> CREATOR = new Creator<CurrentSongPlay>() {

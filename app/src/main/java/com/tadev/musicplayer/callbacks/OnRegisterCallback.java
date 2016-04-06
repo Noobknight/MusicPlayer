@@ -12,4 +12,5 @@ public interface OnRegisterCallback {
     void onServicePreparing(Intent intent);
 
     void onUnRegisterReceiver(boolean enable);
+
 }

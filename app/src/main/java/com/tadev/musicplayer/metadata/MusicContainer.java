@@ -33,6 +33,7 @@ public class MusicContainer {
         musicVietNamList = new ArrayList<>();
         musicKoreaList = new ArrayList<>();
         musicUSUKList = new ArrayList<>();
+        mCurrentSongPlay = new CurrentSongPlay();
     }
 
 

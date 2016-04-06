@@ -60,9 +60,8 @@ public class MusicVietNamFragment extends BaseMusicFragmentDrawer {
 
     @Override
     public void onItemClick(View view, int position) {
-        BaseModel baseModel = null;
         try {
-            baseModel = (BaseModel) application.getMusicContainer().getListNeed(Constants.VIETNAM_TAG).get(position);
+            BaseModel baseModel = (BaseModel) application.getMusicContainer().getListNeed(Constants.VIETNAM_TAG).get(position);
             baseMenuActivity.transaction = baseMenuActivity.getSupportFragmentManager().beginTransaction();
             baseMenuActivity.transaction.setCustomAnimations(R.anim.transition_fade_in, R.anim.transition_fade_out,
                     R.anim.transition_fade_in, R.anim.transition_fade_out);
@@ -70,6 +69,7 @@ public class MusicVietNamFragment extends BaseMusicFragmentDrawer {
                     .addToBackStack(MainMusicPlayFragment.TAG);
             baseMenuActivity.transaction.commit();
             getToolbar().setVisibility(View.INVISIBLE);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

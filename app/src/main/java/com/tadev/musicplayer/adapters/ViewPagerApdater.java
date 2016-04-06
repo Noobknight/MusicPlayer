@@ -1,6 +1,5 @@
 package com.tadev.musicplayer.adapters;
 
-import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,13 +16,11 @@ public class ViewPagerApdater extends FragmentPagerAdapter {
     private final String TAG = "ViewPagerApdater";
     private Song song;
     private Lyric lyric;
-    private Bitmap btmBlur;
 
-    public ViewPagerApdater(FragmentManager fm, Song song, Lyric lyric, Bitmap btm) {
+    public ViewPagerApdater(FragmentManager fm, Song song, Lyric lyric) {
         super(fm);
         this.song = song;
         this.lyric = lyric;
-        btmBlur = btm;
     }
 
 
@@ -31,9 +28,7 @@ public class ViewPagerApdater extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                MusicPlayingFragment fragment = MusicPlayingFragment.newInstance(song);
-                fragment.setBipmapBlur(btmBlur);
-                return fragment;
+                return MusicPlayingFragment.newInstance(song);
             case 1:
                 return MusicLyricFragment.newInstance(lyric);
             default:

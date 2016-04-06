@@ -104,14 +104,14 @@ public class MusicPlayService extends Service implements
                     } else {
                         mMediaPlayer.stop();
                         mMediaPlayer.reset();
-                        play(mCurrentSongPlay.fileUrl);
+                        play(mCurrentSongPlay.song.getFileUrl());
                         duration();
                         musicContainer.setmCurrentSongPlay(mCurrentSongPlay);
                     }
                     break;
                 case ACTION_PLAY:
                     if (mMediaPlayer.isPlaying()) break;
-                    play(mCurrentSongPlay.fileUrl);
+                    play(mCurrentSongPlay.song.getFileUrl());
                     break;
                 case ACTION_PAUSE:
                     pause();
@@ -163,7 +163,7 @@ public class MusicPlayService extends Service implements
     }
 
     public int duration() {
-        return mMediaPlayer != null ? mMediaPlayer.getDuration() : 0;
+        return mMediaPlayer != null || mMediaPlayer.getDuration() > 0? mMediaPlayer.getDuration() : 0;
     }
 
     public int position() {

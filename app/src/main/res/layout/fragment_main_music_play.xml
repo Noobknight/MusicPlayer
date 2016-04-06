@@ -9,7 +9,6 @@
         android:id="@+id/fragment_main_music_play_imgBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/icon_music_background"
         android:contentDescription="@null"
         android:scaleType="fitXY" />
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tadev.musicplayer.MainActivity;
+import com.tadev.musicplayer.MusicPlayerApplication;
 
 /**
  * Created by Iris Louis on 01/04/2016.
@@ -19,11 +20,13 @@ public abstract class BaseFragment extends Fragment {
     protected Context context;
     protected BaseMenuActivity baseMenuActivity;
     protected MainActivity mActivityMain;
+    protected MusicPlayerApplication application;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG(), "onCreate ");
+        application = ((MusicPlayerApplication.getInstance()));
     }
 
     @Nullable

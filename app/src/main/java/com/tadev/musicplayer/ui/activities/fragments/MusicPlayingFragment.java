@@ -3,7 +3,6 @@ package com.tadev.musicplayer.ui.activities.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
@@ -42,7 +41,6 @@ public class MusicPlayingFragment extends BaseFragment {
     private LocalBroadcastManager localBroadcastManager;
     private TextView txtCurrentTime, txtTotalTime;
     private CurrentSongPlay currentPlay;
-    private Bitmap btmBlur;
     private boolean isPlayState;
     //Service Callback To Activity
     private OnRegisterCallback mOnRegisterCallback;
@@ -61,6 +59,7 @@ public class MusicPlayingFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate ");
         mService = mActivityMain.getService();
+        currentPlay = application.getMusicContainer().getmCurrentSongPlay();
     }
 
     @Override
@@ -72,8 +71,8 @@ public class MusicPlayingFragment extends BaseFragment {
 
     @Override
     public void onPause() {
-        super.onPause();
         localBroadcastManager.unregisterReceiver(updateSeekbar);
+        super.onPause();
     }
 
 
@@ -116,23 +115,18 @@ public class MusicPlayingFragment extends BaseFragment {
     @Override
     protected void initViewData() {
         fabPlayPause.setImageDrawable(playPauseDrawable);
-        if (mService == null) {
-            //service not register || MediaPlayer == null;
+        if (mService != null &&
+                mService.getCurrentId() != Integer.parseInt(mSong.getMusicId())) {
+            //Service has register and musicID not equal
             playPauseDrawable.transformToPlay(true);
-        } else if (mService.getCurrentId() != Integer.parseInt(mSong.getMusicId())) {
-            //Service has register and musicID equal with current ID
-            playPauseDrawable.transformToPlay(true);
-
             isPlayState = false;
         } else {
-            //Service has register and musicId not equal
-            context.unregisterReceiver(updateSeekbar);
+            //Service has register and musicId equal with current ID
             playPauseDrawable.transformToPause(true);
             isPlayState = true;
         }
         txtTitle.setText(mSong.getMusicTitle());
         txtArtist.setText(mSong.getMusicArtist());
-        currentPlay = new CurrentSongPlay();
     }
 
     @Override
@@ -144,11 +138,14 @@ public class MusicPlayingFragment extends BaseFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
-                int progress = intent.getIntExtra(UpdateSeekbarReceiver.KEY_UPDATE_PROGRESS, 0);
-                int currentPosition = intent.getIntExtra(UpdateSeekbarReceiver.KEY_CURRENT_POSITION, 0);
-                seekBar.setProgress(progress);
-                txtCurrentTime.setText(Utils.getTimeString(currentPosition));
-                txtTotalTime.setText(Utils.getTimeString(mService.duration()));
+                if (mService != null &&
+                        mService.getCurrentId() == Integer.parseInt(mSong.getMusicId())
+                        && mService.duration() > -1) {
+                    int progress = intent.getIntExtra(UpdateSeekbarReceiver.KEY_UPDATE_PROGRESS, 0);
+                    seekBar.setProgress(progress);
+                    txtCurrentTime.setText(Utils.getTimeString(mService.position()));
+                    txtTotalTime.setText(Utils.getTimeString(mService.duration()));
+                }
             }
         }
     };
@@ -172,11 +169,7 @@ public class MusicPlayingFragment extends BaseFragment {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(MusicPlayService.ACTION_TOGGLE_PLAYPAUSE);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(Constants.KEY_PASS_DATA_SERVICE, initDataCurrentPlay());
-            intent.putExtras(bundle);
-//            intent.putExtra("url", mSong.getFileUrl());
-//            intent.putExtra("id", Integer.parseInt(mSong.getMusicId()));
+            intent.putExtras(initDataCurrentPlay());
             mOnRegisterCallback.onServicePreparing(intent);
             if (isPlayState) {
                 playPauseDrawable.transformToPause(true);
@@ -191,20 +184,11 @@ public class MusicPlayingFragment extends BaseFragment {
 
     private Bundle initDataCurrentPlay() {
         Bundle bundle = new Bundle();
-        currentPlay.artist = mSong.getMusicArtist();
-        currentPlay.title = mSong.getMusicTitle();
-        currentPlay.btmImage = btmBlur;
         currentPlay.musicId = mSong.getMusicId();
-        currentPlay.fileUrl = mSong.getFileUrl();
+        currentPlay.song = mSong;
         bundle.putParcelable(Constants.KEY_PASS_DATA_SERVICE, currentPlay);
         return bundle;
     }
 
-
-    public void setBipmapBlur(Bitmap btmBlur) {
-        if (btmBlur != null) {
-            this.btmBlur = btmBlur;
-        }
-    }
 
 }

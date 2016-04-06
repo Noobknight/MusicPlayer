@@ -2,7 +2,6 @@ package com.tadev.musicplayer.ui.activities.fragments;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -17,8 +16,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.abstracts.BaseFragment;
 import com.tadev.musicplayer.adapters.ViewPagerApdater;
@@ -27,6 +27,7 @@ import com.tadev.musicplayer.models.BaseModel;
 import com.tadev.musicplayer.models.Lyric;
 import com.tadev.musicplayer.models.Music;
 import com.tadev.musicplayer.models.Song;
+import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.services.loaders.MusicInfoLoaderTask;
 import com.tadev.musicplayer.utils.design.blurry.BlurImageUtils;
 import com.tadev.musicplayer.utils.design.viewpager.CircleIndicator;
@@ -46,6 +47,13 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     private FrameLayout frameViewPager;
     private ProgressDialog dialogLoading;
     private Bitmap btmBlur;
+    private MusicPlayService mService;
+//
+//    public interface ImageBlurCallBack {
+//        void onImageBlurred(Bitmap btmBlurred);
+//    }
+//
+//    private ImageBlurCallBack mImageBlurListener;
 
     public static MainMusicPlayFragment newInstance(BaseModel baseModel) {
         MainMusicPlayFragment fragment = new MainMusicPlayFragment();
@@ -60,15 +68,32 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate ");
         setHasOptionsMenu(true);
+        mService = mActivityMain.getService();
     }
+//
+//    @Override
+//    public void onAttach(Context context) {
+//        AppCompatActivity activity;
+//        if (context instanceof AppCompatActivity) {
+//            activity = (AppCompatActivity) context;
+//            try {
+//                mImageBlurListener = (ImageBlurCallBack) activity;
+//            } catch (ClassCastException e) {
+//                throw new ClassCastException(activity.toString() + " must be implement ImageBlurCallBack");
+//            }
+//        }
+//        super.onAttach(context);
+//    }
 
     @Override
     protected int setLayoutById() {
+        Log.i(TAG, "setLayoutById ");
         return R.layout.fragment_main_music_play;
     }
 
     @Override
     protected void initView(View view) {
+        Log.i(TAG, "initView ");
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         mCircleIndicator = (CircleIndicator) view.findViewById(R.id.circleIndicator);
@@ -79,13 +104,14 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
 
     @Override
     protected void initViewData() {
-//        mAdapter = new ViewPagerApdater(getChildFragmentManager(), initSongData(music), initLyricData(music));
-//        mViewPager.setAdapter(mAdapter);
-//        mCircleIndicator.setViewPager(mViewPager);
+        Log.i(TAG, "initViewData ");
+        // TODO: Handle something here !!! initViewData
+
     }
 
     @Override
     protected void setViewEvents() {
+        Log.i(TAG, "setViewEvents ");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -100,12 +126,41 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
                 }, getResources().getInteger(R.integer.fragmentAnimationTime));
             }
         });
-        new MusicInfoLoaderTask(modelMusic.getMusic_id(), modelMusic.getMusic_title_url(), this)
-                .execute();
+        if (!isCurrentSongPlay()) {
+            new MusicInfoLoaderTask(modelMusic.getMusic_id(), modelMusic.getMusic_title_url(), this)
+                    .execute();
+        } else {
+            final Song currentSongPlay = application.getMusicContainer().getmCurrentSongPlay().song;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    imgBackground.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean isImageEmpty = currentSongPlay.getMusicImg() == null
+                                    || currentSongPlay.getMusicImg().isEmpty();
+                            if (isImageEmpty) {
+                                Glide.with(context).load(R.drawable.ic_background_blur).asBitmap()
+                                        .into(target);
+                            } else {
+                                Glide.with(context.getApplicationContext()).load(currentSongPlay.getMusicImg())
+                                        .asBitmap().into(target);
+                            }
+                        }
+                    });
+                }
+            }).start();
+            mAdapter = new ViewPagerApdater(getChildFragmentManager(),
+                    currentSongPlay,
+                    null);
+            mViewPager.setAdapter(mAdapter);
+            mCircleIndicator.setViewPager(mViewPager);
+        }
     }
 
     @Override
     protected String TAG() {
+        Log.i(TAG, "TAG ");
         return TAG;
     }
 
@@ -166,23 +221,19 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
                         boolean isImageEmpty = musicReponse.getMusicImg() == null
                                 || musicReponse.getMusicImg().isEmpty();
                         if (isImageEmpty) {
-                            imgBackground.buildDrawingCache();
-                            btmBlur = imgBackground.getDrawingCache();
-                            btmBlur = BlurImageUtils.blurRenderScript(context, btmBlur, 10);
-                            imgBackground.setImageBitmap(btmBlur);
+                            Glide.with(context).load(R.drawable.ic_background_blur).asBitmap()
+                                    .into(target);
                         } else {
-                            loadImageBlur(musicReponse.getMusicImg());
-//                            btmBlur = BlurImageUtils.blurRenderScript(context,
-//                                    ImageUtils.loadBitmap(musicReponse.getMusicImg()),
-//                                    10);
-//                            imgBackground.setImageBitmap(btmBlur);
+                            Glide.with(context.getApplicationContext()).load(musicReponse.getMusicImg())
+                                    .asBitmap().into(target);
                         }
                     }
                 });
             }
         }).start();
-        mAdapter = new ViewPagerApdater(getChildFragmentManager(), initSongData(musicReponse),
-                initLyricData(musicReponse), btmBlur);
+        mAdapter = new ViewPagerApdater(getChildFragmentManager(), initSongData
+                (musicReponse),
+                initLyricData(musicReponse));
         mViewPager.setAdapter(mAdapter);
         mCircleIndicator.setViewPager(mViewPager);
     }
@@ -200,7 +251,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
 
 
     private Song initSongData(Music music) {
-        if (music != null) {
+        if (music != null && !isCurrentSongPlay()) {
             Song song = new Song();
             song.setMusicId(music.getMusicId());
             song.setMusicTitleUrl(music.getMusicTitleUrl());
@@ -211,9 +262,9 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
             song.setFile320Url(music.getFile320Url());
             song.setFileM4aUrl(music.getFileM4aUrl());
             return song;
+        } else {
+            return application.getMusicContainer().getmCurrentSongPlay().song;
         }
-        return null;
-
     }
 
     private Lyric initLyricData(Music music) {
@@ -240,26 +291,23 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
         }
     }
 
-    private void loadImageBlur(String url) {
-        Picasso.with(context).load(url).into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                btmBlur = BlurImageUtils.blurRenderScript(context, bitmap, 10);
-                imgBackground.setImageBitmap(btmBlur);
-            }
 
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-                imgBackground.buildDrawingCache();
-                btmBlur = imgBackground.getDrawingCache();
-                btmBlur = BlurImageUtils.blurRenderScript(context, btmBlur, 10);
-                imgBackground.setImageBitmap(btmBlur);
-            }
 
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                imgBackground.setImageDrawable(placeHolderDrawable);
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            Bitmap btmBlur = BlurImageUtils.blurRenderScript(context, resource, 10);
+            imgBackground.setImageBitmap(btmBlur);
+        }
+
+    };
+
+    private boolean isCurrentSongPlay() {
+        if (mService != null) {
+            if (mService.getCurrentId() == Integer.parseInt(modelMusic.getMusic_id())) {
+                return true;
             }
-        });
+        }
+        return false;
     }
 }
