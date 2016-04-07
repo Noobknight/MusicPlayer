@@ -21,6 +21,7 @@ import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.nineoldandroids.view.ViewHelper;
 import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.R;
+import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
 import com.tadev.musicplayer.services.loaders.MusicLoaderTask;
 import com.tadev.musicplayer.utils.design.MaterialImageHeader;
 import com.tadev.musicplayer.utils.design.support.Utils;
@@ -41,6 +42,7 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
     protected Context context;
     protected MusicPlayerApplication application;
     protected BaseMenuActivity baseMenuActivity;
+    protected OnPlayBarBottomListener mOnPlayBarBottomListener;
 
 
     @Override
@@ -112,7 +114,12 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
         AppCompatActivity baseMenu = null;
         if (context instanceof AppCompatActivity) {
             baseMenu = (AppCompatActivity) context;
-            baseMenuActivity = (BaseMenuActivity) baseMenu;
+            try {
+                mOnPlayBarBottomListener = (OnPlayBarBottomListener) baseMenu;
+                baseMenuActivity = (BaseMenuActivity) baseMenu;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(baseMenu.toString() + " must be implement OnPlayBarBottomListener");
+            }
         }
         super.onAttach(context);
     }
@@ -232,7 +239,6 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
     }
 
     protected abstract String setTitle();
-
 
 
 }

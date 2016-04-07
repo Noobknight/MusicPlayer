@@ -9,7 +9,7 @@
     <!--</style>-->
 
 
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar" />
 
     <style name="AppTheme" parent="AppBaseTheme">
 
@@ -20,7 +20,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
-         <!--Toolbar Theme / Apply white arrow -->
+        <!--Toolbar Theme / Apply white arrow -->
         <item name="colorControlNormal">@android:color/white</item>
         <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
         <item name="android:textColorPrimary">@color/material_white</item>
@@ -55,6 +55,11 @@
         <item name="colorAccent">#FFFF00</item>
     </style>
 
+    <style name="TypeProgress" parent="Widget.AppCompat.ProgressBar.Horizontal" />
+
+    <style name="ProgressBarStyle">
+        <item name="colorAccent">@color/material_pink_500</item>
+    </style>
 
 
 </resources>

@@ -4,14 +4,90 @@
     android:layout_height="match_parent"
     android:background="@drawable/round_transparent_lyric">
 
-    <TextView
-        android:id="@+id/fragment_music_lyric_txtLyric"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:scrollbars="vertical"
-        android:text="@string/app_name"
-        android:textColor="@color/material_white"
-        android:textSize="18sp" />
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/fragment_music_lyric_txtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:gravity="center_horizontal"
+                    android:text="@string/music_name"
+                    android:textColor="@color/material_white"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/fragment_music_lyric_txtArtist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:singleLine="true"
+                    android:text="@string/drawer_artist"
+                    android:textColor="@color/material_white"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/fragment_music_lyric_txtYear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/music_year"
+                    android:textColor="@color/material_white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.7">
+
+                <ImageView
+                    android:id="@+id/fragment_music_lyric_imgArtist"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_no_user" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/material_lightBlue_500" />
+
+        <TextView
+            android:id="@+id/fragment_music_lyric_txtLyric"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scrollbars="vertical"
+            android:text="@string/app_name"
+            android:textColor="@color/material_white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
 
 </FrameLayout>

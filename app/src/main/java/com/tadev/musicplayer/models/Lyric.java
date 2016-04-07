@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * Created by Iris Louis on 02/04/2016.
  */
 public class Lyric implements Parcelable {
+
     private String musicTitle;
     private String musicArtist;
     private String musicComposer;
@@ -15,56 +16,10 @@ public class Lyric implements Parcelable {
     private String musicYear;
     private String musicUsername;
     private String musicLyric;
+    private String musicImage;
 
     public Lyric() {
     }
-
-
-    protected Lyric(Parcel in) {
-//        String[] data = new String[]{musicTitle, musicArtist, musicComposer, musicAlbum, musicProduction,
-//                musicYear, musicUsername, musicLyric};
-        String[] data = new String[8];
-        in.readStringArray(data);
-        musicTitle = data[0];
-        musicArtist = data[1];
-        musicComposer = data[2];
-        musicAlbum = data[3];
-        musicProduction = data[4];
-        musicYear = data[5];
-        musicUsername = data[6];
-        musicLyric = data[7];
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(musicTitle);
-        dest.writeString(musicArtist);
-        dest.writeString(musicComposer);
-        dest.writeString(musicAlbum);
-        dest.writeString(musicProduction);
-        dest.writeString(musicYear);
-        dest.writeString(musicUsername);
-        dest.writeString(musicLyric);
-    }
-
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Lyric> CREATOR = new Creator<Lyric>() {
-        @Override
-        public Lyric createFromParcel(Parcel in) {
-            return new Lyric(in);
-        }
-
-        @Override
-        public Lyric[] newArray(int size) {
-            return new Lyric[size];
-        }
-    };
 
 
     public String getMusicTitle() {
@@ -134,6 +89,15 @@ public class Lyric implements Parcelable {
         return musicLyric;
     }
 
+    public String getMusicImage() {
+        return musicImage;
+    }
+
+    public Lyric setMusicImage(String musicImage) {
+        this.musicImage = musicImage;
+        return this;
+    }
+
     public Lyric setMusicLyric(String musicLyric) {
         this.musicLyric = musicLyric;
         return this;
@@ -147,4 +111,46 @@ public class Lyric implements Parcelable {
                 + musicUsername + ", musicLyric : " + musicLyric + "}";
 
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.musicTitle);
+        dest.writeString(this.musicArtist);
+        dest.writeString(this.musicComposer);
+        dest.writeString(this.musicAlbum);
+        dest.writeString(this.musicProduction);
+        dest.writeString(this.musicYear);
+        dest.writeString(this.musicUsername);
+        dest.writeString(this.musicLyric);
+        dest.writeString(this.musicImage);
+    }
+
+    protected Lyric(Parcel in) {
+        this.musicTitle = in.readString();
+        this.musicArtist = in.readString();
+        this.musicComposer = in.readString();
+        this.musicAlbum = in.readString();
+        this.musicProduction = in.readString();
+        this.musicYear = in.readString();
+        this.musicUsername = in.readString();
+        this.musicLyric = in.readString();
+        this.musicImage = in.readString();
+    }
+
+    public static final Creator<Lyric> CREATOR = new Creator<Lyric>() {
+        @Override
+        public Lyric createFromParcel(Parcel source) {
+            return new Lyric(source);
+        }
+
+        @Override
+        public Lyric[] newArray(int size) {
+            return new Lyric[size];
+        }
+    };
 }

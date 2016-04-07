@@ -12,4 +12,7 @@
     <dimen name="parallax_image_height_opacity">165dp</dimen>
     <dimen name="cardMarginHorizontal">10dp</dimen>
     <dimen name="cardMarginVertical">8dp</dimen>
+
+    <dimen name="text_size_common">16sp</dimen>
+    <dimen name="play_bar_height">57dp</dimen>
 </resources>

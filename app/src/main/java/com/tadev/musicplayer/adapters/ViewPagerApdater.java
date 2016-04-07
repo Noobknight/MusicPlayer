@@ -28,7 +28,7 @@ public class ViewPagerApdater extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return MusicPlayingFragment.newInstance(song);
+                return MusicPlayingFragment.newInstance(song, lyric);
             case 1:
                 return MusicLyricFragment.newInstance(lyric);
             default:

@@ -61,6 +61,7 @@ public class MusicUsUkFragment extends BaseMusicFragmentDrawer {
 
     @Override
     public void onItemClick(View view, int position) {
+        mOnPlayBarBottomListener.onPlayBarShowHide(true);
         BaseModel usModel = (BaseModel) mListMusicUsUk.get(position);
         baseMenuActivity.transaction = baseMenuActivity.getSupportFragmentManager().beginTransaction();
         baseMenuActivity.transaction.setCustomAnimations(R.anim.transition_fade_in, R.anim.transition_fade_out,

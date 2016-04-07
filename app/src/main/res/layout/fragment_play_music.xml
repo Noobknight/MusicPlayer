@@ -13,7 +13,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/icon_music_background" />
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/include_toolbar" />
 
 
     <LinearLayout

@@ -105,6 +105,7 @@ public class MusicPlayService extends Service implements
                         mMediaPlayer.stop();
                         mMediaPlayer.reset();
                         play(mCurrentSongPlay.song.getFileUrl());
+                        mListener.currentSongPlay(mCurrentSongPlay);
                         duration();
                         musicContainer.setmCurrentSongPlay(mCurrentSongPlay);
                     }

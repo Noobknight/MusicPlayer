@@ -18,6 +18,7 @@ import com.tadev.musicplayer.abstracts.BaseFragment;
 import com.tadev.musicplayer.callbacks.OnRegisterCallback;
 import com.tadev.musicplayer.constant.Constants;
 import com.tadev.musicplayer.models.CurrentSongPlay;
+import com.tadev.musicplayer.models.Lyric;
 import com.tadev.musicplayer.models.Song;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.services.MusicPlayService;
@@ -30,11 +31,14 @@ import com.tadev.musicplayer.utils.design.support.Utils;
  */
 public class MusicPlayingFragment extends BaseFragment {
     private static final String TAG = "MusicPlayingFragment";
+    private static final String KEY_SONG = "song";
+    private static final String KEY_LYRIC = "lyric";
     //    private static MusicPlayingFragment sInstance;
     private TextViewTitle txtTitle, txtArtist;
     private SeekBar seekBar;
     private ImageView imgShuffle, imgRepeat, imgNext, imgPrevious;
     private Song mSong;
+    private Lyric mLyric;
     private FloatingActionButton fabPlayPause;
     private PlayPauseDrawable playPauseDrawable = new PlayPauseDrawable();
     private MusicPlayService mService;
@@ -46,10 +50,11 @@ public class MusicPlayingFragment extends BaseFragment {
     private OnRegisterCallback mOnRegisterCallback;
 
 
-    public static MusicPlayingFragment newInstance(Song song) {
+    public static MusicPlayingFragment newInstance(Song song, Lyric lyric) {
         MusicPlayingFragment fragment = new MusicPlayingFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(TAG, song);
+        bundle.putParcelable(KEY_SONG, song);
+        bundle.putParcelable(KEY_LYRIC, lyric);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -154,7 +159,8 @@ public class MusicPlayingFragment extends BaseFragment {
     protected void getDataCallBack() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            mSong = bundle.getParcelable(TAG);
+            mSong = bundle.getParcelable(KEY_SONG);
+            mLyric = bundle.getParcelable(KEY_LYRIC);
         }
     }
 
@@ -186,6 +192,7 @@ public class MusicPlayingFragment extends BaseFragment {
         Bundle bundle = new Bundle();
         currentPlay.musicId = mSong.getMusicId();
         currentPlay.song = mSong;
+        currentPlay.lyric = mLyric;
         bundle.putParcelable(Constants.KEY_PASS_DATA_SERVICE, currentPlay);
         return bundle;
     }

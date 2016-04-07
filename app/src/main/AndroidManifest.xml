@@ -23,13 +23,14 @@
             <intent-filter>
                 <action android:name="com.tadev.musicmMediaPlayer.action.PLAY" />
                 <action android:name="com.tadev.musicmMediaPlayer.action.PAUSE" />
-                <action android:name="com.tadev.musicmMediaPlayer.action.PLAY_PAUSE"/>
+                <action android:name="com.tadev.musicmMediaPlayer.action.PLAY_PAUSE" />
             </intent-filter>
         </service>
 
         <receiver android:name=".receivers.UpdateSeekbarReceiver">
             <intent-filter>
-                <action android:name="com.tadev.musicplayer.action.ACTION_UPDATE"/>
+                <action android:name="com.tadev.musicplayer.action.ACTION_UPDATE" />
+                <action android:name="com.tadev.musicplayer.UPDATE_MUSIC_PLAYBAR" />
             </intent-filter>
         </receiver>
     </application>

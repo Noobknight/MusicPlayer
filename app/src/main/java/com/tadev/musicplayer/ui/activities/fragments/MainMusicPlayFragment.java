@@ -1,11 +1,13 @@
 package com.tadev.musicplayer.ui.activities.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -46,14 +48,13 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     private Toolbar toolbar;
     private FrameLayout frameViewPager;
     private ProgressDialog dialogLoading;
-    private Bitmap btmBlur;
     private MusicPlayService mService;
-//
-//    public interface ImageBlurCallBack {
-//        void onImageBlurred(Bitmap btmBlurred);
-//    }
-//
-//    private ImageBlurCallBack mImageBlurListener;
+
+    public interface OnBackFragmentListener {
+        void onBack(boolean isBack);
+    }
+
+    private OnBackFragmentListener mOnBackFragmentListener;
 
     public static MainMusicPlayFragment newInstance(BaseModel baseModel) {
         MainMusicPlayFragment fragment = new MainMusicPlayFragment();
@@ -70,30 +71,29 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
         setHasOptionsMenu(true);
         mService = mActivityMain.getService();
     }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        AppCompatActivity activity;
-//        if (context instanceof AppCompatActivity) {
-//            activity = (AppCompatActivity) context;
-//            try {
-//                mImageBlurListener = (ImageBlurCallBack) activity;
-//            } catch (ClassCastException e) {
-//                throw new ClassCastException(activity.toString() + " must be implement ImageBlurCallBack");
-//            }
-//        }
-//        super.onAttach(context);
-//    }
+
+    @Override
+    public void onAttach(Context context) {
+        AppCompatActivity activity;
+        if (context instanceof AppCompatActivity) {
+            activity = (AppCompatActivity) context;
+            try {
+                mOnBackFragmentListener = (OnBackFragmentListener) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString() + " class must be implement" +
+                        " OnBackFragmentListener");
+            }
+        }
+        super.onAttach(context);
+    }
 
     @Override
     protected int setLayoutById() {
-        Log.i(TAG, "setLayoutById ");
         return R.layout.fragment_main_music_play;
     }
 
     @Override
     protected void initView(View view) {
-        Log.i(TAG, "initView ");
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         mCircleIndicator = (CircleIndicator) view.findViewById(R.id.circleIndicator);
@@ -104,18 +104,17 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
 
     @Override
     protected void initViewData() {
-        Log.i(TAG, "initViewData ");
         // TODO: Handle something here !!! initViewData
 
     }
 
     @Override
     protected void setViewEvents() {
-        Log.i(TAG, "setViewEvents ");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                mOnBackFragmentListener.onBack(true);
                 Handler handler = new Handler();
                 baseMenuActivity.mFragmentManager.popBackStack();
                 handler.postDelayed(new Runnable() {
@@ -131,6 +130,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
                     .execute();
         } else {
             final Song currentSongPlay = application.getMusicContainer().getmCurrentSongPlay().song;
+            Lyric currentLyric = application.getMusicContainer().getmCurrentSongPlay().lyric;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -152,7 +152,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
             }).start();
             mAdapter = new ViewPagerApdater(getChildFragmentManager(),
                     currentSongPlay,
-                    null);
+                    currentLyric);
             mViewPager.setAdapter(mAdapter);
             mCircleIndicator.setViewPager(mViewPager);
         }
@@ -160,7 +160,6 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
 
     @Override
     protected String TAG() {
-        Log.i(TAG, "TAG ");
         return TAG;
     }
 
@@ -176,6 +175,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
 
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                     // handle back button
+                    mOnBackFragmentListener.onBack(true);
                     Handler handler = new Handler();
                     baseMenuActivity.mFragmentManager.popBackStack();
                     handler.postDelayed(new Runnable() {
@@ -268,7 +268,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     }
 
     private Lyric initLyricData(Music music) {
-        if (music != null) {
+        if (music != null && !isCurrentSongPlay()) {
             Lyric lyric = new Lyric();
             lyric.setMusicTitle(music.getMusicTitle());
             lyric.setMusicArtist(music.getMusicArtist());
@@ -277,10 +277,11 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
             lyric.setMusicLyric(music.getMusicLyric());
             lyric.setMusicProduction(music.getMusicProduction());
             lyric.setMusicYear(music.getMusicYear());
+            lyric.setMusicImage(music.getMusicImg());
             return lyric;
+        } else {
+            return application.getMusicContainer().getmCurrentSongPlay().lyric;
         }
-        return null;
-
     }
 
     @Override
@@ -290,7 +291,6 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
             modelMusic = bundle.getParcelable(KEY_EXTRA);
         }
     }
-
 
 
     private SimpleTarget target = new SimpleTarget<Bitmap>() {

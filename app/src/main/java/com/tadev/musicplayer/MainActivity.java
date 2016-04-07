@@ -5,36 +5,47 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.tadev.musicplayer.abstracts.BaseMenuActivity;
 import com.tadev.musicplayer.callbacks.OnRegisterCallback;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
+import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
 import com.tadev.musicplayer.models.CurrentSongPlay;
 import com.tadev.musicplayer.services.MusicPlayService;
+import com.tadev.musicplayer.ui.activities.fragments.MainMusicPlayFragment.OnBackFragmentListener;
 import com.tadev.musicplayer.ui.activities.fragments.MusicKoreaFragment;
 import com.tadev.musicplayer.ui.activities.fragments.MusicUsUkFragment;
 import com.tadev.musicplayer.ui.activities.fragments.MusicVietNamFragment;
+import com.tadev.musicplayer.ui.activities.fragments.PlayBarBottomFragment;
 
-public class MainActivity extends BaseMenuActivity implements
-        FragmentManager.OnBackStackChangedListener, OnRegisterCallback
-        , IServicePlayer{
+public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
+        , IServicePlayer, OnBackFragmentListener, OnPlayBarBottomListener {
     private final String TAG = "MainActivity";
+    public static final String UPDATE_MUSIC_PLAYBAR = "com.tadev.musicplayer.UPDATE_MUSIC_PLAYBAR";
+    public static final String EXTRA_CURRENT_PLAY = "current_play";
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
     private int mLastItemChecked;
     private Intent intentRegistedService;
     private MusicPlayService mService;
+    private boolean enablePlayBarBottom;
+    private PlayBarBottomFragment mPlayBarBottomFragment;
+    private FrameLayout containerBottom;
+    private Handler handler;
+    private LocalBroadcastManager localBroadcastManager;
 
 
     @Override
@@ -44,10 +55,12 @@ public class MainActivity extends BaseMenuActivity implements
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        handler = new Handler();
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
         bindService();
-        mFragmentManager.addOnBackStackChangedListener(this);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.left_drawer);
+        containerBottom = (FrameLayout) findViewById(R.id.container_bottom);
         if (savedInstanceState != null) {
             if (mLastItemChecked != R.id.music_vietnam) {
                 mNavigationView.getMenu().findItem(R.id.music_vietnam).setChecked(false);
@@ -114,8 +127,12 @@ public class MainActivity extends BaseMenuActivity implements
 
     private void selectItem(int itemIds) {
         int navItemId = itemIds;
-        transaction = mFragmentManager.beginTransaction();
+
 //        transaction.setCustomAnimations(R.anim.transition_slide_in_bottom, R.anim.transition_slide_out_bottom);
+//        if (mService != null) {
+//            hidePlayBarBottom();
+//        }
+        transaction = mFragmentManager.beginTransaction();
         switch (itemIds) {
             case R.id.music_vietnam:
                 transaction.replace(R.id.container, MusicVietNamFragment.newInstance(),
@@ -148,6 +165,7 @@ public class MainActivity extends BaseMenuActivity implements
         transaction.commit();
         mDrawer.closeDrawer(GravityCompat.START);
         mLastItemChecked = navItemId;
+        showPlayBarBottom();
     }
 
     @Override
@@ -168,7 +186,12 @@ public class MainActivity extends BaseMenuActivity implements
             mDrawer.closeDrawer(mNavigationView);
             return;
         }
+//        if (mFragmentManager.getBackStackEntryCount() > 0) {
+//            enablePlayBarBottom = true;
+//        } else {
         super.onBackPressed();
+//        }
+
 //        if (mFragmentManager.getBackStackEntryCount() > 0) {
 //            mFragmentManager.popBackStackImmediate();
 //            Fragment fragment = mFragmentManager.findFragmentById(R.id.container);
@@ -190,13 +213,9 @@ public class MainActivity extends BaseMenuActivity implements
             Log.i(TAG, "onDestroy here");
             unbindService(mPlayServiceConnection);
             stopService(intentRegistedService);
+            enablePlayBarBottom = false;
         }
         super.onDestroy();
-    }
-
-    @Override
-    public void onBackStackChanged() {
-        Log.i(TAG, "onBackStackChanged ");
     }
 
 
@@ -233,13 +252,51 @@ public class MainActivity extends BaseMenuActivity implements
     private void bindService() {
         Intent intent = new Intent();
         intent.setClass(this, MusicPlayService.class);
-//        mOnRegisterCallback.onServiceRegister(intent, mPlayServiceConnection);
         bindService(intent, mPlayServiceConnection, Context.BIND_AUTO_CREATE);
-//        mServiceCallBack.onServiceCallback(mPlayServiceConnection);
     }
 
     public MusicPlayService getService() {
         return mService;
+    }
+
+
+    private void showPlayBarBottom() {
+        if (mPlayBarBottomFragment != null) {
+            transaction = mFragmentManager.beginTransaction();
+            transaction.show(mPlayBarBottomFragment);
+            transaction.commit();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    containerBottom.setVisibility(View.VISIBLE);
+                }
+            }, getResources().getInteger(R.integer.fragmentAnimationTime));
+
+        }
+    }
+
+
+    private void hidePlayBarBottom() {
+        transaction = mFragmentManager.beginTransaction();
+        transaction.hide(mPlayBarBottomFragment);
+        transaction.commit();
+        containerBottom.setVisibility(View.GONE);
+    }
+
+    private void initPlayBarBottom() {
+        if (mPlayBarBottomFragment == null) {
+            transaction = mFragmentManager.beginTransaction();
+            mPlayBarBottomFragment = new PlayBarBottomFragment();
+            transaction.replace(R.id.container_bottom, mPlayBarBottomFragment);
+            transaction.commit();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    containerBottom.setVisibility(View.VISIBLE);
+                }
+            }, getResources().getInteger(R.integer.fragmentAnimationTime));
+        }
+
     }
 
 
@@ -260,7 +317,7 @@ public class MainActivity extends BaseMenuActivity implements
 
     @Override
     public void onChange(int musicId) {
-
+        Log.i(TAG, "onChange " + musicId);
     }
 
     @Override
@@ -270,7 +327,30 @@ public class MainActivity extends BaseMenuActivity implements
 
     @Override
     public void currentSongPlay(CurrentSongPlay currentSongPlay) {
-
+        sendMessage(currentSongPlay);
     }
 
+    @Override
+    public void onBack(boolean isBack) {
+        if (intentRegistedService != null && mPlayBarBottomFragment == null) {
+            initPlayBarBottom();
+        } else if (isBack) {
+            showPlayBarBottom();
+        }
+    }
+
+    @Override
+    public void onPlayBarShowHide(boolean enable) {
+        if (mPlayBarBottomFragment != null) {
+            hidePlayBarBottom();
+        }
+    }
+
+    private void sendMessage(CurrentSongPlay currentSongPlay) {
+        Intent intent = new Intent(UPDATE_MUSIC_PLAYBAR);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_CURRENT_PLAY, currentSongPlay);
+        intent.putExtras(bundle);
+        localBroadcastManager.sendBroadcast(intent);
+    }
 }

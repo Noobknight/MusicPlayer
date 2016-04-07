@@ -22,8 +22,13 @@
     <string name="category_korea">Nhạc Hàn</string>
     <string name="time_update">00:00:00</string>
     <string name="category_us_uk">Nhạc Châu Âu</string>
+    <string name="music_year">Năm phát hành: 2016</string>
 
     <string name="lyric_empty">Bài hát hiện tại chưa hỗ trợ lời !!!</string>
 
-    
+    <string name="msg_lyric_not_found">Không tìm thấy lời bài hát !!</string>
+
+    <string name="msg_lyric_artist">Nghệ Sĩ : </string>
+    <string name="msg_lyric_year">Năm phát hành : </string>
+
 </resources>

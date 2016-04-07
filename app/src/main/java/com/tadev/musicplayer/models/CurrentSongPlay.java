@@ -10,6 +10,7 @@ public class CurrentSongPlay implements Parcelable {
 
     public String musicId;
     public Song song;
+    public Lyric lyric;
 
     public boolean equals(String id) {
         if (id.equals(musicId)) {
@@ -31,11 +32,14 @@ public class CurrentSongPlay implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.musicId);
         dest.writeParcelable(this.song, flags);
+        dest.writeParcelable(this.lyric, flags);
+
     }
 
     protected CurrentSongPlay(Parcel in) {
         this.musicId = in.readString();
         this.song = in.readParcelable(Song.class.getClassLoader());
+        this.lyric = in.readParcelable(Lyric.class.getClassLoader());
     }
 
     public static final Creator<CurrentSongPlay> CREATOR = new Creator<CurrentSongPlay>() {
