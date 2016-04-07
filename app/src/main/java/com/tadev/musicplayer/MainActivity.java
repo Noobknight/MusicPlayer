@@ -24,6 +24,7 @@ import com.tadev.musicplayer.interfaces.IServicePlayer;
 import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
 import com.tadev.musicplayer.models.CurrentSongPlay;
 import com.tadev.musicplayer.services.MusicPlayService;
+import com.tadev.musicplayer.ui.activities.fragments.MainMusicPlayFragment;
 import com.tadev.musicplayer.ui.activities.fragments.MainMusicPlayFragment.OnBackFragmentListener;
 import com.tadev.musicplayer.ui.activities.fragments.MusicKoreaFragment;
 import com.tadev.musicplayer.ui.activities.fragments.MusicUsUkFragment;
@@ -31,7 +32,8 @@ import com.tadev.musicplayer.ui.activities.fragments.MusicVietNamFragment;
 import com.tadev.musicplayer.ui.activities.fragments.PlayBarBottomFragment;
 
 public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
-        , IServicePlayer, OnBackFragmentListener, OnPlayBarBottomListener {
+        , IServicePlayer, OnBackFragmentListener, OnPlayBarBottomListener,
+        View.OnClickListener{
     private final String TAG = "MainActivity";
     public static final String UPDATE_MUSIC_PLAYBAR = "com.tadev.musicplayer.UPDATE_MUSIC_PLAYBAR";
     public static final String EXTRA_CURRENT_PLAY = "current_play";
@@ -41,7 +43,6 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     private int mLastItemChecked;
     private Intent intentRegistedService;
     private MusicPlayService mService;
-    private boolean enablePlayBarBottom;
     private PlayBarBottomFragment mPlayBarBottomFragment;
     private FrameLayout containerBottom;
     private Handler handler;
@@ -61,6 +62,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.left_drawer);
         containerBottom = (FrameLayout) findViewById(R.id.container_bottom);
+        containerBottom.setOnClickListener(this);
         if (savedInstanceState != null) {
             if (mLastItemChecked != R.id.music_vietnam) {
                 mNavigationView.getMenu().findItem(R.id.music_vietnam).setChecked(false);
@@ -213,7 +215,6 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
             Log.i(TAG, "onDestroy here");
             unbindService(mPlayServiceConnection);
             stopService(intentRegistedService);
-            enablePlayBarBottom = false;
         }
         super.onDestroy();
     }
@@ -271,7 +272,6 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
                     containerBottom.setVisibility(View.VISIBLE);
                 }
             }, getResources().getInteger(R.integer.fragmentAnimationTime));
-
         }
     }
 
@@ -302,12 +302,12 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Override
     public void duration(int duration) {
-        Log.i(TAG, "duration " + duration);
+        application.getMusicContainer().getmCurrentSongPlay().duration = duration;
     }
 
     @Override
     public void position(int currentPosition) {
-
+        application.getMusicContainer().getmCurrentSongPlay().position = currentPosition;
     }
 
     @Override
@@ -322,7 +322,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Override
     public void onPublish(int progress) {
-
+        application.getMusicContainer().getmCurrentSongPlay().progress = progress;
     }
 
     @Override
@@ -337,6 +337,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         } else if (isBack) {
             showPlayBarBottom();
         }
+
     }
 
     @Override
@@ -352,5 +353,21 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         bundle.putParcelable(EXTRA_CURRENT_PLAY, currentSongPlay);
         intent.putExtras(bundle);
         localBroadcastManager.sendBroadcast(intent);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.container_bottom:
+                hidePlayBarBottom();
+                transaction = mFragmentManager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.transition_slide_in_bottom, R.anim.transition_slide_out_bottom,
+                        R.anim.transition_slide_in_bottom, R.anim.transition_slide_out_bottom);
+                transaction.replace(R.id.container, MainMusicPlayFragment.newInstance(true));
+                transaction.addToBackStack(MainMusicPlayFragment.TAG);
+                transaction.commit();
+                getToolbar().setVisibility(View.INVISIBLE);
+                break;
+        }
     }
 }

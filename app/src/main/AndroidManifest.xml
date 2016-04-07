@@ -24,6 +24,7 @@
                 <action android:name="com.tadev.musicmMediaPlayer.action.PLAY" />
                 <action android:name="com.tadev.musicmMediaPlayer.action.PAUSE" />
                 <action android:name="com.tadev.musicmMediaPlayer.action.PLAY_PAUSE" />
+                <action android:name="com.tadev.musicmMediaPlayer.action.PLAY_BAR"/>
             </intent-filter>
         </service>
 
@@ -31,6 +32,8 @@
             <intent-filter>
                 <action android:name="com.tadev.musicplayer.action.ACTION_UPDATE" />
                 <action android:name="com.tadev.musicplayer.UPDATE_MUSIC_PLAYBAR" />
+                <action android:name="com.tadev.musicmMediaPlayer.state.STATE_PLAY"/>
+                <action android:name="com.tadev.musicmMediaPlayer.state.STATE_PAUSE"/>
             </intent-filter>
         </receiver>
     </application>

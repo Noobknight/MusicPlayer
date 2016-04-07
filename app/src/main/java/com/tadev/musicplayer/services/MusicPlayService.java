@@ -31,6 +31,9 @@ public class MusicPlayService extends Service implements
     public static final String ACTION_PAUSE = "com.tadev.musicmMediaPlayer.action.PAUSE";
     public static final String ACTION_TOGGLE_PLAYPAUSE = "com.tadev.musicmMediaPlayer.action.PLAY_PAUSE";
     public static final String BUFFER_UPDATE = "com.tadev.musicplayer.action.ACTION_UPDATE";
+    public static final String STATE_PLAY = "com.tadev.musicmMediaPlayer.state.STATE_PLAY";
+    public static final String STATE_PAUSE = "com.tadev.musicmMediaPlayer.state.STATE_PAUSE";
+    public static final String PLAY_BAR_ACTION = "com.tadev.musicmMediaPlayer.action.PLAY_BAR";
 
     private boolean isPause = false;
     private MediaPlayer mMediaPlayer;
@@ -73,14 +76,7 @@ public class MusicPlayService extends Service implements
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
-            mCurrentSongPlay = intent.getExtras().getParcelable(Constants.KEY_PASS_DATA_SERVICE);
             boolean isCurrentId = false;
-            if (currentId == 0) {
-                currentId = Integer.parseInt(mCurrentSongPlay.musicId);
-            } else {
-                isCurrentId = Integer.parseInt(mCurrentSongPlay.musicId) == currentId;
-                currentId = Integer.parseInt(mCurrentSongPlay.musicId);
-            }
 //            String url = intent.getStringExtra("url");
 //            if (currentId == 0) {
 //                currentId = intent.getIntExtra("id", 0);
@@ -91,12 +87,23 @@ public class MusicPlayService extends Service implements
             String action = intent.getAction();
             switch (action) {
                 case ACTION_TOGGLE_PLAYPAUSE:
+                    if (intent.hasExtra(Constants.KEY_PASS_DATA_SERVICE)) {
+                        mCurrentSongPlay = intent.getExtras().getParcelable(Constants.KEY_PASS_DATA_SERVICE);
+                        if (currentId == 0) {
+                            currentId = Integer.parseInt(mCurrentSongPlay.musicId);
+                        } else {
+                            isCurrentId = Integer.parseInt(mCurrentSongPlay.musicId) == currentId;
+                            currentId = Integer.parseInt(mCurrentSongPlay.musicId);
+                        }
+                    }
                     if (isCurrentId) {
                         if (mMediaPlayer != null && hasDataSource) {
                             if (mMediaPlayer.isPlaying()) {
                                 pause();
+                                localBroadcastManager.sendBroadcast(new Intent(STATE_PAUSE));
                             } else {
                                 mMediaPlayer.start();
+                                localBroadcastManager.sendBroadcast(new Intent(STATE_PLAY));
                             }
                             primaryUpdateSeekBar();
                             break;
@@ -111,11 +118,14 @@ public class MusicPlayService extends Service implements
                     }
                     break;
                 case ACTION_PLAY:
-                    if (mMediaPlayer.isPlaying()) break;
-                    play(mCurrentSongPlay.song.getFileUrl());
+                    //action play
                     break;
                 case ACTION_PAUSE:
                     pause();
+                    break;
+                case PLAY_BAR_ACTION:
+                    playOrPause();
+                    primaryUpdateSeekBar();
                     break;
             }
         }
@@ -131,6 +141,7 @@ public class MusicPlayService extends Service implements
     public void onPrepared(MediaPlayer mp) {
 //        duration = mMediaPlayer.getDuration();
         mListener.duration(mMediaPlayer.getDuration());
+        localBroadcastManager.sendBroadcast(new Intent(STATE_PLAY));
         mMediaPlayer.start();
         primaryUpdateSeekBar();
     }
@@ -163,8 +174,12 @@ public class MusicPlayService extends Service implements
         }
     }
 
+    public boolean isPlaying() {
+        return mMediaPlayer.isPlaying();
+    }
+
     public int duration() {
-        return mMediaPlayer != null || mMediaPlayer.getDuration() > 0? mMediaPlayer.getDuration() : 0;
+        return mMediaPlayer != null || mMediaPlayer.getDuration() > 0 ? mMediaPlayer.getDuration() : 0;
     }
 
     public int position() {
@@ -261,7 +276,6 @@ public class MusicPlayService extends Service implements
     private void sendProgressUpdate(int progress) {
         Intent intent = new Intent(BUFFER_UPDATE);
         intent.putExtra(UpdateSeekbarReceiver.KEY_UPDATE_PROGRESS, progress);
-//        intent.putExtra(UpdateSeekbarReceiver.KEY_CURRENT_POSITION, currentPosition);
         localBroadcastManager.sendBroadcast(intent);
 
     }
@@ -280,6 +294,7 @@ public class MusicPlayService extends Service implements
                 public void run() {
                     if (mMediaPlayer != null) {
                         mListener.onPublish(progress);
+                        mListener.position(position());
                         primaryUpdateSeekBar();
                     }
                 }

@@ -38,7 +38,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
-                android:layout_marginLeft="5dp"
                 android:maxHeight="5dp"
                 android:tag="tint_accent_color" />
 

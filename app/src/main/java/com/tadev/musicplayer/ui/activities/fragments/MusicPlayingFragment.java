@@ -121,14 +121,28 @@ public class MusicPlayingFragment extends BaseFragment {
     protected void initViewData() {
         fabPlayPause.setImageDrawable(playPauseDrawable);
         if (mService != null &&
-                mService.getCurrentId() != Integer.parseInt(mSong.getMusicId())) {
+                mService.getCurrentId() != Integer.parseInt(mSong.getMusicId())
+                ) {
             //Service has register and musicID not equal
             playPauseDrawable.transformToPlay(true);
             isPlayState = false;
         } else {
+            int duration = application.getMusicContainer().getmCurrentSongPlay().duration;
+            int position = application.getMusicContainer().getmCurrentSongPlay().position;
+            int progress = application.getMusicContainer().getmCurrentSongPlay().progress;
+            if (duration != 0 && position != 0 && progress != 0) {
+                txtTotalTime.setText(Utils.getTimeString(duration));
+                txtCurrentTime.setText(Utils.getTimeString(position));
+                seekBar.setProgress(progress);
+            }
             //Service has register and musicId equal with current ID
-            playPauseDrawable.transformToPause(true);
-            isPlayState = true;
+            if (mService.isPlaying()) {
+                playPauseDrawable.transformToPause(true);
+                isPlayState = true;
+            } else {
+                playPauseDrawable.transformToPlay(true);
+                isPlayState = false;
+            }
         }
         txtTitle.setText(mSong.getMusicTitle());
         txtArtist.setText(mSong.getMusicArtist());

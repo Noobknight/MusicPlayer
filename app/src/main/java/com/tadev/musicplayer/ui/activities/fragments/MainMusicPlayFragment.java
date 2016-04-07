@@ -40,6 +40,7 @@ import com.tadev.musicplayer.utils.design.viewpager.CircleIndicator;
 public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLoadListener {
     public static final String TAG = "MainMusicPlayFragment";
     private static final String KEY_EXTRA = "extras";
+    private static final String KEY_EXTRA_PLAYBAR = "extras_play_bar";
     private ViewPager mViewPager;
     private ViewPagerApdater mAdapter;
     private CircleIndicator mCircleIndicator;
@@ -49,6 +50,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     private FrameLayout frameViewPager;
     private ProgressDialog dialogLoading;
     private MusicPlayService mService;
+    private boolean isStartFromBottom;
 
     public interface OnBackFragmentListener {
         void onBack(boolean isBack);
@@ -60,6 +62,14 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
         MainMusicPlayFragment fragment = new MainMusicPlayFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(KEY_EXTRA, baseModel);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static MainMusicPlayFragment newInstance(boolean isStartFromBottom) {
+        MainMusicPlayFragment fragment = new MainMusicPlayFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(KEY_EXTRA_PLAYBAR, isStartFromBottom);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -125,7 +135,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
                 }, getResources().getInteger(R.integer.fragmentAnimationTime));
             }
         });
-        if (!isCurrentSongPlay()) {
+        if (!isCurrentSongPlay() && !isStartFromBottom) {
             new MusicInfoLoaderTask(modelMusic.getMusic_id(), modelMusic.getMusic_title_url(), this)
                     .execute();
         } else {
@@ -288,7 +298,11 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     protected void getDataCallBack() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            modelMusic = bundle.getParcelable(KEY_EXTRA);
+            if (bundle.containsKey(KEY_EXTRA)) {
+                modelMusic = bundle.getParcelable(KEY_EXTRA);
+            } else if (bundle.containsKey(KEY_EXTRA_PLAYBAR)) {
+                isStartFromBottom = bundle.getBoolean(KEY_EXTRA_PLAYBAR);
+            }
         }
     }
 
@@ -303,7 +317,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     };
 
     private boolean isCurrentSongPlay() {
-        if (mService != null) {
+        if (mService != null && modelMusic != null) {
             if (mService.getCurrentId() == Integer.parseInt(modelMusic.getMusic_id())) {
                 return true;
             }

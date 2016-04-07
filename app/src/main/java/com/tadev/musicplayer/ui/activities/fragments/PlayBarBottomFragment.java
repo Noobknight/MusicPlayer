@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.tadev.musicplayer.MainActivity;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.abstracts.BaseFragment;
+import com.tadev.musicplayer.callbacks.OnRegisterCallback;
 import com.tadev.musicplayer.models.CurrentSongPlay;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.services.MusicPlayService;
@@ -35,6 +37,7 @@ public class PlayBarBottomFragment extends BaseFragment {
     private MusicPlayService mService;
     private CurrentSongPlay currentPlay;
     private LocalBroadcastManager localBroadcastManager;
+    private OnRegisterCallback mOnRegisterCallback;
 
 
     @Override
@@ -66,8 +69,11 @@ public class PlayBarBottomFragment extends BaseFragment {
                 @Override
                 public void run() {
                     // TODO: Handle Send message to Service here !!! run
+                    Intent intent = new Intent(MusicPlayService.PLAY_BAR_ACTION);
+                    mOnRegisterCallback.onServicePreparing(intent);
+
                 }
-            }, 200);
+            }, 100);
 
         }
     };
@@ -97,6 +103,12 @@ public class PlayBarBottomFragment extends BaseFragment {
                             Glide.with(context).load(currentSongPlay.song.getMusicImg()).into(coverImage);
                         }
                         break;
+                    case MusicPlayService.STATE_PLAY:
+                        updateStatePlayPause();
+                        break;
+                    case MusicPlayService.STATE_PAUSE:
+                        updateStatePlayPause();
+                        break;
                 }
             }
         }
@@ -114,6 +126,21 @@ public class PlayBarBottomFragment extends BaseFragment {
         mPlayPause.setColor(Utils.getColorRes(context, R.color.material_pink_500));
         prgUpdate.getProgressDrawable().setColorFilter(Utils.getColorRes(context, R.color
                 .material_pink_500), android.graphics.PorterDuff.Mode.SRC_IN);
+        updateStatePlayPause();
+    }
+
+    private void updateStatePlayPause(){
+        if (mService.isPlaying()) {
+            if (!mPlayPause.isPlayed()) {
+                mPlayPause.setPlayed(true);
+                mPlayPause.startAnimation();
+            }
+        } else {
+            if (mPlayPause.isPlayed()) {
+                mPlayPause.setPlayed(false);
+                mPlayPause.startAnimation();
+            }
+        }
     }
 
     @Override
@@ -124,6 +151,8 @@ public class PlayBarBottomFragment extends BaseFragment {
             txtArtist.setText(artist);
             txtTitle.setText(title);
             Glide.with(context).load(currentPlay.song.getMusicImg()).into(coverImage);
+            mPlayPause.setPlayed(true);
+            mPlayPause.startAnimation();
         }
     }
 
@@ -142,6 +171,8 @@ public class PlayBarBottomFragment extends BaseFragment {
         IntentFilter filter = new IntentFilter();
         filter.addAction(MusicPlayService.BUFFER_UPDATE);
         filter.addAction(MainActivity.UPDATE_MUSIC_PLAYBAR);
+        filter.addAction(MusicPlayService.STATE_PLAY);
+        filter.addAction(MusicPlayService.STATE_PAUSE);
         localBroadcastManager.registerReceiver(updateSeekbar,
                 filter);
         super.onResume();
@@ -153,5 +184,17 @@ public class PlayBarBottomFragment extends BaseFragment {
         super.onPause();
     }
 
-
+    @Override
+    public void onAttach(Context context) {
+        AppCompatActivity activity;
+        if (context instanceof AppCompatActivity) {
+            activity = (AppCompatActivity) context;
+            try {
+                mOnRegisterCallback = (OnRegisterCallback) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString() + " must be implement OnRegisterCallBack");
+            }
+        }
+        super.onAttach(context);
+    }
 }
