@@ -9,8 +9,7 @@
     android:minHeight="?attr/actionBarSize"
     android:theme="@style/AppTheme.ActionBarTheme"
     app:navigationIcon="?attr/homeAsUpIndicator"
-    android:gravity="center_vertical"
-    tools:background="#3FFF">
+    tools:background="#3FFF"/>
 
     <!--<FrameLayout-->
         <!--android:layout_width="match_parent"-->
@@ -22,4 +21,3 @@
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="match_parent" />-->
     <!--</FrameLayout>-->
-</android.support.v7.widget.Toolbar>

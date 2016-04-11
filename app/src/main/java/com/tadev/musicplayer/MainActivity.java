@@ -12,10 +12,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.tadev.musicplayer.abstracts.BaseMenuActivity;
@@ -33,7 +33,7 @@ import com.tadev.musicplayer.ui.activities.fragments.PlayBarBottomFragment;
 
 public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         , IServicePlayer, OnBackFragmentListener, OnPlayBarBottomListener,
-        View.OnClickListener{
+        View.OnClickListener {
     private final String TAG = "MainActivity";
     public static final String UPDATE_MUSIC_PLAYBAR = "com.tadev.musicplayer.UPDATE_MUSIC_PLAYBAR";
     public static final String EXTRA_CURRENT_PLAY = "current_play";
@@ -44,7 +44,8 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     private Intent intentRegistedService;
     private MusicPlayService mService;
     private PlayBarBottomFragment mPlayBarBottomFragment;
-    private FrameLayout containerBottom;
+    //    private FrameLayout containerBottom;
+    private CardView cardPlayBar;
     private Handler handler;
     private LocalBroadcastManager localBroadcastManager;
 
@@ -61,8 +62,10 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         bindService();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.left_drawer);
-        containerBottom = (FrameLayout) findViewById(R.id.container_bottom);
-        containerBottom.setOnClickListener(this);
+//        containerBottom = (FrameLayout) findViewById(R.id.container_bottom);
+        cardPlayBar = (CardView) findViewById(R.id.cardPlayBar);
+//        containerBottom.setOnClickListener(this);
+        cardPlayBar.setOnClickListener(this);
         if (savedInstanceState != null) {
             if (mLastItemChecked != R.id.music_vietnam) {
                 mNavigationView.getMenu().findItem(R.id.music_vietnam).setChecked(false);
@@ -211,7 +214,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Override
     protected void onDestroy() {
-        if (mPlayServiceConnection != null || intentRegistedService != null) {
+        if (mPlayServiceConnection != null && intentRegistedService != null) {
             Log.i(TAG, "onDestroy here");
             unbindService(mPlayServiceConnection);
             stopService(intentRegistedService);
@@ -269,7 +272,8 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    containerBottom.setVisibility(View.VISIBLE);
+//                    containerBottom.setVisibility(View.VISIBLE);
+                    cardPlayBar.setVisibility(View.VISIBLE);
                 }
             }, getResources().getInteger(R.integer.fragmentAnimationTime));
         }
@@ -280,7 +284,8 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         transaction = mFragmentManager.beginTransaction();
         transaction.hide(mPlayBarBottomFragment);
         transaction.commit();
-        containerBottom.setVisibility(View.GONE);
+//        containerBottom.setVisibility(View.GONE);
+        cardPlayBar.setVisibility(View.GONE);
     }
 
     private void initPlayBarBottom() {
@@ -292,7 +297,8 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    containerBottom.setVisibility(View.VISIBLE);
+//                    containerBottom.setVisibility(View.VISIBLE);
+                    cardPlayBar.setVisibility(View.VISIBLE);
                 }
             }, getResources().getInteger(R.integer.fragmentAnimationTime));
         }
@@ -317,7 +323,6 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Override
     public void onChange(int musicId) {
-        Log.i(TAG, "onChange " + musicId);
     }
 
     @Override
@@ -357,7 +362,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.container_bottom:
                 hidePlayBarBottom();
                 transaction = mFragmentManager.beginTransaction();
@@ -368,6 +373,17 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
                 transaction.commit();
                 getToolbar().setVisibility(View.INVISIBLE);
                 break;
+            case R.id.cardPlayBar:
+                hidePlayBarBottom();
+                transaction = mFragmentManager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.transition_slide_in_bottom, R.anim.transition_slide_out_bottom,
+                        R.anim.transition_slide_in_bottom, R.anim.transition_slide_out_bottom);
+                transaction.replace(R.id.container, MainMusicPlayFragment.newInstance(true));
+                transaction.addToBackStack(MainMusicPlayFragment.TAG);
+                transaction.commit();
+                getToolbar().setVisibility(View.INVISIBLE);
+                break;
+
         }
     }
 }

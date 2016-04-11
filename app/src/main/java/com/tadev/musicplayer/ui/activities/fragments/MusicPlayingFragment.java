@@ -24,6 +24,7 @@ import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.utils.design.PlayPauseDrawable;
 import com.tadev.musicplayer.utils.design.TextViewTitle;
+import com.tadev.musicplayer.utils.design.actions.Actions;
 import com.tadev.musicplayer.utils.design.support.Utils;
 
 /**
@@ -33,7 +34,6 @@ public class MusicPlayingFragment extends BaseFragment {
     private static final String TAG = "MusicPlayingFragment";
     private static final String KEY_SONG = "song";
     private static final String KEY_LYRIC = "lyric";
-    //    private static MusicPlayingFragment sInstance;
     private TextViewTitle txtTitle, txtArtist;
     private SeekBar seekBar;
     private ImageView imgShuffle, imgRepeat, imgNext, imgPrevious;
@@ -68,58 +68,7 @@ public class MusicPlayingFragment extends BaseFragment {
     }
 
     @Override
-    public void onResume() {
-        localBroadcastManager.registerReceiver(updateSeekbar,
-                new IntentFilter(MusicPlayService.BUFFER_UPDATE));
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        localBroadcastManager.unregisterReceiver(updateSeekbar);
-        super.onPause();
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        AppCompatActivity activity;
-        if (context instanceof AppCompatActivity) {
-            activity = (AppCompatActivity) context;
-            try {
-                mOnRegisterCallback = (OnRegisterCallback) activity;
-            } catch (ClassCastException e) {
-                throw new ClassCastException(activity.toString() + " must be implement OnRegisterCallBack");
-            }
-        }
-        super.onAttach(context);
-
-    }
-
-    @Override
-    protected int setLayoutById() {
-        return R.layout.fragment_music_playing;
-    }
-
-    @Override
-    protected void initView(View rootView) {
-//        bindService();
-        localBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
-        txtTitle = (TextViewTitle) rootView.findViewById(R.id.fragment_music_playing_txtMusicName);
-        txtArtist = (TextViewTitle) rootView.findViewById(R.id.fragment_music_playing_txtMusicArtist);
-        imgNext = (ImageView) rootView.findViewById(R.id.fragment_music_playing_imgNext);
-        imgPrevious = (ImageView) rootView.findViewById(R.id.fragment_music_playing_imgPrevious);
-        imgRepeat = (ImageView) rootView.findViewById(R.id.fragment_music_playing_imgRepeat);
-        imgShuffle = (ImageView) rootView.findViewById(R.id.fragment_music_playing_imgShuffle);
-        seekBar = (SeekBar) rootView.findViewById(R.id.fragment_music_playing_seekbar);
-        txtCurrentTime = (TextView) rootView.findViewById(R.id.fragment_music_playing_txtCurrentTime);
-        txtTotalTime = (TextView) rootView.findViewById(R.id.fragment_music_playing_txtTotalTime);
-        fabPlayPause = (FloatingActionButton) rootView.findViewById(R.id.fragment_music_playing_fabPlayPause);
-    }
-
-    @Override
-    protected void initViewData() {
-        fabPlayPause.setImageDrawable(playPauseDrawable);
+    public void onStart() {
         if (mService != null &&
                 mService.getCurrentId() != Integer.parseInt(mSong.getMusicId())
                 ) {
@@ -146,6 +95,95 @@ public class MusicPlayingFragment extends BaseFragment {
         }
         txtTitle.setText(mSong.getMusicTitle());
         txtArtist.setText(mSong.getMusicArtist());
+        super.onStart();
+
+
+    }
+
+
+    @Override
+    public void onResume() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MusicPlayService.BUFFER_UPDATE);
+        intentFilter.addAction(Actions.ACTION_PLAYPAUSE_NOTIFICATION);
+        localBroadcastManager.registerReceiver(updateSeekbar,
+                intentFilter);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        localBroadcastManager.unregisterReceiver(updateSeekbar);
+        super.onPause();
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        AppCompatActivity activity;
+        if (context instanceof AppCompatActivity) {
+            activity = (AppCompatActivity) context;
+            try {
+                mOnRegisterCallback = (OnRegisterCallback) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString() + " must be implement OnRegisterCallBack");
+            }
+        }
+        super.onAttach(context);
+
+    }
+
+
+    @Override
+    protected int setLayoutById() {
+        return R.layout.fragment_music_playing;
+    }
+
+    @Override
+    protected void initView(View rootView) {
+//        bindService();
+        localBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
+        txtTitle = (TextViewTitle) rootView.findViewById(R.id.fragment_music_playing_txtMusicName);
+        txtArtist = (TextViewTitle) rootView.findViewById(R.id.fragment_music_playing_txtMusicArtist);
+        imgNext = (ImageView) rootView.findViewById(R.id.fragment_music_playing_imgNext);
+        imgPrevious = (ImageView) rootView.findViewById(R.id.fragment_music_playing_imgPrevious);
+        imgRepeat = (ImageView) rootView.findViewById(R.id.fragment_music_playing_imgRepeat);
+        imgShuffle = (ImageView) rootView.findViewById(R.id.fragment_music_playing_imgShuffle);
+        seekBar = (SeekBar) rootView.findViewById(R.id.fragment_music_playing_seekbar);
+        txtCurrentTime = (TextView) rootView.findViewById(R.id.fragment_music_playing_txtCurrentTime);
+        txtTotalTime = (TextView) rootView.findViewById(R.id.fragment_music_playing_txtTotalTime);
+        fabPlayPause = (FloatingActionButton) rootView.findViewById(R.id.fragment_music_playing_fabPlayPause);
+    }
+
+    @Override
+    protected void initViewData() {
+        fabPlayPause.setImageDrawable(playPauseDrawable);
+//        if (mService != null &&
+//                mService.getCurrentId() != Integer.parseInt(mSong.getMusicId())
+//                ) {
+//            //Service has register and musicID not equal
+//            playPauseDrawable.transformToPlay(true);
+//            isPlayState = false;
+//        } else {
+//            int duration = application.getMusicContainer().getmCurrentSongPlay().duration;
+//            int position = application.getMusicContainer().getmCurrentSongPlay().position;
+//            int progress = application.getMusicContainer().getmCurrentSongPlay().progress;
+//            if (duration != 0 && position != 0 && progress != 0) {
+//                txtTotalTime.setText(Utils.getTimeString(duration));
+//                txtCurrentTime.setText(Utils.getTimeString(position));
+//                seekBar.setProgress(progress);
+//            }
+//            //Service has register and musicId equal with current ID
+//            if (mService.isPlaying()) {
+//                playPauseDrawable.transformToPause(true);
+//                isPlayState = true;
+//            } else {
+//                playPauseDrawable.transformToPlay(true);
+//                isPlayState = false;
+//            }
+//        }
+//        txtTitle.setText(mSong.getMusicTitle());
+//        txtArtist.setText(mSong.getMusicArtist());
     }
 
     @Override
@@ -157,14 +195,22 @@ public class MusicPlayingFragment extends BaseFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
-                if (mService != null &&
-                        mService.getCurrentId() == Integer.parseInt(mSong.getMusicId())
-                        && mService.duration() > -1) {
-                    int progress = intent.getIntExtra(UpdateSeekbarReceiver.KEY_UPDATE_PROGRESS, 0);
-                    seekBar.setProgress(progress);
-                    txtCurrentTime.setText(Utils.getTimeString(mService.position()));
-                    txtTotalTime.setText(Utils.getTimeString(mService.duration()));
+                String action = intent.getAction();
+                switch (action) {
+                    case MusicPlayService.BUFFER_UPDATE:
+                        if (mService.getCurrentId() == Integer.parseInt(mSong.getMusicId())
+                                && mService.duration() > -1) {
+                            int progress = intent.getIntExtra(UpdateSeekbarReceiver.KEY_UPDATE_PROGRESS, 0);
+                            seekBar.setProgress(progress);
+                            txtCurrentTime.setText(Utils.getTimeString(mService.position()));
+                            txtTotalTime.setText(Utils.getTimeString(mService.duration()));
+                        }
+                        break;
+                    case Actions.ACTION_PLAYPAUSE_NOTIFICATION:
+                        updateStatePlayPause();
+                        break;
                 }
+
             }
         }
     };
@@ -188,9 +234,12 @@ public class MusicPlayingFragment extends BaseFragment {
     private final View.OnClickListener mFLoatingButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(MusicPlayService.ACTION_TOGGLE_PLAYPAUSE);
+//            Intent intent = new Intent(MusicPlayService.ACTION_TOGGLE_PLAYPAUSE);
+            Intent intent = new Intent(getActivity(), MusicPlayService.class);
+            intent.setAction(Actions.ACTION_TOGGLE);
             intent.putExtras(initDataCurrentPlay());
             mOnRegisterCallback.onServicePreparing(intent);
+            Log.i(TAG, "onClick " + isPlayState);
             if (isPlayState) {
                 playPauseDrawable.transformToPause(true);
                 playPauseDrawable.transformToPlay(true);
@@ -209,6 +258,16 @@ public class MusicPlayingFragment extends BaseFragment {
         currentPlay.lyric = mLyric;
         bundle.putParcelable(Constants.KEY_PASS_DATA_SERVICE, currentPlay);
         return bundle;
+    }
+
+    private void updateStatePlayPause() {
+        if (mService.isPlaying()) {
+            playPauseDrawable.transformToPause(true);
+            isPlayState = true;
+        } else {
+            playPauseDrawable.transformToPlay(true);
+            isPlayState = false;
+        }
     }
 
 

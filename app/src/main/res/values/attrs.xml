@@ -31,4 +31,8 @@
         <attr name="ci_drawable_unselected" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="ScrimInsetsView">
+        <attr name="appInsetForeground" format="reference|color" />
+    </declare-styleable>
+
 </resources>

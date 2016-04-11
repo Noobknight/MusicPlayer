@@ -126,7 +126,7 @@ public class MusicContainer {
         return mCurrentSongPlay;
     }
 
-    public MusicContainer setmCurrentSongPlay(CurrentSongPlay mCurrentSongPlay) {
+    public MusicContainer setCurrentSongPlay(CurrentSongPlay mCurrentSongPlay) {
         this.mCurrentSongPlay = mCurrentSongPlay;
         return this;
     }

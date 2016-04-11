@@ -22,6 +22,7 @@ import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.utils.design.PlayPauseButton;
 import com.tadev.musicplayer.utils.design.SquareImageView;
+import com.tadev.musicplayer.utils.design.actions.Actions;
 import com.tadev.musicplayer.utils.design.support.Utils;
 
 /**
@@ -69,9 +70,9 @@ public class PlayBarBottomFragment extends BaseFragment {
                 @Override
                 public void run() {
                     // TODO: Handle Send message to Service here !!! run
-                    Intent intent = new Intent(MusicPlayService.PLAY_BAR_ACTION);
+                    Intent intent = new Intent(getActivity(), MusicPlayService.class);
+                    intent.setAction(Actions.ACTION_PLAY_BAR);
                     mOnRegisterCallback.onServicePreparing(intent);
-
                 }
             }, 100);
 
@@ -103,10 +104,13 @@ public class PlayBarBottomFragment extends BaseFragment {
                             Glide.with(context).load(currentSongPlay.song.getMusicImg()).into(coverImage);
                         }
                         break;
-                    case MusicPlayService.STATE_PLAY:
+                    case Actions.ACTION_PLAY:
                         updateStatePlayPause();
                         break;
-                    case MusicPlayService.STATE_PAUSE:
+                    case Actions.ACTION_PAUSE:
+                        updateStatePlayPause();
+                        break;
+                    case Actions.ACTION_PLAYPAUSE_NOTIFICATION:
                         updateStatePlayPause();
                         break;
                 }
@@ -129,7 +133,7 @@ public class PlayBarBottomFragment extends BaseFragment {
         updateStatePlayPause();
     }
 
-    private void updateStatePlayPause(){
+    private void updateStatePlayPause() {
         if (mService.isPlaying()) {
             if (!mPlayPause.isPlayed()) {
                 mPlayPause.setPlayed(true);
@@ -171,8 +175,9 @@ public class PlayBarBottomFragment extends BaseFragment {
         IntentFilter filter = new IntentFilter();
         filter.addAction(MusicPlayService.BUFFER_UPDATE);
         filter.addAction(MainActivity.UPDATE_MUSIC_PLAYBAR);
-        filter.addAction(MusicPlayService.STATE_PLAY);
-        filter.addAction(MusicPlayService.STATE_PAUSE);
+        filter.addAction(Actions.ACTION_PLAY);
+        filter.addAction(Actions.ACTION_PAUSE);
+        filter.addAction(Actions.ACTION_PLAYPAUSE_NOTIFICATION);
         localBroadcastManager.registerReceiver(updateSeekbar,
                 filter);
         super.onResume();
@@ -182,6 +187,14 @@ public class PlayBarBottomFragment extends BaseFragment {
     public void onPause() {
         localBroadcastManager.unregisterReceiver(updateSeekbar);
         super.onPause();
+    }
+
+    @Override
+    public void onStart() {
+        if (mService != null) {
+            updateStatePlayPause();
+        }
+        super.onStart();
     }
 
     @Override

@@ -2,23 +2,26 @@ package com.tadev.musicplayer.utils.design.support;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.tadev.musicplayer.MainActivity;
 import com.tadev.musicplayer.R;
+import com.tadev.musicplayer.constant.Constants;
 
 /**
  * Created by Iris Louis on 25/03/2016.
  */
 public class Utils {
 
-    public static int getColorRes(Context context, int colorId){
+    public static int getColorRes(Context context, int colorId) {
         return ContextCompat.getColor(context, colorId);
     }
 
-    public static int getDimensRes(Context context,int dimens){
+    public static int getDimensRes(Context context, int dimens) {
         return context.getResources().getDimensionPixelSize(dimens);
     }
 
@@ -43,13 +46,15 @@ public class Utils {
         view.startAnimation(slideAnim);
     }
 
-    public static String getTitleVN(Context context){
+    public static String getTitleVN(Context context) {
         return context.getResources().getString(R.string.category_vietnam);
     }
-    public static String getTitleKorea(Context context){
+
+    public static String getTitleKorea(Context context) {
         return context.getResources().getString(R.string.category_korea);
     }
-    public static String getTitleUS(Context context){
+
+    public static String getTitleUS(Context context) {
         return context.getResources().getString(R.string.category_us_uk);
     }
 
@@ -89,5 +94,13 @@ public class Utils {
 
         // return current duration in milliseconds
         return currentDuration * 1000;
+    }
+
+    public static Intent getNowPlayingIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setAction(Constants.NAVIGATE_NOWPLAYING);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
     }
 }

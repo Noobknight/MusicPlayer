@@ -20,20 +20,28 @@
 
         <service android:name=".services.MusicPlayService">
 
-            <intent-filter>
-                <action android:name="com.tadev.musicmMediaPlayer.action.PLAY" />
-                <action android:name="com.tadev.musicmMediaPlayer.action.PAUSE" />
-                <action android:name="com.tadev.musicmMediaPlayer.action.PLAY_PAUSE" />
-                <action android:name="com.tadev.musicmMediaPlayer.action.PLAY_BAR"/>
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="com.tadev.musicmMediaPlayer.action.PLAY" />-->
+                <!--<action android:name="com.tadev.musicmMediaPlayer.action.PAUSE" />-->
+                <!--<action android:name="com.tadev.musicmMediaPlayer.action.PLAY_PAUSE" />-->
+                <!--<action android:name="com.tadev.musicmMediaPlayer.action.PLAY_BAR" />-->
+            <!--</intent-filter>-->
         </service>
+
 
         <receiver android:name=".receivers.UpdateSeekbarReceiver">
             <intent-filter>
                 <action android:name="com.tadev.musicplayer.action.ACTION_UPDATE" />
                 <action android:name="com.tadev.musicplayer.UPDATE_MUSIC_PLAYBAR" />
-                <action android:name="com.tadev.musicmMediaPlayer.state.STATE_PLAY"/>
-                <action android:name="com.tadev.musicmMediaPlayer.state.STATE_PAUSE"/>
+                <action android:name="com.tadev.musicplayer.action.ACTION_PLAY" />
+                <action android:name="com.tadev.musicplayer.action.ACTION_PAUSE" />
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receivers.RemoteControlReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
     </application>
