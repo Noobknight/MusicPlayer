@@ -31,4 +31,7 @@
     <string name="msg_lyric_artist">Nghệ Sĩ : </string>
     <string name="msg_lyric_year">Năm phát hành : </string>
 
+    <string name="action_pause">pause</string>
+    <string name="action_play_pause">play_pause</string>
+
 </resources>

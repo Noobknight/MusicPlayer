@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.models.CurrentSongPlay;
+import com.tadev.musicplayer.utils.design.support.StringUtils;
 import com.tadev.musicplayer.utils.design.support.Utils;
 
 /**
@@ -19,7 +20,7 @@ public class NotificationHelper {
     public static NotificationCompat.Builder from(Context context,
                                                   MediaSessionCompat mediaSession,
                                                   CurrentSongPlay currentSongPlay, Bitmap btm,
-                                                  long timeWhen, boolean isPlaying) {
+                                                  long timeWhen) {
         String title = currentSongPlay.song.getMusicTitle();
         String artist = currentSongPlay.song.getMusicArtist();
         Intent nowPlayingIntent = Utils.getNowPlayingIntent(context);
@@ -33,9 +34,11 @@ public class NotificationHelper {
                 .setWhen(timeWhen)
                 .setContentIntent(clickIntent)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        int stateButton = isPlaying ? R.drawable.ic_play_arrow_white_36dp : R.drawable.ic_pause_white_36dp;
-        builder.addAction(new NotificationCompat.Action(stateButton, "pause",
-                getActionIntent(context, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE)));
+        builder.addAction(R.drawable.ic_pause_white_36dp, StringUtils.getStringRes(R.string.action_pause),
+                getActionIntent(context, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
+//        int stateButton = isPlaying ? R.drawable.ic_play_arrow_white_36dp : R.drawable.ic_pause_white_36dp;
+//        builder.addAction(new NotificationCompat.Action(stateButton, "pause",
+//                getActionIntent(context, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE)));
         builder.setStyle(new NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(0)
                 .setShowCancelButton(true)

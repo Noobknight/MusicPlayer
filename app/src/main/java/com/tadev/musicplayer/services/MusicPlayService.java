@@ -28,6 +28,7 @@ import android.view.KeyEvent;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.constant.Constants;
 import com.tadev.musicplayer.helpers.NotificationHelper;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
@@ -36,6 +37,8 @@ import com.tadev.musicplayer.models.CurrentSongPlay;
 import com.tadev.musicplayer.receivers.RemoteControlReceiver;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.utils.design.actions.Actions;
+import com.tadev.musicplayer.utils.design.support.StringUtils;
+import com.tadev.musicplayer.utils.design.support.Utils;
 
 import java.io.IOException;
 
@@ -64,7 +67,7 @@ public class MusicPlayService extends Service implements
     private MediaSessionCompat mMediaSessionCompat;
     private boolean mPausedByTransientLossOfFocus;
     private boolean mServiceInUse = false;
-    private boolean isMusicRepared;
+    private boolean isMusicRepared, isPauseFromNotification;
     private AudioManager mAudioManager;
     private int mServiceStartId = -1;
     private int mPlayingPosition = 0;
@@ -147,11 +150,11 @@ public class MusicPlayService extends Service implements
         mListener.duration(getDuration());
         localBroadcastManager.sendBroadcast(new Intent(Actions.ACTION_PLAY));
         start();
+        createNotification();
         primaryUpdateSeekBar();
         mMediaSessionCompat.setPlaybackState(playbackState(PlaybackStateCompat.STATE_PLAYING,
                 getCurrentStreamPosition(), 1));
         mMediaSessionCompat.setActive(true);
-
     }
 
     public boolean isMusicPrepared() {
@@ -194,11 +197,11 @@ public class MusicPlayService extends Service implements
                 pause();
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                if (isPlaying()) {
-                    mPausedByTransientLossOfFocus = true;
-                }
-                pause();
-                break;
+//                if (isPlaying()) {
+//                    mPausedByTransientLossOfFocus = true;
+//                }
+//                pause();
+//                break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                 if (mMediaPlayer.isPlaying()) {
                     mPausedByTransientLossOfFocus = true;
@@ -272,25 +275,42 @@ public class MusicPlayService extends Service implements
     }
 
 
-    private void updateNotification() {
-        mNotificationManager.cancel(hashCode());
-        startForeground(NOTIFICATION_ID, createNotification());
+    private void createNotification() {
+        startForeground(NOTIFICATION_ID, buildNotification());
     }
 
-    private Notification createNotification() {
+    private Notification buildNotification() {
         downloadImageArtWork();
         if (mNotificationPostTime == 0) {
             mNotificationPostTime = System.currentTimeMillis();
         }
-        NotificationCompat.Builder builder = NotificationHelper.from(this, mMediaSessionCompat, mCurrentSongPlay
-                , btmArtWork, mNotificationPostTime, isPlaying());
-        builder.mActions.clear();
-        NotificationCompat.Builder newBuilder = NotificationHelper.from(this, mMediaSessionCompat, mCurrentSongPlay
-                , btmArtWork, mNotificationPostTime, isPlaying());
-        return newBuilder.build();
+        String title = mCurrentSongPlay.song.getMusicTitle();
+        String artist = mCurrentSongPlay.song.getMusicArtist();
+        Intent nowPlayingIntent = Utils.getNowPlayingIntent(this);
+        PendingIntent clickIntent = PendingIntent.getActivity(this, 0, nowPlayingIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        boolean isPlaying = isPlaying();
+        int stateButton = isPlaying ? R.drawable.ic_pause_white_36dp : R.drawable.ic_play_arrow_white_36dp;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(title)
+                .setContentText(artist)
+                .setLargeIcon(btmArtWork)
+                .setWhen(mNotificationPostTime)
+                .setContentIntent(clickIntent)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        builder.addAction(stateButton, StringUtils.getStringRes(R.string.action_play_pause),
+                NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
+        builder.setStyle(new NotificationCompat.MediaStyle()
+                .setShowActionsInCompactView(0)
+                .setShowCancelButton(true)
+                .setCancelButtonIntent(NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_STOP)));
+        return builder.build();
     }
 
+
     private void cancelNotification() {
+        mNotificationManager.cancel(NOTIFICATION_ID);
         stopForeground(true);
     }
 
@@ -352,7 +372,6 @@ public class MusicPlayService extends Service implements
                 mListener.currentSongPlay(mCurrentSongPlay);
                 getDuration();
                 musicContainer.setCurrentSongPlay(mCurrentSongPlay);
-                updateNotification();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -419,7 +438,6 @@ public class MusicPlayService extends Service implements
                 resume();
             }
         }
-        createNotification();
     }
 
     private void playOrPauseNotification() {
@@ -428,7 +446,6 @@ public class MusicPlayService extends Service implements
         } else {
             resume();
         }
-        createNotification();
         localBroadcastManager.sendBroadcast(new Intent(Actions.ACTION_PLAYPAUSE_NOTIFICATION));
     }
 
@@ -510,7 +527,9 @@ public class MusicPlayService extends Service implements
                     }
                     if (isCurrentId) {
                         if (mMediaPlayer != null && hasDataSource) {
-                            updateNotification();
+                            if (isPauseFromNotification) {
+                                createNotification();
+                            }
                             playOrPause();
                             break;
                         }
@@ -531,8 +550,10 @@ public class MusicPlayService extends Service implements
                 case Actions.VOLUME_CHANGED_ACTION:
                     break;
                 case Actions.ACTION_PLAY_BAR:
+                    if (isPauseFromNotification) {
+                        createNotification();
+                    }
                     playOrPause();
-                    updateNotification();
                     break;
                 case Actions.ACTION_PLAY_PAUSE:
                     playOrPause();
@@ -550,6 +571,7 @@ public class MusicPlayService extends Service implements
                             playOrPauseNotification();
                             break;
                         case KeyEvent.KEYCODE_MEDIA_STOP:
+                            isPauseFromNotification = true;
                             if (isPaused()) {
                                 cancelNotification();
                                 break;
