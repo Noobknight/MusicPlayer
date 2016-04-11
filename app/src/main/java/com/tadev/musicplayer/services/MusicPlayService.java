@@ -276,7 +276,8 @@ public class MusicPlayService extends Service implements
 
 
     private void createNotification() {
-        startForeground(NOTIFICATION_ID, buildNotification());
+        int notificationId = hashCode();
+        startForeground(notificationId, buildNotification());
     }
 
     private Notification buildNotification() {
@@ -310,8 +311,9 @@ public class MusicPlayService extends Service implements
 
 
     private void cancelNotification() {
-        mNotificationManager.cancel(NOTIFICATION_ID);
         stopForeground(true);
+        mNotificationManager.cancel(hashCode());
+        mNotificationPostTime = 0;
     }
 
 
@@ -531,6 +533,7 @@ public class MusicPlayService extends Service implements
                                 createNotification();
                             }
                             playOrPause();
+                            updateStateButtonNotification();
                             break;
                         }
                     } else {
@@ -554,9 +557,11 @@ public class MusicPlayService extends Service implements
                         createNotification();
                     }
                     playOrPause();
+                    updateStateButtonNotification();
                     break;
                 case Actions.ACTION_PLAY_PAUSE:
                     playOrPause();
+                    updateStateButtonNotification();
                     break;
                 case Actions.ACTION_STOP:
                     stop();
@@ -569,17 +574,18 @@ public class MusicPlayService extends Service implements
                     switch (event.getKeyCode()) {
                         case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
                             playOrPauseNotification();
+                            updateStateButtonNotification();
                             break;
                         case KeyEvent.KEYCODE_MEDIA_STOP:
                             isPauseFromNotification = true;
                             if (isPaused()) {
                                 cancelNotification();
-                                break;
                             } else {
                                 playOrPauseNotification();
                                 cancelNotification();
-                                break;
+
                             }
+                            break;
                     }
             }
             mMediaSessionCompat.setPlaybackState(playbackState(isPlaying() ?
@@ -587,6 +593,12 @@ public class MusicPlayService extends Service implements
                     getCurrentStreamPosition(), 1));
             primaryUpdateSeekBar();
         }
+    }
+
+    private void updateStateButtonNotification(){
+        mNotificationManager.cancel(hashCode());
+        mNotificationPostTime = 0;
+        createNotification();
     }
 
     private void releaseMediaSession() {
