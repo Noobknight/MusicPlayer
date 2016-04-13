@@ -34,4 +34,27 @@
     <string name="action_pause">pause</string>
     <string name="action_play_pause">play_pause</string>
 
+    <string name="action_download_comfirm">CHOOSE</string>
+    <string name="action_download_close">x</string>
+    <string name="dialog_title_download">Download Music</string>
+    <string name="dialog_close">@android:string/cancel</string>
+
+
+    <string name="rdb_128">File MP3 128Kbps</string>
+    <string name="rdb_320">File MP3 320Kbps</string>
+    <string name="rdb_500">File M4A 500Kbps</string>
+    <string name="rdb_1000">File FLAC 1000Kbps</string>
+
+    <string name="txt128FileSize">MP3 size : </string>
+    <string name="txt320FileSize">MP3&#8211;320 size : </string>
+    <string name="txt500FileSize">M4A size : </string>
+    <string name="txt1000FileSize">LOSSLESS size : </string>
+    <string name="txtEmptyFileSizeDownload">Chưa hỗ trợ</string>
+
+
+    <dimen name="md_styled_text_title">30sp</dimen>
+    <dimen name="md_styled_text_description">18sp</dimen>
+    <dimen name="md_styled_dialog_header">120dp</dimen>
+    <dimen name="md_styled_pic_size">44dp</dimen>
+
 </resources>

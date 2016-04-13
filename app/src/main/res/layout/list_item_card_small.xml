@@ -88,8 +88,9 @@
                         android:id="@+id/list_item_card_small_tvMusicType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
                         android:text="@string/music_type"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginRight="5dp"
                         android:textColor="@color/material_red_500" />
                 </LinearLayout>
 

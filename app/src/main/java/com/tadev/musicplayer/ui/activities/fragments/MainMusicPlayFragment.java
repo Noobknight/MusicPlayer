@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -31,17 +30,18 @@ import com.tadev.musicplayer.models.Music;
 import com.tadev.musicplayer.models.Song;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.services.loaders.MusicInfoLoaderTask;
+import com.tadev.musicplayer.utils.design.SwipeViewPager;
 import com.tadev.musicplayer.utils.design.blurry.BlurImageUtils;
 import com.tadev.musicplayer.utils.design.viewpager.CircleIndicator;
 
 /**
  * Created by Iris Louis on 01/04/2016.
  */
-public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLoadListener {
+public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLoadListener, SwipeViewPager.OnSwipeOutListener {
     public static final String TAG = "MainMusicPlayFragment";
     private static final String KEY_EXTRA = "extras";
     private static final String KEY_EXTRA_PLAYBAR = "extras_play_bar";
-    private ViewPager mViewPager;
+    private SwipeViewPager mViewPager;
     private ViewPagerApdater mAdapter;
     private CircleIndicator mCircleIndicator;
     private ImageView imgBackground;
@@ -51,6 +51,24 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     private ProgressDialog dialogLoading;
     private MusicPlayService mService;
     private boolean isStartFromBottom;
+
+    @Override
+    public void onSwipeOutAtStart() {
+        mOnBackFragmentListener.onBack(true);
+        Handler handler = new Handler();
+        baseMenuActivity.mFragmentManager.popBackStack();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                baseMenuActivity.getToolbar().setVisibility(View.VISIBLE);
+            }
+        }, getResources().getInteger(R.integer.fragmentAnimationTime));
+    }
+
+    @Override
+    public void onSwipeOutAtEnd() {
+//        Toast.makeText(context, "Can next", Toast.LENGTH_SHORT).show();
+    }
 
     public interface OnBackFragmentListener {
         void onBack(boolean isBack);
@@ -80,7 +98,10 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
         Log.i(TAG, "onCreate ");
         setHasOptionsMenu(true);
         mService = mActivityMain.getService();
+
+
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -105,7 +126,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     @Override
     protected void initView(View view) {
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        mViewPager = (SwipeViewPager) view.findViewById(R.id.viewpager);
         mCircleIndicator = (CircleIndicator) view.findViewById(R.id.circleIndicator);
         imgBackground = (ImageView) view.findViewById(R.id.fragment_main_music_play_imgBackground);
         frameViewPager = (FrameLayout) view.findViewById(R.id.frameViewPager);
@@ -165,7 +186,9 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
                     currentLyric);
             mViewPager.setAdapter(mAdapter);
             mCircleIndicator.setViewPager(mViewPager);
+
         }
+
     }
 
     @Override
@@ -246,6 +269,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
                 initLyricData(musicReponse));
         mViewPager.setAdapter(mAdapter);
         mCircleIndicator.setViewPager(mViewPager);
+        mViewPager.setOnSwipeOutListener(this);
     }
 
     @Override
@@ -271,6 +295,11 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
             song.setFileUrl(music.getFileUrl());
             song.setFile320Url(music.getFile320Url());
             song.setFileM4aUrl(music.getFileM4aUrl());
+            song.setFileLossless(music.getFileLosslessUrl());
+            song.setMusicFilesize(music.getMusicFilesize());
+            song.setMusic320Filesize(music.getMusic320Filesize());
+            song.setMusicM4aFilesize(music.getMusicM4aFilesize());
+            song.setMusicLosslessFilesize(music.getMusicLosslessFilesize());
             return song;
         } else {
             return application.getMusicContainer().getmCurrentSongPlay().song;
@@ -307,7 +336,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     }
 
 
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+    private SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>() {
         @Override
         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
             Bitmap btmBlur = BlurImageUtils.blurRenderScript(context, resource, 10);
@@ -324,4 +353,6 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
         }
         return false;
     }
+
+
 }

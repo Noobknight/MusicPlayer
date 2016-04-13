@@ -15,7 +15,12 @@ public class Song implements Parcelable {
     private String fileUrl;
     private String file320Url;
     private String fileM4aUrl;
+    private String fileLossless;
     private String musicLength;
+    private String musicFilesize;
+    private String music320Filesize;
+    private String musicM4aFilesize;
+    private String musicLosslessFilesize;
 
     public Song(){}
 
@@ -74,6 +79,14 @@ public class Song implements Parcelable {
         return this;
     }
 
+    public String getFileLossless() {
+        return fileLossless;
+    }
+
+    public void setFileLossless(String fileLossless) {
+        this.fileLossless = fileLossless;
+    }
+
     public String getFile320Url() {
         return file320Url;
     }
@@ -99,6 +112,38 @@ public class Song implements Parcelable {
     public Song setMusicLength(String musicLength) {
         this.musicLength = musicLength;
         return this;
+    }
+
+    public String getMusicFilesize() {
+        return musicFilesize;
+    }
+
+    public void setMusicFilesize(String musicFilesize) {
+        this.musicFilesize = musicFilesize;
+    }
+
+    public String getMusic320Filesize() {
+        return music320Filesize;
+    }
+
+    public void setMusic320Filesize(String music320Filesize) {
+        this.music320Filesize = music320Filesize;
+    }
+
+    public String getMusicM4aFilesize() {
+        return musicM4aFilesize;
+    }
+
+    public void setMusicM4aFilesize(String musicM4aFilesize) {
+        this.musicM4aFilesize = musicM4aFilesize;
+    }
+
+    public String getMusicLosslessFilesize() {
+        return musicLosslessFilesize;
+    }
+
+    public void setMusicLosslessFilesize(String musicLosslessFilesize) {
+        this.musicLosslessFilesize = musicLosslessFilesize;
     }
 
     @Override
@@ -131,7 +176,13 @@ public class Song implements Parcelable {
         dest.writeString(this.fileUrl);
         dest.writeString(this.file320Url);
         dest.writeString(this.fileM4aUrl);
+        dest.writeString(this.fileLossless);
         dest.writeString(this.musicLength);
+        dest.writeString(this.musicFilesize);
+        dest.writeString(this.music320Filesize);
+        dest.writeString(this.musicM4aFilesize);
+        dest.writeString(this.musicLosslessFilesize);
+
     }
 
     protected Song(Parcel in) {
@@ -143,7 +194,12 @@ public class Song implements Parcelable {
         this.fileUrl = in.readString();
         this.file320Url = in.readString();
         this.fileM4aUrl = in.readString();
+        this.fileLossless = in.readString();
         this.musicLength = in.readString();
+        this.musicFilesize = in.readString();
+        this.music320Filesize = in.readString();
+        this.musicM4aFilesize = in.readString();
+        this.musicLosslessFilesize = in.readString();
     }
 
     public static final Creator<Song> CREATOR = new Creator<Song>() {

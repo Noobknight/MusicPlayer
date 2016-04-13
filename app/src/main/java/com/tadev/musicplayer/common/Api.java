@@ -12,6 +12,11 @@ public class Api {
     private static final String USUK = "us-uk";
     private static final String KOREA = "korea";
 
+    public static final int MUSIC_128 = 0;
+    public static final int MUSIC_320 = 1;
+    public static final int MUSIC_500 = 2;
+    public static final int MUSIC_1000 = 3;
+
     public static final String KEY_CODE = "duc_wp_2014";
 
     public static String getApiMusicVietNam() {

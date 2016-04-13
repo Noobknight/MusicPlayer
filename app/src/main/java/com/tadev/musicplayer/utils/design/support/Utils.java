@@ -12,6 +12,8 @@ import com.tadev.musicplayer.MainActivity;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.constant.Constants;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by Iris Louis on 25/03/2016.
  */
@@ -66,9 +68,12 @@ public class Utils {
         int minutes = (int) ((millis % (1000 * 60 * 60)) / (1000 * 60));
         int seconds = (int) (((millis % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
 
-        buf.append(String.format("%02d", hours)).append(":")
+        buf.append(
+                String.format("%02d", hours)).append(":")
                 .append(String.format("%02d", minutes)).append(":")
                 .append(String.format("%02d", seconds));
+//        buf.append(String.format("%02d", minutes)).append(":")
+//                .append(String.format("%02d", seconds));
 
         return buf.toString();
     }
@@ -103,4 +108,12 @@ public class Utils {
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }
+
+    public static String readableFileSize(long size) {
+        if (size <= 0) return " ";
+        final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        return new DecimalFormat(" #,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+    }
+
 }

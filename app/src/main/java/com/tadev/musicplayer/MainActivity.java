@@ -48,6 +48,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     private CardView cardPlayBar;
     private Handler handler;
     private LocalBroadcastManager localBroadcastManager;
+    private boolean isBound;
 
 
     @Override
@@ -191,11 +192,10 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
             mDrawer.closeDrawer(mNavigationView);
             return;
         }
-//        if (mFragmentManager.getBackStackEntryCount() > 0) {
-//            enablePlayBarBottom = true;
-//        } else {
-        super.onBackPressed();
-//        }
+        Log.i(TAG, "onBackPressed " + mFragmentManager.getBackStackEntryCount());
+        if (getFragmentManager().getBackStackEntryCount() == 1) {
+            this.finish();
+        }
 
 //        if (mFragmentManager.getBackStackEntryCount() > 0) {
 //            mFragmentManager.popBackStackImmediate();
@@ -214,7 +214,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Override
     protected void onDestroy() {
-        if (mPlayServiceConnection != null && intentRegistedService != null) {
+        if (isBound && intentRegistedService != null) {
             Log.i(TAG, "onDestroy here");
             unbindService(mPlayServiceConnection);
             stopService(intentRegistedService);
@@ -240,16 +240,23 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     }
 
+    @Override
+    public void onDownloadRegister(Intent intent) {
+        startService(intent);
+    }
+
     private ServiceConnection mPlayServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mService = ((MusicPlayService.PlayBinder) service).getService();
             mService.setOnMusicPlayListener(MainActivity.this);
+            isBound = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             mService = null;
+            isBound = false;
         }
     };
 
@@ -343,6 +350,10 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
             showPlayBarBottom();
         }
 
+    }
+
+    public boolean isBound(){
+        return isBound;
     }
 
     @Override

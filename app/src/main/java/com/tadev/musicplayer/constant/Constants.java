@@ -13,8 +13,5 @@ public class Constants {
     public static final String BASE_URL_GET_INFO = "http://chiasenhac.com/api/listen.php";
     public static final String BASE_URL_SEARCH = "http://search.chiasenhac.com/api/search.php";
 
-
-    public static final String KEY_PASS_DATA_SERVICE = "extras_in_service";
-
     public static final String NAVIGATE_NOWPLAYING = "com.tadev.musicplayer.action.NAVIGATE_NOWPLAYING";
 }

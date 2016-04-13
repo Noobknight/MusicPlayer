@@ -13,4 +13,6 @@ public interface OnRegisterCallback {
 
     void onUnRegisterReceiver(boolean enable);
 
+    void onDownloadRegister(Intent intent);
+
 }

@@ -102,7 +102,16 @@ public class MusicKorea extends BaseModel implements Parcelable {
     }
 
     public String getMusic_bitrate() {
-        return music_bitrate;
+        return validateBitrate();
+    }
+
+    private String validateBitrate() {
+        if (music_bitrate.equals("1000")) {
+            return "Lossless";
+        } else if (music_bitrate.equals("500")) {
+            return "M4A";
+        }
+        return music_bitrate.concat(" Kbps");
     }
 
     public void setMusic_bitrate(String music_bitrate) {

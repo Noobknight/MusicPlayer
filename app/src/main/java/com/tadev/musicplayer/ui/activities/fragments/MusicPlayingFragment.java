@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -16,27 +17,32 @@ import android.widget.TextView;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.abstracts.BaseFragment;
 import com.tadev.musicplayer.callbacks.OnRegisterCallback;
-import com.tadev.musicplayer.constant.Constants;
+import com.tadev.musicplayer.common.Api;
+import com.tadev.musicplayer.constant.Extras;
 import com.tadev.musicplayer.models.CurrentSongPlay;
+import com.tadev.musicplayer.models.Download;
 import com.tadev.musicplayer.models.Lyric;
 import com.tadev.musicplayer.models.Song;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
+import com.tadev.musicplayer.services.DownloaderService;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.utils.design.PlayPauseDrawable;
 import com.tadev.musicplayer.utils.design.TextViewTitle;
 import com.tadev.musicplayer.utils.design.actions.Actions;
 import com.tadev.musicplayer.utils.design.support.Utils;
 
+import java.util.HashMap;
+
 /**
  * Created by Iris Louis on 01/04/2016.
  */
-public class MusicPlayingFragment extends BaseFragment {
+public class MusicPlayingFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = "MusicPlayingFragment";
     private static final String KEY_SONG = "song";
     private static final String KEY_LYRIC = "lyric";
     private TextViewTitle txtTitle, txtArtist;
     private SeekBar seekBar;
-    private ImageView imgShuffle, imgRepeat, imgNext, imgPrevious;
+    private ImageView imgShuffle, imgRepeat, imgNext, imgPrevious, imgDownoad;
     private Song mSong;
     private Lyric mLyric;
     private FloatingActionButton fabPlayPause;
@@ -48,7 +54,7 @@ public class MusicPlayingFragment extends BaseFragment {
     private boolean isPlayState;
     //Service Callback To Activity
     private OnRegisterCallback mOnRegisterCallback;
-
+    private FrameLayout framePlaying;
 
     public static MusicPlayingFragment newInstance(Song song, Lyric lyric) {
         MusicPlayingFragment fragment = new MusicPlayingFragment();
@@ -96,8 +102,6 @@ public class MusicPlayingFragment extends BaseFragment {
         txtTitle.setText(mSong.getMusicTitle());
         txtArtist.setText(mSong.getMusicArtist());
         super.onStart();
-
-
     }
 
 
@@ -141,7 +145,6 @@ public class MusicPlayingFragment extends BaseFragment {
 
     @Override
     protected void initView(View rootView) {
-//        bindService();
         localBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
         txtTitle = (TextViewTitle) rootView.findViewById(R.id.fragment_music_playing_txtMusicName);
         txtArtist = (TextViewTitle) rootView.findViewById(R.id.fragment_music_playing_txtMusicArtist);
@@ -153,6 +156,8 @@ public class MusicPlayingFragment extends BaseFragment {
         txtCurrentTime = (TextView) rootView.findViewById(R.id.fragment_music_playing_txtCurrentTime);
         txtTotalTime = (TextView) rootView.findViewById(R.id.fragment_music_playing_txtTotalTime);
         fabPlayPause = (FloatingActionButton) rootView.findViewById(R.id.fragment_music_playing_fabPlayPause);
+        imgDownoad = (ImageView) rootView.findViewById(R.id.btnDownload);
+        framePlaying = (FrameLayout) rootView.findViewById(R.id.framePlaying);
     }
 
     @Override
@@ -189,6 +194,7 @@ public class MusicPlayingFragment extends BaseFragment {
     @Override
     protected void setViewEvents() {
         fabPlayPause.setOnClickListener(mFLoatingButtonListener);
+        imgDownoad.setOnClickListener(this);
     }
 
     private UpdateSeekbarReceiver updateSeekbar = new UpdateSeekbarReceiver() {
@@ -239,7 +245,6 @@ public class MusicPlayingFragment extends BaseFragment {
             intent.setAction(Actions.ACTION_TOGGLE);
             intent.putExtras(initDataCurrentPlay());
             mOnRegisterCallback.onServicePreparing(intent);
-            Log.i(TAG, "onClick " + isPlayState);
             if (isPlayState) {
                 playPauseDrawable.transformToPause(true);
                 playPauseDrawable.transformToPlay(true);
@@ -256,7 +261,7 @@ public class MusicPlayingFragment extends BaseFragment {
         currentPlay.musicId = mSong.getMusicId();
         currentPlay.song = mSong;
         currentPlay.lyric = mLyric;
-        bundle.putParcelable(Constants.KEY_PASS_DATA_SERVICE, currentPlay);
+        bundle.putParcelable(Extras.KEY_PASS_DATA_SERVICE, currentPlay);
         return bundle;
     }
 
@@ -270,5 +275,49 @@ public class MusicPlayingFragment extends BaseFragment {
         }
     }
 
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnDownload:
+                DialogDownloadFragment mDialogDownload = DialogDownloadFragment
+                        .newInstance(buildDownload());
+                mDialogDownload.setTargetFragment(this, Extras.REQUEST_CODE);
+                mDialogDownload.show(getFragmentManager(), "dialog");
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Extras.REQUEST_CODE && resultCode == Extras.RESULT_CODE) {
+            if (data != null) {
+                Download download = data.getExtras().getParcelable(Extras.KEY_EXTRA_DATA);
+                Intent intent = new Intent(getActivity(), DownloaderService.class);
+                intent.putExtra("id", download.getId());
+                intent.putExtra("name", download.getName());
+                intent.putExtra("url", download.getUrlChoose());
+                mOnRegisterCallback.onDownloadRegister(intent);
+            }
+        }
+    }
+
+    private Download buildDownload() {
+        Download download = new Download();
+        download.setId(Integer.parseInt(mSong.getMusicId()));
+        download.setName(mSong.getMusicTitle());
+        download.setMusicFilesize(mSong.getMusicFilesize());
+        download.setMusic320Filesize(mSong.getMusic320Filesize());
+        download.setMusicM4aFilesize(mSong.getMusicM4aFilesize());
+        download.setMusicLosslessFilesize(mSong.getMusicLosslessFilesize());
+        HashMap<Integer, String> url = new HashMap<>();
+        url.put(Api.MUSIC_128, mSong.getFileUrl());
+        url.put(Api.MUSIC_320, mSong.getFile320Url());
+        url.put(Api.MUSIC_500, mSong.getFileM4aUrl());
+        url.put(Api.MUSIC_1000, mSong.getFileLossless());
+        download.setUrl(url);
+        return download;
+    }
 
 }

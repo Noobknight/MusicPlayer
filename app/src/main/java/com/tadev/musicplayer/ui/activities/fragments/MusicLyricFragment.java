@@ -1,6 +1,7 @@
 package com.tadev.musicplayer.ui.activities.fragments;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
@@ -60,12 +61,13 @@ public class MusicLyricFragment extends BaseFragment {
             txtTitle.setText(lyric.getMusicTitle());
             txtArtist.setText(StringUtils.getStringRes(R.string.msg_lyric_artist) + lyric.getMusicArtist());
             txtYear.setText(StringUtils.getStringRes(R.string.msg_lyric_year) + lyric.getMusicYear());
-            boolean isEmptyLyric = lyric.getMusicLyric().isEmpty() || lyric.getMusicLyric() == null;
+            boolean isEmptyLyric = TextUtils.isEmpty(lyric.getMusicLyric());
             if (isEmptyLyric) {
                 txtLyric.setText(getResources().getString(R.string.lyric_empty));
+            } else {
+                txtLyric.setText(lyric.getMusicLyric());
+                txtLyric.setMovementMethod(ScrollingMovementMethod.getInstance());
             }
-            txtLyric.setText(lyric.getMusicLyric());
-            txtLyric.setMovementMethod(ScrollingMovementMethod.getInstance());
             Glide.with(context).load(lyric.getMusicImage()).override(200, 140).into(imgArtist);
         } else {
             txtLyric.setText(StringUtils.getStringRes(R.string.msg_lyric_not_found));

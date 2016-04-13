@@ -45,8 +45,8 @@ public class PlayBarBottomFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate ");
-        mService = mActivityMain.getService();
-        currentPlay = application.getMusicContainer().getmCurrentSongPlay();
+            mService = mActivityMain.getService();
+            currentPlay = application.getMusicContainer().getmCurrentSongPlay();
     }
 
     @Override

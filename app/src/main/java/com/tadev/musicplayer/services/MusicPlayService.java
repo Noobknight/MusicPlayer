@@ -29,7 +29,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tadev.musicplayer.R;
-import com.tadev.musicplayer.constant.Constants;
+import com.tadev.musicplayer.constant.Extras;
 import com.tadev.musicplayer.helpers.NotificationHelper;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
 import com.tadev.musicplayer.metadata.MusicContainer;
@@ -197,11 +197,11 @@ public class MusicPlayService extends Service implements
                 pause();
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-//                if (isPlaying()) {
-//                    mPausedByTransientLossOfFocus = true;
-//                }
-//                pause();
-//                break;
+                if (isPlaying()) {
+                    mPausedByTransientLossOfFocus = true;
+                }
+                pause();
+                break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                 if (mMediaPlayer.isPlaying()) {
                     mPausedByTransientLossOfFocus = true;
@@ -520,7 +520,7 @@ public class MusicPlayService extends Service implements
             String action = intent.getAction();
             switch (action) {
                 case Actions.ACTION_TOGGLE:
-                    mCurrentSongPlay = intent.getExtras().getParcelable(Constants.KEY_PASS_DATA_SERVICE);
+                    mCurrentSongPlay = intent.getExtras().getParcelable(Extras.KEY_PASS_DATA_SERVICE);
                     if (currentId == 0) {
                         currentId = Integer.parseInt(mCurrentSongPlay.musicId);
                     } else {

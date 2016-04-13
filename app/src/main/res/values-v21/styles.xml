@@ -5,7 +5,7 @@
 
     <style name="AppTheme" parent="AppBaseTheme">
 
-        <!--<item name="android:textColorPrimary">@android:color/white</item>-->
+        <item name="android:textColorPrimary">@android:color/white</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:windowTranslucentStatus">true</item>
         <!--<item name="colorPrimary">@android:color/transparent</item>-->

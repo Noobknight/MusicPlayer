@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/framePlaying"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -48,12 +49,12 @@
                 android:weightSum="10">
 
                 <TextView
-                    android:layout_marginTop="10dp"
                     android:id="@+id/fragment_music_playing_txtCurrentTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3.95"
                     android:layout_marginLeft="3dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="3.95"
                     android:text="@string/time_update"
                     android:textColor="@color/material_white" />
 
@@ -61,30 +62,39 @@
                     android:id="@+id/fragment_music_playing_seekbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:layout_weight="1.9"
                     android:paddingBottom="10dp"
-                    android:layout_marginTop="5dp"
                     android:theme="@style/ThemeSeekbar" />
 
                 <TextView
                     android:id="@+id/fragment_music_playing_txtTotalTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:layout_weight="4.1"
                     android:paddingRight="3dp"
-                    android:layout_marginTop="10dp"
                     android:text="@string/time_update"
                     android:textColor="@color/material_white" />
 
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/btnDownload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:src="@drawable/ic_file_download_white_36dp"
+                android:layout_marginRight="15dp"
+                />
+
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp"
                 android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                >
+                android:paddingRight="15dp">
 
                 <ImageView
                     android:id="@+id/fragment_music_playing_imgShuffle"

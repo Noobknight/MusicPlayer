@@ -301,8 +301,19 @@ public class Music implements Parcelable {
      * @return The musicBitrate
      */
     public String getMusicBitrate() {
-        return musicBitrate;
+        return validateBitrate();
     }
+
+
+    private String validateBitrate() {
+        if (musicBitrate.equals("1000")) {
+            return "Lossless";
+        } else if (musicBitrate.equals("500")) {
+            return "M4A";
+        }
+        return musicBitrate.concat(" Kbps");
+    }
+
 
     /**
      * @param musicBitrate The music_bitrate
