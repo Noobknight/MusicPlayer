@@ -72,4 +72,40 @@ public class Enums {
             return value;
         }
     }
+
+    public static enum VideoBitrate {
+        HD1080("HD 1080", 0),
+        HD720("HD 720", 1),
+        MV480("MV 480", 2);
+
+        private String stringValue;
+        private int intValue;
+
+        VideoBitrate(String toString, int value) {
+            stringValue = toString;
+            intValue = value;
+        }
+
+        public static VideoBitrate valueOf(int value) {
+            switch (value) {
+                case 0:
+                    return HD1080;
+                case 1:
+                    return HD720;
+                case 2:
+                    return MV480;
+                default:
+                    return null;
+            }
+        }
+
+        public int value() {
+            return intValue;
+        }
+
+        @Override
+        public String toString() {
+            return stringValue;
+        }
+    }
 }

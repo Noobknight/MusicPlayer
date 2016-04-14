@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.tadev.musicplayer.utils.design.viewpager.PagerSlidingTabStrip xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fragment_video_list_slidingtabs"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:pstsIndicatorColor="#ffffffff"
+        app:pstsIndicatorHeight="3dp"
+        app:pstsShouldExpand="true"
+        app:pstsTabPaddingLeftRight="10dp"
+        app:pstsTabTextAllCaps="true" />
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/fragment_video_list_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

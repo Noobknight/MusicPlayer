@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.abstracts.BaseFragment;
-import com.tadev.musicplayer.models.Lyric;
+import com.tadev.musicplayer.models.music.Lyric;
 import com.tadev.musicplayer.utils.design.support.StringUtils;
 
 /**

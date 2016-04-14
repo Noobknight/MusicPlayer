@@ -1,6 +1,6 @@
 package com.tadev.musicplayer.interfaces;
 
-import com.tadev.musicplayer.models.CurrentSongPlay;
+import com.tadev.musicplayer.models.music.CurrentSongPlay;
 
 /**
  * Created by Iris Louis on 08/04/2016.

@@ -7,9 +7,9 @@ import com.google.gson.reflect.TypeToken;
 import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.constant.Constants;
 import com.tadev.musicplayer.models.BaseModel;
-import com.tadev.musicplayer.models.MusicKorea;
-import com.tadev.musicplayer.models.MusicUSUK;
-import com.tadev.musicplayer.models.MusicVietNam;
+import com.tadev.musicplayer.models.music.MusicKorea;
+import com.tadev.musicplayer.models.music.MusicUSUK;
+import com.tadev.musicplayer.models.music.MusicVietNam;
 import com.tadev.musicplayer.utils.design.support.JsonUtils;
 
 import org.json.JSONArray;

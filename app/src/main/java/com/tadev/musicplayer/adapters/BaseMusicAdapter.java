@@ -61,12 +61,12 @@ public class BaseMusicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (viewType == VIEW_TYPE_HEADER) {
             return new HeaderViewHolder(mHeaderView);
         } else {
-            return new ItemViewHolder(mInflater.inflate(R.layout.list_item_card_small, parent, false));
+            return new ItemViewHolder(mInflater.inflate(R.layout.item_card_music, parent, false));
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder,final int position) {
         if (viewHolder instanceof ItemViewHolder) {
             BaseModel music = (BaseModel) musics.get(position - 1);
             if (music != null) {

@@ -22,7 +22,7 @@ import com.tadev.musicplayer.abstracts.BaseMenuActivity;
 import com.tadev.musicplayer.callbacks.OnRegisterCallback;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
 import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
-import com.tadev.musicplayer.models.CurrentSongPlay;
+import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.ui.activities.fragments.MainMusicPlayFragment;
 import com.tadev.musicplayer.ui.activities.fragments.MainMusicPlayFragment.OnBackFragmentListener;
@@ -30,6 +30,7 @@ import com.tadev.musicplayer.ui.activities.fragments.MusicKoreaFragment;
 import com.tadev.musicplayer.ui.activities.fragments.MusicUsUkFragment;
 import com.tadev.musicplayer.ui.activities.fragments.MusicVietNamFragment;
 import com.tadev.musicplayer.ui.activities.fragments.PlayBarBottomFragment;
+import com.tadev.musicplayer.ui.activities.fragments.VideoContainerFragment;
 
 public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         , IServicePlayer, OnBackFragmentListener, OnPlayBarBottomListener,
@@ -154,6 +155,11 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
                 transaction.replace(R.id.container, MusicUsUkFragment.newInstance(),
                         MusicUsUkFragment.TAG)
                         .addToBackStack(MusicUsUkFragment.TAG);
+                break;
+            case R.id.music_video:
+                transaction.replace(R.id.container, VideoContainerFragment.newInstance(),
+                        VideoContainerFragment.TAG)
+                        .addToBackStack(VideoContainerFragment.TAG);
                 break;
             case R.id.music_artist:
                 Toast.makeText(MainActivity.this, "Music Artist", Toast.LENGTH_SHORT).show();
@@ -352,7 +358,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     }
 
-    public boolean isBound(){
+    public boolean isBound() {
         return isBound;
     }
 

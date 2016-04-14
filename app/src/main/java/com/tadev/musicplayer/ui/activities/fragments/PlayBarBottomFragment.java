@@ -17,7 +17,7 @@ import com.tadev.musicplayer.MainActivity;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.abstracts.BaseFragment;
 import com.tadev.musicplayer.callbacks.OnRegisterCallback;
-import com.tadev.musicplayer.models.CurrentSongPlay;
+import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.utils.design.PlayPauseButton;

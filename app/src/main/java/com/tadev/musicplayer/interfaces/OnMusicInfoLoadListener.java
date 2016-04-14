@@ -1,6 +1,6 @@
 package com.tadev.musicplayer.interfaces;
 
-import com.tadev.musicplayer.models.Music;
+import com.tadev.musicplayer.models.music.Music;
 
 /**
  * Created by Iris Louis on 01/04/2016.

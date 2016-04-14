@@ -11,6 +11,9 @@
     <color name="cyan">#00BCD4</color>
     <color name="lime">#CDDC39</color>
 
+    <color name="psts_background_tab_pressed">#1AFFFFFF</color>
+    <color name="psts_background_tab_pressed_ripple">#AAFFFFFF</color>
+
     <color name="statusBarColor">@color/blue</color>
     <color name="navigationBarColor">@android:color/black</color>
     <color name="drawerArrowColor">@android:color/white</color>
@@ -23,4 +26,6 @@
     <color name="translucent_white_24p">#3DFFFFFF</color>
     <color name="translucent_white_96p">#F5FFFFFF</color>
     <color name="translucent_grey_300_96p">#F5E0E0E0</color>
+
+    <color name="fifty_percent_transparency_grey_400">#80bdbdbd</color>
 </resources>

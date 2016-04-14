@@ -1,4 +1,4 @@
-package com.tadev.musicplayer.models;
+package com.tadev.musicplayer.models.music;
 
 import android.os.Parcel;
 import android.os.Parcelable;

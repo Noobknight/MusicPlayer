@@ -84,4 +84,6 @@ public abstract class BaseMenuActivity extends AppCompatActivity {
         }
         return result;
     }
+
+
 }

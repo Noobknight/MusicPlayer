@@ -22,10 +22,15 @@
             </menu>
         </item>
         <item
+            android:id="@+id/music_video"
+            android:icon="@drawable/ic_music_video_black_24dp"
+            android:title="@string/drawer_video" />
+
+
+        <item
             android:id="@+id/music_artist"
             android:icon="@drawable/icon_artist"
             android:title="@string/drawer_artist" />
-
         <item
             android:id="@+id/music_ranking"
             android:icon="@drawable/icon_rankings"

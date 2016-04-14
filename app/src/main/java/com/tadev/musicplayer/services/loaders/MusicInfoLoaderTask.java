@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import com.google.gson.Gson;
 import com.tadev.musicplayer.common.Api;
 import com.tadev.musicplayer.interfaces.OnMusicInfoLoadListener;
-import com.tadev.musicplayer.models.Music;
+import com.tadev.musicplayer.models.music.Music;
 import com.tadev.musicplayer.utils.design.support.JsonUtils;
 
 import org.json.JSONException;

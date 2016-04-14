@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.constant.Extras;
-import com.tadev.musicplayer.models.Download;
+import com.tadev.musicplayer.models.music.Download;
 import com.tadev.musicplayer.services.downloads.DownloadThread;
 import com.tadev.musicplayer.utils.design.support.Utils;
 

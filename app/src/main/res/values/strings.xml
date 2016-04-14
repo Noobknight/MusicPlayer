@@ -6,6 +6,8 @@
     <string name="music_download">81.021</string>
     <string name="music_type">Lossless</string>
 
+    <string name="video_rate">HD 1080p</string>
+
 
     <string name="drawer_header_music">Thể Loại</string>
     <string name="drawer_vietnam_music">Việt Nam</string>
@@ -15,9 +17,12 @@
     <string name="drawer_artist">Nghệ Sĩ</string>
     <string name="drawer_rankings">Bảng Xếp Hạng</string>
     <string name="drawer_settings">Cài Đặt</string>
+    <string name="drawer_video">Video</string>
+    <string name="no_data_available">Không có dữ liệu</string>
 
     <string name="action_favorite">Favorite</string>
 
+    <string name="txtLoading">Đang tải&#8230;</string>
     <string name="category_vietnam">Nhạc Việt</string>
     <string name="category_korea">Nhạc Hàn</string>
     <string name="time_update">00:00:00</string>
@@ -34,9 +39,9 @@
     <string name="action_pause">pause</string>
     <string name="action_play_pause">play_pause</string>
 
-    <string name="action_download_comfirm">CHOOSE</string>
+    <string name="action_download_comfirm">Chọn</string>
     <string name="action_download_close">x</string>
-    <string name="dialog_title_download">Download Music</string>
+    <string name="dialog_title_download">Tải Nhạc</string>
     <string name="dialog_close">@android:string/cancel</string>
 
 

@@ -15,4 +15,12 @@
 
     <dimen name="text_size_common">16sp</dimen>
     <dimen name="play_bar_height">57dp</dimen>
+
+    <dimen name="text_title_video">20sp</dimen>
+    <dimen name="text_artist_video">15sp</dimen>
+    <dimen name="screen_tips_top">80dp</dimen>
+
+    <dimen name="card_corner_radius">7dp</dimen>
+    <dimen name="card_elevation">10dp</dimen>
+    
 </resources>

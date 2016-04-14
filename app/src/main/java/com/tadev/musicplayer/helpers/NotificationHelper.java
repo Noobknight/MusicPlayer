@@ -9,7 +9,7 @@ import android.support.v7.app.NotificationCompat;
 import android.view.KeyEvent;
 
 import com.tadev.musicplayer.R;
-import com.tadev.musicplayer.models.CurrentSongPlay;
+import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.utils.design.support.StringUtils;
 import com.tadev.musicplayer.utils.design.support.Utils;
 

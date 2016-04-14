@@ -33,7 +33,7 @@ import com.tadev.musicplayer.constant.Extras;
 import com.tadev.musicplayer.helpers.NotificationHelper;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
 import com.tadev.musicplayer.metadata.MusicContainer;
-import com.tadev.musicplayer.models.CurrentSongPlay;
+import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.receivers.RemoteControlReceiver;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.utils.design.actions.Actions;

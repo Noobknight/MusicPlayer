@@ -20,7 +20,7 @@ import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.common.Api;
 import com.tadev.musicplayer.constant.Enums;
 import com.tadev.musicplayer.constant.Extras;
-import com.tadev.musicplayer.models.Download;
+import com.tadev.musicplayer.models.music.Download;
 import com.tadev.musicplayer.utils.design.support.StringUtils;
 import com.tadev.musicplayer.utils.design.support.Utils;
 
