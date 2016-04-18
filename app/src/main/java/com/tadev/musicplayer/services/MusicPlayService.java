@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
@@ -28,6 +29,7 @@ import android.view.KeyEvent;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.constant.Extras;
 import com.tadev.musicplayer.helpers.NotificationHelper;
@@ -35,9 +37,12 @@ import com.tadev.musicplayer.interfaces.IServicePlayer;
 import com.tadev.musicplayer.metadata.MusicContainer;
 import com.tadev.musicplayer.models.MusicOffline;
 import com.tadev.musicplayer.models.music.CurrentSongPlay;
+import com.tadev.musicplayer.models.music.Lyric;
+import com.tadev.musicplayer.models.music.Song;
 import com.tadev.musicplayer.receivers.RemoteControlReceiver;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.utils.design.actions.Actions;
+import com.tadev.musicplayer.utils.design.support.CoverLoader;
 import com.tadev.musicplayer.utils.design.support.StringUtils;
 import com.tadev.musicplayer.utils.design.support.Utils;
 
@@ -51,6 +56,7 @@ public class MusicPlayService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener {
     private final String TAG = "MusicPlayService";
     public static final String BUFFER_UPDATE = "com.tadev.musicplayer.action.ACTION_UPDATE";
+    public static final String PATH_URI = "/storage";
     private boolean isPause = false;
     private MediaPlayer mMediaPlayer;
     private boolean hasDataSource = false;
@@ -65,14 +71,14 @@ public class MusicPlayService extends Service implements
     private long mNotificationPostTime = 0;
     private Bitmap btmArtWork;
     private MediaSessionCompat mMediaSessionCompat;
-    private boolean mPausedByTransientLossOfFocus;
+    private boolean mPausedByTransientLossOfFocus, isPlayOffline;
     private boolean mServiceInUse = false;
     private boolean isMusicRepared, isPauseFromNotification;
     private AudioManager mAudioManager;
     private int mServiceStartId = -1;
     private int mPlayingPosition = 0;
     private ArrayList<MusicOffline> mListOffline;
-    public int playingAtPosition;
+    public int playingAtPosition, indexOfList;
 
     @Override
     public void onCreate() {
@@ -137,8 +143,9 @@ public class MusicPlayService extends Service implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        isPlayOffline = enableModePlayOffline(intent);
         handleCommandIntent(intent);
-        return START_NOT_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     @Override
@@ -303,8 +310,17 @@ public class MusicPlayService extends Service implements
                 .setContentIntent(clickIntent)
                 .setColor(Utils.getColorRes(R.color.colorPrimary))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        builder.addAction(stateButton, StringUtils.getStringRes(R.string.action_play_pause),
-                NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
+        if (isPlayOffline) {
+            builder.addAction(R.drawable.ic_previous, StringUtils.getStringRes(R.string.action_previous),
+                    NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
+            builder.addAction(stateButton, StringUtils.getStringRes(R.string.action_play_pause),
+                    NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
+            builder.addAction(R.drawable.ic_next, StringUtils.getStringRes(R.string.action_next),
+                    NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_NEXT));
+        } else {
+            builder.addAction(stateButton, StringUtils.getStringRes(R.string.action_play_pause),
+                    NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
+        }
         builder.setStyle(new NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(0)
                 .setShowCancelButton(true)
@@ -327,24 +343,28 @@ public class MusicPlayService extends Service implements
         }
     }
 
+
     private void downloadImageArtWork() {
-        Glide.with(this).load(mCurrentSongPlay.song.getMusicImg()).asBitmap().into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                btmArtWork = resource;
-                setupMediaSessionCallback();
+        String linkImage = mCurrentSongPlay.song.getMusicImg();
+        if (!TextUtils.isEmpty(linkImage)) {
+            if (linkImage.startsWith(PATH_URI)) {
+                btmArtWork = CoverLoader.getInstance().loadThumbnail(linkImage);
+            } else {
+                Glide.with(this).load(linkImage).asBitmap().into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        btmArtWork = resource;
+                    }
+                });
             }
-        });
+        } else {
+            btmArtWork = BitmapFactory.decodeResource(MusicPlayerApplication.getInstance().getResources(),
+                    R.drawable.ic_default_cover);
+        }
+        setupMediaSessionCallback();
 
     }
 
-
-    private PendingIntent retrievePlaybackAction(final String action) {
-        final ComponentName serviceName = new ComponentName(this, MusicPlayService.class);
-        Intent intent = new Intent(action);
-        intent.setComponent(serviceName);
-        return PendingIntent.getService(this, 0, intent, 0);
-    }
 
     public void initPlayBack() {
         createMediaPlayer();
@@ -373,6 +393,7 @@ public class MusicPlayService extends Service implements
                 mMediaPlayer.setDataSource(url);
                 mMediaPlayer.prepareAsync();
                 hasDataSource = true;
+                isPlayOffline = false;
                 isPause = false;
                 mListener.currentSongPlay(mCurrentSongPlay);
                 getDuration();
@@ -411,24 +432,57 @@ public class MusicPlayService extends Service implements
         }
     }
 
+    public int next() {
+        if (mListOffline == null) {
+            return -1;
+        } else {
+            playingAtPosition += 1;
+            refreshData(playingAtPosition);
+            playOffline(playingAtPosition);
+            Intent intent = new Intent();
+            intent.setAction(Actions.ACTION_UPDATE_MAIN_MUSIC);
+            localBroadcastManager.sendBroadcast(intent);
+        }
+        return playingAtPosition;
+    }
 
-    public int play(int position) {
+    public int previous() {
+        if (mListOffline == null) {
+            return -1;
+        } else {
+            playingAtPosition -= 1;
+            refreshData(playingAtPosition);
+            playOffline(playingAtPosition);
+            Intent intent = new Intent(Actions.ACTION_UPDATE_MAIN_MUSIC);
+            localBroadcastManager.sendBroadcast(intent);
+        }
+        return playingAtPosition;
+    }
+
+
+    public int playOffline(int indexOfList) {
+        requestAudioFocus();
         if (mListOffline == null) {
             return -1;
         }
-        if (position < 0) {
-            position = mListOffline.size() - 1;
-        } else if (position >= mListOffline.size()) {
-            position = 0;
+        if (indexOfList < 0) {
+            indexOfList = getListOffline().size() - 1;
+        } else if (indexOfList >= getListOffline().size()) {
+            indexOfList = 0;
         }
-        playingAtPosition = position;
+        playingAtPosition = indexOfList;
         try {
             mMediaPlayer.reset();
-            mMediaPlayer.setDataSource(mListOffline.get(position).getUri());
-            mMediaPlayer.prepare();
-            start();
+            mMediaPlayer.setDataSource(getListOffline().get(indexOfList).getUri());
+            mMediaPlayer.prepareAsync();
+            hasDataSource = true;
+            isPause = false;
+            isPlayOffline = true;
+            mListener.currentSongPlay(mCurrentSongPlay);
+            getDuration();
+            musicContainer.setCurrentSongPlay(mCurrentSongPlay);
             if (mListener != null) {
-                mListener.onChange((int) mListOffline.get(position).getId());
+                mListener.onChange((int) getListOffline().get(indexOfList).getId());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -544,12 +598,12 @@ public class MusicPlayService extends Service implements
 
     private void handleCommandIntent(Intent intent) {
         if (intent != null) {
-            boolean isPlayOffline = enableModePlayOffline(intent);
+            indexOfList = intent.getIntExtra(Extras.KEY_INDEX_LIST, 0);
             boolean isCurrentId = false;
             String action = intent.getAction();
             switch (action) {
                 case Actions.ACTION_TOGGLE:
-                    mCurrentSongPlay = intent.getExtras().getParcelable(Extras.KEY_PASS_DATA_SERVICE);
+                    getDataIntent(intent, isPlayOffline);
                     if (currentId == 0) {
                         currentId = Integer.parseInt(mCurrentSongPlay.musicId);
                     } else {
@@ -566,7 +620,11 @@ public class MusicPlayService extends Service implements
                             break;
                         }
                     } else {
-                        play(mCurrentSongPlay.song.getFileUrl());
+                        if (isPlayOffline) {
+                            playOffline(indexOfList);
+                        } else {
+                            play(mCurrentSongPlay.song.getFileUrl());
+                        }
                     }
                     break;
                 case Actions.ACTION_PLAY:
@@ -576,8 +634,10 @@ public class MusicPlayService extends Service implements
                     pause();
                     break;
                 case Actions.ACTION_NEXT:
+                    next();
                     break;
                 case Actions.ACTION_PREVIOUS:
+                    previous();
                     break;
                 case Actions.VOLUME_CHANGED_ACTION:
                     break;
@@ -605,6 +665,12 @@ public class MusicPlayService extends Service implements
                             playOrPauseNotification();
                             updateStateButtonNotification();
                             break;
+                        case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                            previous();
+                            break;
+                        case KeyEvent.KEYCODE_MEDIA_NEXT:
+                            next();
+                            break;
                         case KeyEvent.KEYCODE_MEDIA_STOP:
                             isPauseFromNotification = true;
                             if (isPaused()) {
@@ -612,7 +678,6 @@ public class MusicPlayService extends Service implements
                             } else {
                                 playOrPauseNotification();
                                 cancelNotification();
-
                             }
                             break;
                     }
@@ -625,6 +690,7 @@ public class MusicPlayService extends Service implements
     }
 
     private void updateStateButtonNotification() {
+        Log.i(TAG, "updateStateButtonNotification " + isPlayOffline);
         mNotificationManager.cancel(hashCode());
         mNotificationPostTime = 0;
         createNotification();
@@ -649,6 +715,12 @@ public class MusicPlayService extends Service implements
         }
     }
 
+
+    public boolean isPlayOffline() {
+        return isPlayOffline;
+    }
+
+
     private void releaseMediaPlayer() {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
@@ -659,8 +731,7 @@ public class MusicPlayService extends Service implements
     }
 
     private boolean enableModePlayOffline(Intent intent) {
-        if (intent.hasExtra(Extras.KEY_MODE_PLAY)) {
-
+        if (intent.hasExtra(Extras.KEY_MODE_OFFLINE)) {
             return true;
         }
         return false;
@@ -672,6 +743,51 @@ public class MusicPlayService extends Service implements
 
     public void setListOffline(ArrayList<MusicOffline> mListOffline) {
         this.mListOffline = mListOffline;
+    }
+
+
+    private void refreshData(int position) {
+        if (position < 0) {
+            position = getListOffline().size() - 1;
+        } else if (position >= getListOffline().size()) {
+            position = 0;
+        }
+        MusicOffline offline = mListOffline.get(position);
+        Song newSong = new Song();
+        newSong.setMusicId(String.valueOf(offline.getId()));
+        newSong.setMusicTitle(offline.getTitle());
+        newSong.setMusicArtist(offline.getArtist());
+        newSong.setMusicImg(offline.getCoverUri());
+        Lyric lyric = new Lyric();
+        lyric.setMusicTitle(offline.getTitle());
+        lyric.setMusicArtist(offline.getArtist());
+        lyric.setMusicImage(offline.getCoverUri());
+        mCurrentSongPlay = new CurrentSongPlay();
+        mCurrentSongPlay.song = newSong;
+        mCurrentSongPlay.lyric = lyric;
+        mCurrentSongPlay.musicId = String.valueOf(offline.getId());
+        currentId = (int) offline.getId();
+    }
+
+    private void getDataIntent(Intent intent, boolean isPlayOffline) {
+        if (isPlayOffline) {
+            MusicOffline offline = mListOffline.get(indexOfList);
+            Song newSong = new Song();
+            newSong.setMusicId(String.valueOf(offline.getId()));
+            newSong.setMusicTitle(offline.getTitle());
+            newSong.setMusicArtist(offline.getArtist());
+            newSong.setMusicImg(offline.getCoverUri());
+            Lyric lyric = new Lyric();
+            lyric.setMusicTitle(offline.getTitle());
+            lyric.setMusicArtist(offline.getArtist());
+            lyric.setMusicImage(offline.getCoverUri());
+            mCurrentSongPlay = new CurrentSongPlay();
+            mCurrentSongPlay.song = newSong;
+            mCurrentSongPlay.lyric = lyric;
+            mCurrentSongPlay.musicId = String.valueOf(offline.getId());
+        } else {
+            mCurrentSongPlay = intent.getExtras().getParcelable(Extras.KEY_PASS_DATA_SERVICE);
+        }
     }
 
     @Override

@@ -14,11 +14,9 @@ public class Actions {
     public static final String ACTION_STOP = "com.tadev.musicplayer.action.ACTION_STOP";
     public static final String ACTION_MEDIA_PLAY = "android.intent.action.MEDIA_BUTTON";
     public static final String ACTION_UPDATE = "com.tadev.musicplayer.action.ACTION_UPDATE";
-
-
     public static final String ACTION_PLAY_PAUSE = "com.tadev.musicplayer.ACTION_PLAY_PAUSE";
-
     public static final String ACTION_PLAYPAUSE_NOTIFICATION = "com.tadev.musicplayer.ACTION_PLAYPAUSE_NOTIFICATION";
+    public static final String ACTION_UPDATE_MAIN_MUSIC = "com.tadev.musicplayer.action.ACTION_UPDATE_MAIN_MUSIC";
 
 
 }

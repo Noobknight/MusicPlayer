@@ -33,9 +33,12 @@ import com.tadev.musicplayer.fragments.VideoContainerFragment;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
 import com.tadev.musicplayer.interfaces.OnBackFragmentListener;
 import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
+import com.tadev.musicplayer.models.MusicOffline;
 import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.utils.design.statusbar.StatusBarCompat;
+
+import java.util.ArrayList;
 
 public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         , IServicePlayer, OnBackFragmentListener, OnPlayBarBottomListener,
@@ -55,6 +58,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     private Handler handler;
     private LocalBroadcastManager localBroadcastManager;
     private boolean isBound;
+    private ArrayList<MusicOffline> mListOffline;
 
 
     @Override
@@ -278,6 +282,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     public void onDownloadRegister(Intent intent) {
         startService(intent);
     }
+
 
     private ServiceConnection mPlayServiceConnection = new ServiceConnection() {
         @Override

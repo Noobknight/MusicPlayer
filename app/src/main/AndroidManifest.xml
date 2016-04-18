@@ -61,6 +61,14 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".receivers.MainMusicPlayReceiver">
+            <intent-filter>
+                <action android:name="com.tadev.musicplayer.action.ACTION_UPDATE_MAIN_MUSIC"/>
+                <action android:name="com.tadev.musicplayer.UPDATE_MUSIC_PLAYBAR"/>
+                <action android:name="com.tadev.musicplayer.action.ACTION_PLAY"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

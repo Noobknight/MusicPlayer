@@ -43,6 +43,8 @@
 
     <string name="action_pause">pause</string>
     <string name="action_play_pause">play_pause</string>
+    <string name="action_next">action_next</string>
+    <string name="action_previous">action_previous</string>
 
     <string name="action_download_comfirm">Chọn</string>
     <string name="action_download_close">x</string>
