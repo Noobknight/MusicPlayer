@@ -3,6 +3,7 @@ package com.tadev.musicplayer.abstracts;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -43,6 +44,7 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
     protected MusicPlayerApplication application;
     protected BaseMenuActivity baseMenuActivity;
     protected OnPlayBarBottomListener mOnPlayBarBottomListener;
+    private int flexibleSpaceImageHeight;
 
 
     @Override
@@ -62,7 +64,10 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(false);
         headerView = LayoutInflater.from(getActivity()).inflate(R.layout.recycler_header, null);
-        final int flexibleSpaceImageHeight = Utils.getDimensRes(context, R.dimen.parallax_image_height);
+        flexibleSpaceImageHeight = Utils.getDimensRes(context, R.dimen.parallax_image_height);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            flexibleSpaceImageHeight += getStatusBarHeight();
+        }
         mParallaxImageHeight = Utils.getDimensRes(context, R.dimen.parallax_image_height_opacity);
         headerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, flexibleSpaceImageHeight));
         imageHeader = (MaterialImageHeader) headerView.findViewById(R.id.imageHeader);
@@ -154,7 +159,7 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
 
     @Override
     protected void updateFlexibleSpace(int scrollY, View view) {
-        int baseColor = Utils.getColorRes(getActivity(), R.color.colorPrimary);
+        int baseColor = Utils.getColorRes(R.color.colorPrimary);
         String colorPrimary = "#" + Integer.toHexString(baseColor).replace("ff", "").toUpperCase();
 
         float scrollYAlpha = Math.min(1, (float) scrollY / mParallaxImageHeight);
@@ -176,7 +181,7 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
             } else {
                 toolbar.setTitle("");
                 mViewOpacity.setBackgroundColor(hexColorTranspanrent);
-                toolbar.setBackgroundColor(Utils.getColorRes(getActivity(), android.R.color.transparent));
+                toolbar.setBackgroundColor(Utils.getColorRes(android.R.color.transparent));
             }
         }
 
@@ -240,5 +245,13 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
 
     protected abstract String setTitle();
 
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
 
 }

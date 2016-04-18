@@ -22,5 +22,7 @@
 
     <dimen name="card_corner_radius">7dp</dimen>
     <dimen name="card_elevation">10dp</dimen>
+
+    <dimen name="padding_sliding_tab">7dp</dimen>
     
 </resources>

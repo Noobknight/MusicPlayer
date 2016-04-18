@@ -17,4 +17,7 @@ public class Constants {
 
     public static final String HD_1080 = "1080";
 
+    public static final int TYPE_TTTLE_MUSIC = 0;
+    public static final int TYPE_TTTLE_VIDEO = 1;
+
 }

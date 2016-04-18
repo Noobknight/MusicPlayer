@@ -33,6 +33,7 @@ import com.tadev.musicplayer.constant.Extras;
 import com.tadev.musicplayer.helpers.NotificationHelper;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
 import com.tadev.musicplayer.metadata.MusicContainer;
+import com.tadev.musicplayer.models.MusicOffline;
 import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.receivers.RemoteControlReceiver;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
@@ -41,6 +42,7 @@ import com.tadev.musicplayer.utils.design.support.StringUtils;
 import com.tadev.musicplayer.utils.design.support.Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Iris Louis on 01/04/2016.
@@ -48,9 +50,7 @@ import java.io.IOException;
 public class MusicPlayService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener {
     private final String TAG = "MusicPlayService";
-    private static final int NOTIFICATION_ID = 0x111;
     public static final String BUFFER_UPDATE = "com.tadev.musicplayer.action.ACTION_UPDATE";
-
     private boolean isPause = false;
     private MediaPlayer mMediaPlayer;
     private boolean hasDataSource = false;
@@ -71,6 +71,8 @@ public class MusicPlayService extends Service implements
     private AudioManager mAudioManager;
     private int mServiceStartId = -1;
     private int mPlayingPosition = 0;
+    private ArrayList<MusicOffline> mListOffline;
+    public int playingAtPosition;
 
     @Override
     public void onCreate() {
@@ -299,6 +301,7 @@ public class MusicPlayService extends Service implements
                 .setLargeIcon(btmArtWork)
                 .setWhen(mNotificationPostTime)
                 .setContentIntent(clickIntent)
+                .setColor(Utils.getColorRes(R.color.colorPrimary))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         builder.addAction(stateButton, StringUtils.getStringRes(R.string.action_play_pause),
                 NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
@@ -406,6 +409,31 @@ public class MusicPlayService extends Service implements
                 mListener.onPublish(msec);
             }
         }
+    }
+
+
+    public int play(int position) {
+        if (mListOffline == null) {
+            return -1;
+        }
+        if (position < 0) {
+            position = mListOffline.size() - 1;
+        } else if (position >= mListOffline.size()) {
+            position = 0;
+        }
+        playingAtPosition = position;
+        try {
+            mMediaPlayer.reset();
+            mMediaPlayer.setDataSource(mListOffline.get(position).getUri());
+            mMediaPlayer.prepare();
+            start();
+            if (mListener != null) {
+                mListener.onChange((int) mListOffline.get(position).getId());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mPlayingPosition;
     }
 
     public boolean isPaused() {
@@ -516,6 +544,7 @@ public class MusicPlayService extends Service implements
 
     private void handleCommandIntent(Intent intent) {
         if (intent != null) {
+            boolean isPlayOffline = enableModePlayOffline(intent);
             boolean isCurrentId = false;
             String action = intent.getAction();
             switch (action) {
@@ -595,7 +624,7 @@ public class MusicPlayService extends Service implements
         }
     }
 
-    private void updateStateButtonNotification(){
+    private void updateStateButtonNotification() {
         mNotificationManager.cancel(hashCode());
         mNotificationPostTime = 0;
         createNotification();
@@ -629,6 +658,21 @@ public class MusicPlayService extends Service implements
 //        unregisterReceiver(mReceiver);
     }
 
+    private boolean enableModePlayOffline(Intent intent) {
+        if (intent.hasExtra(Extras.KEY_MODE_PLAY)) {
+
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<MusicOffline> getListOffline() {
+        return mListOffline;
+    }
+
+    public void setListOffline(ArrayList<MusicOffline> mListOffline) {
+        this.mListOffline = mListOffline;
+    }
 
     @Override
     public boolean onUnbind(Intent intent) {

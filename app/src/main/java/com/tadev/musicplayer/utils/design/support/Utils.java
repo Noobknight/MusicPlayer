@@ -18,9 +18,14 @@ import java.text.DecimalFormat;
  * Created by Iris Louis on 25/03/2016.
  */
 public class Utils {
+    private static Context sContext;
 
-    public static int getColorRes(Context context, int colorId) {
-        return ContextCompat.getColor(context, colorId);
+    public static void init(Context context) {
+        sContext = context.getApplicationContext();
+    }
+
+    public static int getColorRes(int colorId) {
+        return ContextCompat.getColor(sContext, colorId);
     }
 
     public static int getDimensRes(Context context, int dimens) {
@@ -48,16 +53,40 @@ public class Utils {
         view.startAnimation(slideAnim);
     }
 
-    public static String getTitleVN(Context context) {
-        return context.getResources().getString(R.string.category_vietnam);
+    public static String getTitleVN(Context context, int typeTitle) {
+        switch (typeTitle) {
+            case Constants.TYPE_TTTLE_MUSIC:
+                return context.getResources().getString(R.string.category_vietnam);
+            case Constants.TYPE_TTTLE_VIDEO:
+                return context.getResources()
+                        .getString(R.string.category_vietnam).replace("Nhạc", "Video");
+            default:
+                return null;
+        }
     }
 
-    public static String getTitleKorea(Context context) {
-        return context.getResources().getString(R.string.category_korea);
+    public static String getTitleKorea(Context context, int typeTitle) {
+        switch (typeTitle) {
+            case Constants.TYPE_TTTLE_MUSIC:
+                return context.getResources().getString(R.string.category_korea);
+            case Constants.TYPE_TTTLE_VIDEO:
+                return context.getResources()
+                        .getString(R.string.category_korea).replace("Nhạc", "Video");
+            default:
+                return null;
+        }
     }
 
-    public static String getTitleUS(Context context) {
-        return context.getResources().getString(R.string.category_us_uk);
+    public static String getTitleUS(Context context, int typeTitle) {
+        switch (typeTitle) {
+            case Constants.TYPE_TTTLE_MUSIC:
+                return context.getResources().getString(R.string.category_us_uk);
+            case Constants.TYPE_TTTLE_VIDEO:
+                return context.getResources()
+                        .getString(R.string.category_us_uk).replace("Nhạc", "Video");
+            default:
+                return null;
+        }
     }
 
 
@@ -74,6 +103,19 @@ public class Utils {
                 .append(String.format("%02d", seconds));
 //        buf.append(String.format("%02d", minutes)).append(":")
 //                .append(String.format("%02d", seconds));
+
+        return buf.toString();
+    }
+
+    public static String getTimeDuration(long millis) {
+        StringBuffer buf = new StringBuffer();
+
+        // int hours = (int) (millis / (1000 * 60 * 60));
+        int minutes = (int) ((millis % (1000 * 60 * 60)) / (1000 * 60));
+        int seconds = (int) (((millis % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
+
+        buf.append(String.format("%02d", minutes)).append(":")
+                .append(String.format("%02d", seconds));
 
         return buf.toString();
     }
@@ -114,6 +156,27 @@ public class Utils {
         final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat(" #,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+    }
+
+    public static void NavigationAnimation(View view, int animId) {
+        Animation slideAnim = AnimationUtils.loadAnimation(sContext, R.anim.slide_out_bottom);
+        slideAnim.setFillAfter(true);
+        slideAnim.setAnimationListener(new Animation.AnimationListener() {
+            public void onAnimationStart(Animation paramAnimation) {
+            }
+
+            public void onAnimationRepeat(Animation paramAnimation) {
+            }
+
+            public void onAnimationEnd(Animation paramAnimation) {
+                ((Activity) sContext).finish();
+                // if you call NavUtils.navigateUpFromSameTask(activity); instead,
+                // the screen will flicker once after the animation. Since FrontActivity is
+                // in front of BackActivity, calling finish() should give the same result.
+                ((Activity) sContext).overridePendingTransition(0, 0);
+            }
+        });
+        view.startAnimation(slideAnim);
     }
 
 }

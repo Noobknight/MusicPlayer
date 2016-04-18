@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.tadev.musicplayer.MainActivity;
 import com.tadev.musicplayer.MusicPlayerApplication;
+import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
 
 /**
  * Created by Iris Louis on 01/04/2016.
@@ -21,11 +22,13 @@ public abstract class BaseFragment extends Fragment {
     protected BaseMenuActivity baseMenuActivity;
     protected MainActivity mActivityMain;
     protected MusicPlayerApplication application;
+    protected OnPlayBarBottomListener mOnPlayBarBottomListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG(), "onCreate ");
+        getSaveInstanceState(savedInstanceState);
         application = ((MusicPlayerApplication.getInstance()));
     }
 
@@ -45,12 +48,14 @@ public abstract class BaseFragment extends Fragment {
         initViewData();
     }
 
+
     @Override
     public void onAttach(Context context) {
         AppCompatActivity activity;
         if (context instanceof AppCompatActivity) {
             activity = (AppCompatActivity) context;
             baseMenuActivity = (BaseMenuActivity) activity;
+            mOnPlayBarBottomListener = (OnPlayBarBottomListener) activity;
             mActivityMain = (MainActivity) activity;
         }
         super.onAttach(context);
@@ -68,5 +73,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected void getDataCallBack() {
     }
+
+    protected void getSaveInstanceState(Bundle savedInstanceState){}
 
 }

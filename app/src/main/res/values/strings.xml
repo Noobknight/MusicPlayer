@@ -8,6 +8,8 @@
 
     <string name="video_rate">HD 1080p</string>
 
+    <string name="drawer_header_of_me">Của Tôi</string>
+    <string name="drawer_favorite">Yêu Thích</string>
 
     <string name="drawer_header_music">Thể Loại</string>
     <string name="drawer_vietnam_music">Việt Nam</string>
@@ -16,6 +18,7 @@
     <string name="drawer_china_music">Trung Quốc</string>
     <string name="drawer_artist">Nghệ Sĩ</string>
     <string name="drawer_rankings">Bảng Xếp Hạng</string>
+    <string name="drawer_offline">Nhạc Offline</string>
     <string name="drawer_settings">Cài Đặt</string>
     <string name="drawer_video">Video</string>
     <string name="no_data_available">Không có dữ liệu</string>
@@ -35,6 +38,8 @@
 
     <string name="msg_lyric_artist">Nghệ Sĩ : </string>
     <string name="msg_lyric_year">Năm phát hành : </string>
+
+    <string name="msg_composer">Sáng tác : </string>
 
     <string name="action_pause">pause</string>
     <string name="action_play_pause">play_pause</string>
@@ -61,5 +66,12 @@
     <dimen name="md_styled_text_description">18sp</dimen>
     <dimen name="md_styled_dialog_header">120dp</dimen>
     <dimen name="md_styled_pic_size">44dp</dimen>
+
+    <string name="delete_selected">Xóa Mục Đã Chọn</string>
+    <string name="favorite_delete">Xóa</string>
+    <string name="category_favorite">Yêu Thích</string>
+    <string name="category_music_offline">Nhạc Của Bạn</string>
+
+    <string name="unknown">Unknow</string>
 
 </resources>

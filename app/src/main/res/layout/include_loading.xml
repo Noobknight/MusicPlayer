@@ -12,7 +12,8 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <include layout="@layout/include_progress_bar" />
+        <include
+            layout="@layout/include_progress_bar" />
 
         <TextView
             android:id="@+id/tv_loading_text"

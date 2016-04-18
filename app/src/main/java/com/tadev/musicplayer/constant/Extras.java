@@ -17,4 +17,6 @@ public class Extras {
     public static final int TYPE_GET_NORMAL = 0;
     public static final int TYPE_GET_MORE = 1;
 
+    public static final String KEY_MODE_PLAY = "online_offline";
+
 }

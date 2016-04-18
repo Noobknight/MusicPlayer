@@ -8,7 +8,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.WindowManager;
 
 import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.R;
@@ -27,12 +26,18 @@ public abstract class BaseMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(layoutById());
         Log.i(TAG(), "onCreate ");
+        setTranslucentStatusBar();
         mFragmentManager = getSupportFragmentManager();
         application = MusicPlayerApplication.getInstance();
         setTitle("");
         initToolbar();
         initView(savedInstanceState);
         setEvents();
+    }
+
+
+    protected void setTranslucentStatusBar() {
+
     }
 
     protected abstract int layoutById();
@@ -53,10 +58,8 @@ public abstract class BaseMenuActivity extends AppCompatActivity {
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setHomeButtonEnabled(true);
         }
-        if(Build.VERSION.SDK_INT >= 21){
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            toolbar.setPadding(0,getStatusBarHeight(),0,0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
         }
     }
 
@@ -69,7 +72,7 @@ public abstract class BaseMenuActivity extends AppCompatActivity {
         return toolbar;
     }
 
-    protected MusicPlayerApplication getMusicPlayerApplication(){
+    protected MusicPlayerApplication getMusicPlayerApplication() {
         return application;
     }
 
@@ -78,8 +81,8 @@ public abstract class BaseMenuActivity extends AppCompatActivity {
 
     public int getStatusBarHeight() {
         int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height","dimen","android");
-        if(resourceId>0){
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;

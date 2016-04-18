@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:checkableBehavior="single">
+
         <item android:title="@string/drawer_header_music">
             <menu>
                 <group android:checkableBehavior="single">
@@ -25,8 +27,6 @@
             android:id="@+id/music_video"
             android:icon="@drawable/ic_music_video_black_24dp"
             android:title="@string/drawer_video" />
-
-
         <item
             android:id="@+id/music_artist"
             android:icon="@drawable/icon_artist"
@@ -36,10 +36,31 @@
             android:icon="@drawable/icon_rankings"
             android:title="@string/drawer_rankings" />
 
-        <item
-            android:id="@+id/music_setting"
-            android:icon="@drawable/icon_settings"
-            android:title="@string/drawer_settings" />
+        <item android:title="@string/drawer_header_of_me">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/music_favorite"
+                        android:icon="@drawable/ic_stars_black_24dp"
+                        android:title="@string/drawer_favorite"
+                        app:actionLayout="@layout/include_menu_counter" />
+
+                    <item
+                        android:id="@+id/music_offline"
+                        android:icon="@drawable/ic_library_music_black_24dp"
+                        android:title="@string/drawer_offline" />
+
+                    <item
+                        android:id="@+id/music_setting"
+                        android:icon="@drawable/icon_settings"
+                        android:title="@string/drawer_settings" />
+
+                </group>
+            </menu>
+
+        </item>
+
+
     </group>
 
 </menu>

@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.tadev.musicplayer.common.Api;
-import com.tadev.musicplayer.ui.activities.fragments.VideoFragment;
+import com.tadev.musicplayer.fragments.VideoFragment;
 
 /**
  * Created by Iris Louis on 13/04/2016.

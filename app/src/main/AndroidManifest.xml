@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
 
     <application
@@ -13,7 +15,8 @@
         android:fullBackupContent="@xml/mybackupscheme"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
+        android:screenOrientation="portrait"
+        android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -22,19 +25,28 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activities.VideoPlayingActivity"
+            android:configChanges="screenLayout|screenSize|orientation" />
+        <activity
+            android:name=".activities.VideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+
         <service android:name=".services.MusicPlayService">
 
             <!--<intent-filter>-->
-                <!--<action android:name="com.tadev.musicmMediaPlayer.action.PLAY" />-->
-                <!--<action android:name="com.tadev.musicmMediaPlayer.action.PAUSE" />-->
-                <!--<action android:name="com.tadev.musicmMediaPlayer.action.PLAY_PAUSE" />-->
-                <!--<action android:name="com.tadev.musicmMediaPlayer.action.PLAY_BAR" />-->
+            <!--<action android:name="com.tadev.musicmMediaPlayer.action.PLAY" />-->
+            <!--<action android:name="com.tadev.musicmMediaPlayer.action.PAUSE" />-->
+            <!--<action android:name="com.tadev.musicmMediaPlayer.action.PLAY_PAUSE" />-->
+            <!--<action android:name="com.tadev.musicmMediaPlayer.action.PLAY_BAR" />-->
             <!--</intent-filter>-->
         </service>
 
-        <service android:name=".services.DownloaderService"/>
+        <service android:name=".services.DownloaderService" />
 
-        <receiver android:name=".receivers.UpdateSeekbarReceiver">
+        <receiver
+            android:name=".receivers.UpdateSeekbarReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tadev.musicplayer.action.ACTION_UPDATE" />
                 <action android:name="com.tadev.musicplayer.UPDATE_MUSIC_PLAYBAR" />

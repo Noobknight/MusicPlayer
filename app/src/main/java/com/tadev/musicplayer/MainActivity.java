@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
@@ -16,21 +17,25 @@ import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tadev.musicplayer.abstracts.BaseMenuActivity;
 import com.tadev.musicplayer.callbacks.OnRegisterCallback;
+import com.tadev.musicplayer.fragments.FavoriteFragment;
+import com.tadev.musicplayer.fragments.MainMusicPlayFragment;
+import com.tadev.musicplayer.fragments.MusicKoreaFragment;
+import com.tadev.musicplayer.fragments.MusicOfflineFragment;
+import com.tadev.musicplayer.fragments.MusicUsUkFragment;
+import com.tadev.musicplayer.fragments.MusicVietNamFragment;
+import com.tadev.musicplayer.fragments.PlayBarBottomFragment;
+import com.tadev.musicplayer.fragments.VideoContainerFragment;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
+import com.tadev.musicplayer.interfaces.OnBackFragmentListener;
 import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
 import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.services.MusicPlayService;
-import com.tadev.musicplayer.ui.activities.fragments.MainMusicPlayFragment;
-import com.tadev.musicplayer.ui.activities.fragments.MainMusicPlayFragment.OnBackFragmentListener;
-import com.tadev.musicplayer.ui.activities.fragments.MusicKoreaFragment;
-import com.tadev.musicplayer.ui.activities.fragments.MusicUsUkFragment;
-import com.tadev.musicplayer.ui.activities.fragments.MusicVietNamFragment;
-import com.tadev.musicplayer.ui.activities.fragments.PlayBarBottomFragment;
-import com.tadev.musicplayer.ui.activities.fragments.VideoContainerFragment;
+import com.tadev.musicplayer.utils.design.statusbar.StatusBarCompat;
 
 public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         , IServicePlayer, OnBackFragmentListener, OnPlayBarBottomListener,
@@ -91,7 +96,9 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
                     @Override
                     public void onDrawerOpened(View drawerView) {
+                        setMenuCounter(R.id.music_favorite, application.getDatabaseFavorite().getCountDB());
                         super.onDrawerOpened(drawerView);
+
                     }
                 }
 
@@ -132,6 +139,11 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     }
 
 
+    private void setMenuCounter(@IdRes int itemId, int count) {
+        TextView view = (TextView) mNavigationView.getMenu().findItem(itemId).getActionView();
+        view.setText(count > 0 ? String.valueOf(count) : null);
+    }
+
     private void selectItem(int itemIds) {
         int navItemId = itemIds;
 
@@ -166,6 +178,15 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
                 break;
             case R.id.music_ranking:
                 Toast.makeText(MainActivity.this, "Music Rankings", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.music_favorite:
+                transaction.replace(R.id.container, FavoriteFragment.newInstance(),
+                        FavoriteFragment.TAG)
+                        .addToBackStack(FavoriteFragment.TAG);
+                break;
+            case R.id.music_offline:
+                transaction.replace(R.id.container, MusicOfflineFragment.newInstance(),
+                        FavoriteFragment.TAG);
                 break;
             case R.id.music_setting:
                 Toast.makeText(MainActivity.this, "Music Settings", Toast.LENGTH_SHORT).show();
@@ -216,6 +237,13 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 //        } else {
 //            super.onBackPressed();
 //        }
+    }
+
+
+    @Override
+    protected void setTranslucentStatusBar() {
+        super.setTranslucentStatusBar();
+        StatusBarCompat.translucentStatusBar(MainActivity.this);
     }
 
     @Override

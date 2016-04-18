@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tadev.musicplayer.models.music.Lyric;
 import com.tadev.musicplayer.models.music.Song;
-import com.tadev.musicplayer.ui.activities.fragments.MusicLyricFragment;
-import com.tadev.musicplayer.ui.activities.fragments.MusicPlayingFragment;
+import com.tadev.musicplayer.fragments.MusicLyricFragment;
+import com.tadev.musicplayer.fragments.MusicPlayingFragment;
 
 /**
  * Created by Iris Louis on 01/04/2016.
