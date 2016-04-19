@@ -32,6 +32,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.constant.Extras;
+import com.tadev.musicplayer.constant.MusicTypeEnum;
 import com.tadev.musicplayer.helpers.NotificationHelper;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
 import com.tadev.musicplayer.metadata.MusicContainer;
@@ -264,6 +265,10 @@ public class MusicPlayService extends Service implements
         return currentId;
     }
 
+    public void setCurrentId(int currentId) {
+        this.currentId = currentId;
+    }
+
 
     private void primaryUpdateSeekBar() {
         final int progress = (int) ((((float) position() / duration()) * 100));
@@ -310,6 +315,7 @@ public class MusicPlayService extends Service implements
                 .setContentIntent(clickIntent)
                 .setColor(Utils.getColorRes(R.color.colorPrimary))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        isPlayOffline = mCurrentSongPlay.song.getType() == MusicTypeEnum.LOCAL;
         if (isPlayOffline) {
             builder.addAction(R.drawable.ic_previous, StringUtils.getStringRes(R.string.action_previous),
                     NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
@@ -690,7 +696,6 @@ public class MusicPlayService extends Service implements
     }
 
     private void updateStateButtonNotification() {
-        Log.i(TAG, "updateStateButtonNotification " + isPlayOffline);
         mNotificationManager.cancel(hashCode());
         mNotificationPostTime = 0;
         createNotification();
@@ -746,7 +751,7 @@ public class MusicPlayService extends Service implements
     }
 
 
-    private void refreshData(int position) {
+    private CurrentSongPlay refreshData(int position) {
         if (position < 0) {
             position = getListOffline().size() - 1;
         } else if (position >= getListOffline().size()) {
@@ -754,6 +759,7 @@ public class MusicPlayService extends Service implements
         }
         MusicOffline offline = mListOffline.get(position);
         Song newSong = new Song();
+        newSong.setType(MusicTypeEnum.LOCAL);
         newSong.setMusicId(String.valueOf(offline.getId()));
         newSong.setMusicTitle(offline.getTitle());
         newSong.setMusicArtist(offline.getArtist());
@@ -767,12 +773,14 @@ public class MusicPlayService extends Service implements
         mCurrentSongPlay.lyric = lyric;
         mCurrentSongPlay.musicId = String.valueOf(offline.getId());
         currentId = (int) offline.getId();
+        return mCurrentSongPlay;
     }
 
     private void getDataIntent(Intent intent, boolean isPlayOffline) {
-        if (isPlayOffline) {
+        if (isPlayOffline && mListOffline != null) {
             MusicOffline offline = mListOffline.get(indexOfList);
             Song newSong = new Song();
+            newSong.setType(MusicTypeEnum.LOCAL);
             newSong.setMusicId(String.valueOf(offline.getId()));
             newSong.setMusicTitle(offline.getTitle());
             newSong.setMusicArtist(offline.getArtist());

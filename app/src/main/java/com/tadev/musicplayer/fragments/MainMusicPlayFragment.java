@@ -19,7 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -27,6 +28,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.abstracts.BaseFragment;
 import com.tadev.musicplayer.adapters.ViewPagerApdater;
+import com.tadev.musicplayer.constant.MusicTypeEnum;
 import com.tadev.musicplayer.interfaces.OnBackFragmentListener;
 import com.tadev.musicplayer.interfaces.OnMusicInfoLoadListener;
 import com.tadev.musicplayer.models.BaseModel;
@@ -41,6 +43,7 @@ import com.tadev.musicplayer.services.loaders.MusicInfoLoaderTask;
 import com.tadev.musicplayer.utils.design.SwipeViewPager;
 import com.tadev.musicplayer.utils.design.actions.Actions;
 import com.tadev.musicplayer.utils.design.blurry.BlurImageUtils;
+import com.tadev.musicplayer.utils.design.support.Utils;
 import com.tadev.musicplayer.utils.design.viewpager.CircleIndicator;
 
 /**
@@ -63,6 +66,9 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     private boolean isStartFromBottom;
     private Music music;
     private LocalBroadcastManager localBroadcastManager;
+    private boolean isFavorite;
+    private TextView txtEmptyData;
+    private RelativeLayout rlContent;
 
     @Override
     public void onSwipeOutAtEnd() {
@@ -130,6 +136,8 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
         mCircleIndicator = (CircleIndicator) view.findViewById(R.id.circleIndicator);
         imgBackground = (ImageView) view.findViewById(R.id.fragment_main_music_play_imgBackground);
         frameViewPager = (FrameLayout) view.findViewById(R.id.frameViewPager);
+        txtEmptyData = (TextView) view.findViewById(R.id.txtEmptyData);
+        rlContent = (RelativeLayout) view.findViewById(R.id.rlContent);
         mViewPager.setOnSwipeOutListener(this);
         initToolbar();
     }
@@ -268,6 +276,12 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_playing_menu, menu);
+        isFavorite = dbFavoriteManager.isFavorite(modelMusic.getMusic_id());
+        if (isFavorite) {
+            menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_favorite_red_a700_24dp);
+        } else {
+            menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_favorite_border_red_700_24dp);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -284,37 +298,43 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     @Override
     public void onTaskLoadCompleted(final Music musicReponse) {
         dialogLoading.dismiss();
-        music = musicReponse;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                imgBackground.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        boolean isImageEmpty = musicReponse.getMusicImg() == null
-                                || musicReponse.getMusicImg().isEmpty();
-                        if (isImageEmpty) {
-                            Glide.with(context).load(R.drawable.ic_background_blur).asBitmap()
-                                    .into(target);
-                        } else {
-                            Glide.with(context.getApplicationContext()).load(musicReponse.getMusicImg())
-                                    .asBitmap().into(target);
+        if (musicReponse != null) {
+            music = musicReponse;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    imgBackground.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean isImageEmpty = musicReponse.getMusicImg() == null
+                                    || musicReponse.getMusicImg().isEmpty();
+                            if (isImageEmpty) {
+                                Glide.with(context).load(R.drawable.ic_background_blur).asBitmap()
+                                        .into(target);
+                            } else {
+                                Glide.with(context.getApplicationContext()).load(musicReponse.getMusicImg())
+                                        .asBitmap().into(target);
+                            }
                         }
-                    }
-                });
-            }
-        }).start();
-        mAdapter = new ViewPagerApdater(getChildFragmentManager(), initSongData
-                (musicReponse),
-                initLyricData(musicReponse));
-        mViewPager.setAdapter(mAdapter);
-        mCircleIndicator.setViewPager(mViewPager);
+                    });
+                }
+            }).start();
+            mAdapter = new ViewPagerApdater(getChildFragmentManager(), initSongData
+                    (musicReponse),
+                    initLyricData(musicReponse));
+            mViewPager.setAdapter(mAdapter);
+            mCircleIndicator.setViewPager(mViewPager);
+        } else {
+            toolbar.setBackgroundColor(Utils.getColorRes(R.color.colorPrimary));
+            txtEmptyData.setVisibility(View.VISIBLE);
+            rlContent.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onTaskLoadFailed(Exception e) {
         dialogLoading.dismiss();
-        Toast.makeText(context, "Load failed !!!", Toast.LENGTH_SHORT).show();
+        e.printStackTrace();
     }
 
     @Override
@@ -326,6 +346,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     private Song initSongData(Music music) {
         if (music != null && !isCurrentSongPlay()) {
             Song song = new Song();
+            song.setType(MusicTypeEnum.ONLINE);
             song.setMusicId(music.getMusicId());
             song.setMusicTitleUrl(music.getMusicTitleUrl());
             song.setMusicTitle(music.getMusicTitle());
@@ -412,15 +433,20 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_favorite:
-                if (buildFavorte() != null) {
-                    application.getDatabaseFavorite().insertFavorite(buildFavorte());
+                if (isFavorite && dbFavoriteManager.isDeleteSucess(modelMusic.getMusic_id())) {
+                    item.setIcon(R.drawable.ic_favorite_border_red_700_24dp);
+                } else {
+                    if (buildFavorite() != null) {
+                        dbFavoriteManager.insertFavorite(buildFavorite());
+                        item.setIcon(R.drawable.ic_favorite_red_a700_24dp);
+                    }
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private SongFavorite buildFavorte() {
+    private SongFavorite buildFavorite() {
         if (music != null) {
             return new SongFavorite(music.getMusicArtist(),
                     music.getMusicId(), music.getMusicImg(),
@@ -431,7 +457,12 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
 
     @Override
     public void onPause() {
-        localBroadcastManager.unregisterReceiver(eventCallBack);
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        localBroadcastManager.unregisterReceiver(eventCallBack);
+        super.onDestroy();
     }
 }

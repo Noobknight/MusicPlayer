@@ -4,17 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--<include-->
-        <!--android:id="@+id/fragment_video_list_loading"-->
-        <!--layout="@layout/include_loading"-->
-        <!--android:visibility="visible" />-->
+    <include
+        android:id="@+id/fragment_video_list_loading"
+        layout="@layout/include_loading"
+        android:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragment_video_list_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/empty_view"

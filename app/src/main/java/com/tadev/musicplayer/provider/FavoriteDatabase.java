@@ -212,12 +212,10 @@ public class FavoriteDatabase extends FavoriteDAO {
         String query = "SELECT * FROM " + DatabaseConstant.DBConsFavorite.TB_FAVORITE_MUSIC + " " +
                 "where id_music = \"" + id_story + "\"";
         Cursor cursor = mDatabaseFavorite.rawQuery(query, null);
-        if (cursor.getCount() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return cursor.getCount() > 0;
     }
+
+
 
     @Override
     public int getCountDB() {
@@ -239,5 +237,6 @@ public class FavoriteDatabase extends FavoriteDAO {
     public SQLiteDatabase getWritetableDB() {
         return mDatabaseFavorite;
     }
+
 
 }

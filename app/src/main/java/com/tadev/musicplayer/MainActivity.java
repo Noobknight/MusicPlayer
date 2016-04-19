@@ -369,6 +369,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Override
     public void onChange(int musicId) {
+        mService.setCurrentId(musicId);
     }
 
     @Override
@@ -378,6 +379,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Override
     public void currentSongPlay(CurrentSongPlay currentSongPlay) {
+        Log.i(TAG, "currentSongPlay abc");
         sendMessage(currentSongPlay);
     }
 

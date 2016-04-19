@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.tadev.musicplayer.MainActivity;
 import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
+import com.tadev.musicplayer.provider.DBFavoriteManager;
 
 /**
  * Created by Iris Louis on 01/04/2016.
@@ -23,6 +24,7 @@ public abstract class BaseFragment extends Fragment {
     protected MainActivity mActivityMain;
     protected MusicPlayerApplication application;
     protected OnPlayBarBottomListener mOnPlayBarBottomListener;
+    protected DBFavoriteManager dbFavoriteManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public abstract class BaseFragment extends Fragment {
         Log.i(TAG(), "onCreate ");
         getSaveInstanceState(savedInstanceState);
         application = ((MusicPlayerApplication.getInstance()));
+        dbFavoriteManager = application.getDatabaseFavorite();
     }
 
     @Nullable

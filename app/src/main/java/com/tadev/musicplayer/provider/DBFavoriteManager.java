@@ -73,6 +73,10 @@ public class DBFavoriteManager {
         return mDatabase.isExistFavorite(item.getId());
     }
 
+    public boolean isFavorite(String id) {
+        return mDatabase.isExistFavorite(id);
+    }
+
 
     public boolean isDeleteSucess(String songId) {
         return mDatabase.deleteRowFarovite(songId);

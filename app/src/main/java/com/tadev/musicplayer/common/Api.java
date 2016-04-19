@@ -24,6 +24,8 @@ public class Api {
 
     public static final String KEY_CODE = "duc_wp_2014";
 
+    public static final String ERROR_MSG = "{\"error\"";
+
     public static String getApiMusicVietNam() {
         return Constants.BASE_URL_CATE_API + VIETNAM;
     }

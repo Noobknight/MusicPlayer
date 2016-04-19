@@ -75,5 +75,6 @@
     <string name="category_music_offline">Nhạc Của Bạn</string>
 
     <string name="unknown">Unknow</string>
+    <string name="cancel_dialog">Hủy Bỏ</string>
 
 </resources>

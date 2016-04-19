@@ -34,7 +34,7 @@ public class VideoFragment extends BaseFragment implements VideoLoaderTask.Video
         RecyclerItemClickListener.OnItemClickListener {
     private final String TAG = "VideoFragment";
     private RecyclerView mRecyclerView;
-    //    private View viewLoading;
+    private View viewLoading;
     private TextView txtEmptyData;
     private VideoLoadMore mVideoLoadMore;
     private List<Video> videos;
@@ -59,7 +59,7 @@ public class VideoFragment extends BaseFragment implements VideoLoaderTask.Video
     @Override
     protected void initView(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_video_list_recycler);
-//        viewLoading = view.findViewById(R.id.fragment_video_list_loading);
+        viewLoading = view.findViewById(R.id.fragment_video_list_loading);
         txtEmptyData = (TextView) view.findViewById(R.id.empty_view);
         mLinearLayoutManager = new LinearLayoutManager(context);
         if (videos == null) {
@@ -127,6 +127,8 @@ public class VideoFragment extends BaseFragment implements VideoLoaderTask.Video
             videos = resultCallback;
             mAdapter = new VideoAdapter(context, videos);
             mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            viewLoading.setVisibility(View.GONE);
         }
     }
 
@@ -180,7 +182,7 @@ public class VideoFragment extends BaseFragment implements VideoLoaderTask.Video
 
         @Override
         public void onLoadFailed(Exception e) {
-//            viewLoading.setVisibility(View.GONE);
+            viewLoading.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.GONE);
             txtEmptyData.setVisibility(View.VISIBLE);
         }
@@ -202,7 +204,8 @@ public class VideoFragment extends BaseFragment implements VideoLoaderTask.Video
 
         @Override
         public void onLoadCompleted(List<Video> videos) {
-//            viewLoading.setVisibility(View.GONE);
+            viewLoading.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
             updateResults(videos);
         }
     }

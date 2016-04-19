@@ -14,6 +14,7 @@ import com.tadev.musicplayer.abstracts.BaseFragment;
 import com.tadev.musicplayer.adapters.FavoriteAdapter;
 import com.tadev.musicplayer.interfaces.OnItemClickListener;
 import com.tadev.musicplayer.interfaces.RetrieveListener;
+import com.tadev.musicplayer.models.BaseModel;
 import com.tadev.musicplayer.models.SongFavorite;
 import com.tadev.musicplayer.provider.DBFavoriteManager;
 import com.tadev.musicplayer.utils.design.support.StringUtils;
@@ -106,6 +107,16 @@ public class FavoriteFragment extends BaseFragment implements RetrieveListener
     public void onItemClick(View view, int position) {
         switch (view.getId()) {
             case R.id.card_favorite:
+                BaseModel baseModel = new BaseModel();
+                baseModel.setMusic_title_url(mListFavorites.get(position).getUrlTitle());
+                baseModel.setMusic_id(mListFavorites.get(position).getId());
+                baseMenuActivity.transaction = baseMenuActivity.getSupportFragmentManager().beginTransaction();
+                baseMenuActivity.transaction.setCustomAnimations(R.anim.transition_fade_in, R.anim.transition_fade_out,
+                        R.anim.transition_fade_in, R.anim.transition_fade_out);
+                baseMenuActivity.transaction.replace(R.id.container, MainMusicPlayFragment.newInstance(baseModel))
+                        .addToBackStack(MainMusicPlayFragment.TAG);
+                baseMenuActivity.transaction.commit();
+                mActivityMain.getToolbar().setVisibility(View.INVISIBLE);
                 break;
             case R.id.item_favorite_btnFavorite:
                 if (dbFavoriteManager.isDeleteSucess(mListFavorites.get(position).getId())) {

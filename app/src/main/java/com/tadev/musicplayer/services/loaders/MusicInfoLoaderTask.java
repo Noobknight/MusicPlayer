@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.UnknownServiceException;
 
 /**
  * Created by Iris Louis on 01/04/2016.
@@ -34,7 +35,12 @@ public class MusicInfoLoaderTask extends AsyncTask<Void, Void, Music> {
         final String KEY_OBJECT = "music_info";
         try {
             JSONObject response = JsonUtils.getJsonResponse(Api.getURLFindInfo(idSong, urlTitle));
+            if (response.toString().startsWith(Api.ERROR_MSG)) {
+                mOnMusicInfoLoadListener.onTaskLoadFailed(new UnknownServiceException("File Not Found"));
+                return null;
+            }
             JSONObject objects = response.getJSONObject(KEY_OBJECT);
+
             return toMusicGson(objects.toString());
         } catch (IOException | JSONException e) {
             mOnMusicInfoLoadListener.onTaskLoadFailed(e);

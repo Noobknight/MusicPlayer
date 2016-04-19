@@ -19,6 +19,7 @@ import com.tadev.musicplayer.abstracts.BaseFragment;
 import com.tadev.musicplayer.callbacks.OnRegisterCallback;
 import com.tadev.musicplayer.common.Api;
 import com.tadev.musicplayer.constant.Extras;
+import com.tadev.musicplayer.constant.MusicTypeEnum;
 import com.tadev.musicplayer.interfaces.UpdateableFragment;
 import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.models.music.Download;
@@ -166,32 +167,14 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
     @Override
     protected void initViewData() {
         fabPlayPause.setImageDrawable(playPauseDrawable);
-//        if (mService != null &&
-//                mService.getCurrentId() != Integer.parseInt(mSong.getMusicId())
-//                ) {
-//            //Service has register and musicID not equal
-//            playPauseDrawable.transformToPlay(true);
-//            isPlayState = false;
-//        } else {
-//            int duration = application.getMusicContainer().getmCurrentSongPlay().duration;
-//            int position = application.getMusicContainer().getmCurrentSongPlay().position;
-//            int progress = application.getMusicContainer().getmCurrentSongPlay().progress;
-//            if (duration != 0 && position != 0 && progress != 0) {
-//                txtTotalTime.setText(Utils.getTimeString(duration));
-//                txtCurrentTime.setText(Utils.getTimeString(position));
-//                seekBar.setProgress(progress);
-//            }
-//            //Service has register and musicId equal with current ID
-//            if (mService.isPlaying()) {
-//                playPauseDrawable.transformToPause(true);
-//                isPlayState = true;
-//            } else {
-//                playPauseDrawable.transformToPlay(true);
-//                isPlayState = false;
-//            }
-//        }
-//        txtTitle.setText(mSong.getMusicTitle());
-//        txtArtist.setText(mSong.getMusicArtist());
+        switch (mSong.getType()) {
+            case LOCAL:
+                imgDownoad.setVisibility(View.GONE);
+                break;
+            case ONLINE:
+                imgDownoad.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
     @Override
@@ -249,12 +232,12 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(getActivity(), MusicPlayService.class);
-            // TODO: 18/04/2016  
-            if (mService.isPlayOffline()) {
-                intent.setAction(Actions.ACTION_PLAY_PAUSE);
-            } else {
+            if (mSong.getType() == MusicTypeEnum.ONLINE) {
                 intent.setAction(Actions.ACTION_TOGGLE);
                 intent.putExtras(initDataCurrentPlay());
+            } else {
+                intent.setAction(Actions.ACTION_PLAY_PAUSE);
+                intent.putExtra(Extras.KEY_MODE_OFFLINE, true);
             }
             mOnRegisterCallback.onServicePreparing(intent);
             if (isPlayState) {
@@ -290,7 +273,7 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(getActivity(), MusicPlayService.class);
+        Intent intent = null;
         switch (view.getId()) {
             case R.id.btnDownload:
                 DialogDownloadFragment mDialogDownload = DialogDownloadFragment
@@ -299,13 +282,17 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
                 mDialogDownload.show(getFragmentManager(), "dialog");
                 break;
             case R.id.fragment_music_playing_imgNext:
+                intent = new Intent(getActivity(), MusicPlayService.class);
                 intent.setAction(Actions.ACTION_NEXT);
+                mOnRegisterCallback.onServicePreparing(intent);
                 break;
             case R.id.fragment_music_playing_imgPrevious:
+                intent = new Intent(getActivity(), MusicPlayService.class);
                 intent.setAction(Actions.ACTION_PREVIOUS);
+                mOnRegisterCallback.onServicePreparing(intent);
                 break;
         }
-        mOnRegisterCallback.onServicePreparing(intent);
+
     }
 
     @Override
@@ -343,6 +330,7 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void update(CurrentSongPlay currentSongPlay) {
         currentPlay = currentSongPlay;
+        mSong = currentSongPlay.song;
         txtTitle.setText(currentSongPlay.song.getMusicTitle());
         txtArtist.setText(currentSongPlay.song.getMusicArtist());
     }

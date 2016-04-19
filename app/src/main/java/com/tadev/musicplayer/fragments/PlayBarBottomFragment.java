@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,6 +20,8 @@ import com.tadev.musicplayer.MainActivity;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.abstracts.BaseFragment;
 import com.tadev.musicplayer.callbacks.OnRegisterCallback;
+import com.tadev.musicplayer.constant.Extras;
+import com.tadev.musicplayer.constant.MusicTypeEnum;
 import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.services.MusicPlayService;
@@ -74,9 +77,11 @@ public class PlayBarBottomFragment extends BaseFragment {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    // TODO: Handle Send message to Service here !!! run
                     Intent intent = new Intent(getActivity(), MusicPlayService.class);
                     intent.setAction(Actions.ACTION_PLAY_BAR);
+                    if (currentPlay.song.getType() == MusicTypeEnum.LOCAL) {
+                        intent.putExtra(Extras.KEY_MODE_OFFLINE, true);
+                    }
                     mOnRegisterCallback.onServicePreparing(intent);
                 }
             }, 100);
@@ -145,6 +150,10 @@ public class PlayBarBottomFragment extends BaseFragment {
         mPlayPause.setColor(Utils.getColorRes(R.color.material_pink_500));
         prgUpdate.getProgressDrawable().setColorFilter(Utils.getColorRes(R.color
                 .material_pink_500), android.graphics.PorterDuff.Mode.SRC_IN);
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) prgUpdate.getLayoutParams();
+        prgUpdate.measure(0, 0);
+        layoutParams.setMargins(0, -(prgUpdate.getMeasuredHeight() / 4), 0, 0);
+        prgUpdate.setLayoutParams(layoutParams);
         updateStatePlayPause();
     }
 
@@ -161,6 +170,7 @@ public class PlayBarBottomFragment extends BaseFragment {
             }
         }
     }
+
 
     @Override
     protected void initViewData() {
@@ -207,16 +217,44 @@ public class PlayBarBottomFragment extends BaseFragment {
 
     @Override
     public void onPause() {
-        localBroadcastManager.unregisterReceiver(updateSeekbar);
+//        localBroadcastManager.unregisterReceiver(updateSeekbar);
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        localBroadcastManager.unregisterReceiver(updateSeekbar);
+        super.onDestroy();
     }
 
     @Override
     public void onStart() {
         if (mService != null) {
             updateStatePlayPause();
+//            if (mService.getCurrentId() != Integer.parseInt(currentPlay.musicId)) {
+//                doUpdateUI();
+//            }
         }
         super.onStart();
+    }
+
+    //You can update from onStart()
+    private void doUpdateUI() {
+        if (mService != null) {
+            CurrentSongPlay newSong = mService.getCurrentSongPlay();
+            String title = newSong.song.getMusicTitle();
+            String artist = newSong.song.getMusicArtist();
+            txtArtist.setText(artist);
+            txtTitle.setText(title);
+            String pathImage = newSong.song.getMusicImg();
+            if (!TextUtils.isEmpty(pathImage)) {
+                if (pathImage.startsWith(MusicPlayService.PATH_URI)) {
+                    Glide.with(context).load(new File(pathImage)).into(coverImage);
+                } else {
+                    Glide.with(context).load(pathImage).into(coverImage);
+                }
+            }
+        }
     }
 
     @Override

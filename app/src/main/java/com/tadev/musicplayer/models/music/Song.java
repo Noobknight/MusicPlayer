@@ -3,6 +3,8 @@ package com.tadev.musicplayer.models.music;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tadev.musicplayer.constant.MusicTypeEnum;
+
 /**
  * Created by Iris Louis on 02/04/2016.
  */
@@ -21,6 +23,7 @@ public class Song implements Parcelable {
     private String music320Filesize;
     private String musicM4aFilesize;
     private String musicLosslessFilesize;
+    private MusicTypeEnum type;
 
     public Song(){}
 
@@ -146,20 +149,14 @@ public class Song implements Parcelable {
         this.musicLosslessFilesize = musicLosslessFilesize;
     }
 
-    @Override
-    public String toString() {
-        return "Song{" +
-                "musicId='" + musicId + '\'' +
-                ", musicTitleUrl='" + musicTitleUrl + '\'' +
-                ", musicTitle='" + musicTitle + '\'' +
-                ", musicArtist='" + musicArtist + '\'' +
-                ", musicImg='" + musicImg + '\'' +
-                ", fileUrl='" + fileUrl + '\'' +
-                ", file320Url='" + file320Url + '\'' +
-                ", fileM4aUrl='" + fileM4aUrl + '\'' +
-                ", musicLength='" + musicLength + '\'' +
-                '}';
+    public MusicTypeEnum getType() {
+        return type;
     }
+
+    public void setType(MusicTypeEnum type) {
+        this.type = type;
+    }
+
 
     @Override
     public int describeContents() {
@@ -182,7 +179,7 @@ public class Song implements Parcelable {
         dest.writeString(this.music320Filesize);
         dest.writeString(this.musicM4aFilesize);
         dest.writeString(this.musicLosslessFilesize);
-
+        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
     }
 
     protected Song(Parcel in) {
@@ -200,6 +197,8 @@ public class Song implements Parcelable {
         this.music320Filesize = in.readString();
         this.musicM4aFilesize = in.readString();
         this.musicLosslessFilesize = in.readString();
+        int tmpType = in.readInt();
+        this.type = tmpType == -1 ? null : MusicTypeEnum.values()[tmpType];
     }
 
     public static final Creator<Song> CREATOR = new Creator<Song>() {
@@ -213,4 +212,25 @@ public class Song implements Parcelable {
             return new Song[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                "musicId='" + musicId + '\'' +
+                ", musicTitleUrl='" + musicTitleUrl + '\'' +
+                ", musicTitle='" + musicTitle + '\'' +
+                ", musicArtist='" + musicArtist + '\'' +
+                ", musicImg='" + musicImg + '\'' +
+                ", fileUrl='" + fileUrl + '\'' +
+                ", file320Url='" + file320Url + '\'' +
+                ", fileM4aUrl='" + fileM4aUrl + '\'' +
+                ", fileLossless='" + fileLossless + '\'' +
+                ", musicLength='" + musicLength + '\'' +
+                ", musicFilesize='" + musicFilesize + '\'' +
+                ", music320Filesize='" + music320Filesize + '\'' +
+                ", musicM4aFilesize='" + musicM4aFilesize + '\'' +
+                ", musicLosslessFilesize='" + musicLosslessFilesize + '\'' +
+                ", type=" + type +
+                '}';
+    }
 }

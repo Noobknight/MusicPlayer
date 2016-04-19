@@ -20,9 +20,19 @@
         <include layout="@layout/include_toolbar" />
 
 
+        <TextView
+            android:id="@+id/txtEmptyData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/no_data_available"
+            android:visibility="gone" />
+
         <RelativeLayout xmlns:viewpager="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/rlContent"
+            android:visibility="visible">
 
             <com.tadev.musicplayer.utils.design.SwipeViewPager
                 android:id="@+id/viewpager"
