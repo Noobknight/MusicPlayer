@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
@@ -24,8 +25,8 @@ import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
 import com.tadev.musicplayer.services.loaders.MusicLoaderTask;
-import com.tadev.musicplayer.utils.design.MaterialImageHeader;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.supports.design.MaterialImageHeader;
+import com.tadev.musicplayer.utils.support.Utils;
 
 /**
  * Created by Iris Louis on 31/03/2016.
@@ -35,6 +36,7 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
     private final String TAG = "BaseMusicFragmentDrawer";
     protected ObservableRecyclerView recyclerView;
     protected View headerView;
+    protected TextView txtEmptyData;
     protected ProgressDialog mDialogLoading;
     private MaterialImageHeader imageHeader;
     private Toolbar toolbar;
@@ -64,6 +66,7 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(false);
         headerView = LayoutInflater.from(getActivity()).inflate(R.layout.recycler_header, null);
+        txtEmptyData = (TextView) view.findViewById(R.id.txtEmptyData);
         flexibleSpaceImageHeight = Utils.getDimensRes(context, R.dimen.parallax_image_height);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             flexibleSpaceImageHeight += getStatusBarHeight();
@@ -71,7 +74,7 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
         mParallaxImageHeight = Utils.getDimensRes(context, R.dimen.parallax_image_height_opacity);
         headerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, flexibleSpaceImageHeight));
         imageHeader = (MaterialImageHeader) headerView.findViewById(R.id.imageHeader);
-        mViewOpacity = (View) headerView.findViewById(R.id.opacityView);
+        mViewOpacity = headerView.findViewById(R.id.opacityView);
         imageHeader.setImageDrawable(ContextCompat.getDrawable(getActivity(), setImageHeaderId()), 300);
         // TouchInterceptionViewGroup should be a parent view other than ViewPager.
         // This is a workaround for the issue #117:
@@ -201,6 +204,8 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
     @Override
     public void onTaskLoadFailed(Exception e) {
         mDialogLoading.dismiss();
+        setDummyDataWithHeader(recyclerView, headerView, null);
+        txtEmptyData.setVisibility(View.VISIBLE);
     }
 
     @Override

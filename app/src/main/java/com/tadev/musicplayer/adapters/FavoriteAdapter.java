@@ -13,7 +13,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.interfaces.OnItemClickListener;
 import com.tadev.musicplayer.models.SongFavorite;
-import com.tadev.musicplayer.utils.design.TextViewTitle;
+import com.tadev.musicplayer.supports.design.TextViewTitle;
 
 import java.util.ArrayList;
 

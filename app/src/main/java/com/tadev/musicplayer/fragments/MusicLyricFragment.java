@@ -14,7 +14,7 @@ import com.tadev.musicplayer.interfaces.UpdateableFragment;
 import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.models.music.Lyric;
 import com.tadev.musicplayer.services.MusicPlayService;
-import com.tadev.musicplayer.utils.design.support.StringUtils;
+import com.tadev.musicplayer.utils.support.StringUtils;
 
 import java.io.File;
 

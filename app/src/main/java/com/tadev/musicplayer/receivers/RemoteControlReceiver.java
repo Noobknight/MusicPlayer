@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.view.KeyEvent;
 
 import com.tadev.musicplayer.services.MusicPlayService;
-import com.tadev.musicplayer.utils.design.actions.Actions;
+import com.tadev.musicplayer.utils.actions.Actions;
 
 /**
  * Created by Iris Louis on 08/04/2016.

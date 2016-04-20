@@ -45,9 +45,4 @@ public abstract class BaseFragmentDrawer extends Fragment implements BaseMusicAd
         recyclerView.setAdapter(adapter);
     }
 
-    protected void notifyDataSetChanged(){
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
-    }
 }

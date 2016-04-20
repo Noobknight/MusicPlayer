@@ -13,9 +13,9 @@ import com.bumptech.glide.Glide;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.interfaces.OnItemClickListener;
 import com.tadev.musicplayer.models.MusicOffline;
-import com.tadev.musicplayer.utils.design.CircleImageView;
-import com.tadev.musicplayer.utils.design.TextViewTitle;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.supports.design.CircleImageView;
+import com.tadev.musicplayer.supports.design.TextViewTitle;
+import com.tadev.musicplayer.utils.support.Utils;
 
 import java.io.File;
 import java.util.ArrayList;

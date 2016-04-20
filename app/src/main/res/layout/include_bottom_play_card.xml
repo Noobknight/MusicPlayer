@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="60dp">
 
-    <com.tadev.musicplayer.utils.design.SquareImageView
+    <com.tadev.musicplayer.supports.design.SquareImageView
         android:id="@+id/album_art_nowplayingcard"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -62,7 +62,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp">
 
-        <com.tadev.musicplayer.utils.design.PlayPauseButton
+        <com.tadev.musicplayer.supports.design.PlayPauseButton
             android:id="@+id/include_bottom_play_play_pause"
             android:layout_width="23dp"
             android:layout_height="23dp"

@@ -8,7 +8,7 @@ import com.tadev.musicplayer.common.Api;
 import com.tadev.musicplayer.constant.Constants;
 import com.tadev.musicplayer.models.BaseModel;
 import com.tadev.musicplayer.services.loaders.MusicLoaderTask;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.utils.support.Utils;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class MusicVietNamFragment extends BaseMusicFragmentDrawer {
     public static final String TAG = "MusicVietNamFragment";
-
+    private List mListMusicVn;
 
     public static MusicVietNamFragment newInstance() {
         return new MusicVietNamFragment();
@@ -39,8 +39,13 @@ public class MusicVietNamFragment extends BaseMusicFragmentDrawer {
     @Override
     protected void initLoadTask() {
         try {
-            List mListMusicVn = application.getMusicContainer().getListNeed(Constants.VIETNAM_TAG);
-            boolean isListNull = mListMusicVn == null;
+            mListMusicVn = application.getMusicContainer().getListNeed(Constants.VIETNAM_TAG);
+            boolean isListNull = false;
+            if (mListMusicVn == null) {
+                isListNull = true;
+            } else if (mListMusicVn != null && mListMusicVn.isEmpty()) {
+                isListNull = true;
+            }
             if (isListNull) {
                 new MusicLoaderTask(this, Constants.VIETNAM_TAG).execute(Api.getApiMusicVietNam());
             } else {
@@ -78,7 +83,12 @@ public class MusicVietNamFragment extends BaseMusicFragmentDrawer {
     @Override
     public void onTaskLoadCompleted(List<BaseModel> musics) {
         mDialogLoading.dismiss();
-        setDummyDataWithHeader(recyclerView, headerView, musics);
+        txtEmptyData.setVisibility(View.GONE);
+        try {
+            setDummyDataWithHeader(recyclerView, headerView, application.getMusicContainer().getListNeed(Constants.VIETNAM_TAG));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

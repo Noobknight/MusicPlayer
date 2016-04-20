@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.models.BaseModel;
-import com.tadev.musicplayer.utils.design.CircleImageView;
+import com.tadev.musicplayer.supports.design.CircleImageView;
 
 import java.util.List;
 
@@ -44,10 +44,14 @@ public class BaseMusicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
-        if (mHeaderView == null) {
-            return musics.size();
+        if (musics != null) {
+            if (mHeaderView == null) {
+                return musics.size();
+            } else {
+                return musics.size() + 1;
+            }
         } else {
-            return musics.size() + 1;
+            return 1;
         }
     }
 
@@ -66,7 +70,7 @@ public class BaseMusicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder,final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         if (viewHolder instanceof ItemViewHolder) {
             BaseModel music = (BaseModel) musics.get(position - 1);
             if (music != null) {
@@ -97,6 +101,7 @@ public class BaseMusicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
+
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         public CircleImageView imgArtistFace;
         public TextView tvTitle;
@@ -116,7 +121,4 @@ public class BaseMusicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public void notiftyDataSetChanged() {
-        notifyDataSetChanged();
-    }
 }

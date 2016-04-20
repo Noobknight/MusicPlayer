@@ -26,10 +26,10 @@ import com.tadev.musicplayer.abstracts.BaseActivity;
 import com.tadev.musicplayer.fragments.VideoContainerFragment;
 import com.tadev.musicplayer.models.video.VideoInfo;
 import com.tadev.musicplayer.services.loaders.VideoInfoLoader;
-import com.tadev.musicplayer.utils.design.CustomVideoView;
-import com.tadev.musicplayer.utils.design.statusbar.StatusBarCompat;
-import com.tadev.musicplayer.utils.design.support.StringUtils;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.supports.design.CustomVideoView;
+import com.tadev.musicplayer.supports.design.statusbar.StatusBarCompat;
+import com.tadev.musicplayer.utils.support.StringUtils;
+import com.tadev.musicplayer.utils.support.Utils;
 
 /**
  * Created by Iris Louis on 16/04/2016.

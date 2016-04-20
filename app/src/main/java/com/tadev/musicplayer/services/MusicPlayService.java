@@ -42,10 +42,10 @@ import com.tadev.musicplayer.models.music.Lyric;
 import com.tadev.musicplayer.models.music.Song;
 import com.tadev.musicplayer.receivers.RemoteControlReceiver;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
-import com.tadev.musicplayer.utils.design.actions.Actions;
-import com.tadev.musicplayer.utils.design.support.CoverLoader;
-import com.tadev.musicplayer.utils.design.support.StringUtils;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.utils.actions.Actions;
+import com.tadev.musicplayer.utils.support.CoverLoader;
+import com.tadev.musicplayer.utils.support.StringUtils;
+import com.tadev.musicplayer.utils.support.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;

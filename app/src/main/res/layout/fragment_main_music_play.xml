@@ -34,13 +34,13 @@
             android:id="@+id/rlContent"
             android:visibility="visible">
 
-            <com.tadev.musicplayer.utils.design.SwipeViewPager
+            <com.tadev.musicplayer.supports.design.SwipeViewPager
                 android:id="@+id/viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/circleIndicator" />
 
-            <com.tadev.musicplayer.utils.design.viewpager.CircleIndicator
+            <com.tadev.musicplayer.supports.design.viewpager.CircleIndicator
                 android:id="@+id/circleIndicator"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"

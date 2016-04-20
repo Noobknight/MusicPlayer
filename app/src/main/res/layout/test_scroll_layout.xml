@@ -23,7 +23,7 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <com.tadev.musicplayer.utils.design.MaterialImageHeader
+            <com.tadev.musicplayer.supports.design.MaterialImageHeader
                 android:id="@+id/imgHeader"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

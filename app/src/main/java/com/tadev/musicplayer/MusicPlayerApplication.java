@@ -4,8 +4,8 @@ import android.app.Application;
 
 import com.tadev.musicplayer.metadata.MusicContainer;
 import com.tadev.musicplayer.provider.DBFavoriteManager;
-import com.tadev.musicplayer.utils.design.support.StringUtils;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.utils.support.StringUtils;
+import com.tadev.musicplayer.utils.support.Utils;
 
 /**
  * Created by Iris Louis on 30/03/2016.

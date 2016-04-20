@@ -1,6 +1,5 @@
 package com.tadev.musicplayer.fragments;
 
-import android.util.Log;
 import android.view.View;
 
 import com.tadev.musicplayer.R;
@@ -9,7 +8,7 @@ import com.tadev.musicplayer.common.Api;
 import com.tadev.musicplayer.constant.Constants;
 import com.tadev.musicplayer.models.BaseModel;
 import com.tadev.musicplayer.services.loaders.MusicLoaderTask;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.utils.support.Utils;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,8 +40,12 @@ public class MusicUsUkFragment extends BaseMusicFragmentDrawer {
     protected void initLoadTask() {
         try {
             mListMusicUsUk = application.getMusicContainer().getListNeed(Constants.US_TAG);
-            Log.i(TAG, "initLoadTask " + mListMusicUsUk.size());
-            boolean isListNull = mListMusicUsUk.isEmpty();
+            boolean isListNull = false;
+            if (mListMusicUsUk == null) {
+                isListNull = true;
+            } else if (mListMusicUsUk != null && mListMusicUsUk.isEmpty()) {
+                isListNull = true;
+            }
             if (isListNull) {
                 new MusicLoaderTask(this, Constants.US_TAG).execute(Api.getApiMusicUSUK());
             } else {
@@ -79,7 +82,7 @@ public class MusicUsUkFragment extends BaseMusicFragmentDrawer {
             setDummyDataWithHeader(recyclerView, headerView,
                     application.getMusicContainer().getListNeed(Constants.US_TAG));
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
 
     }

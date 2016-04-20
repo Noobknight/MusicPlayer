@@ -29,7 +29,7 @@
         android:paddingBottom="10dp"
         android:weightSum="3">
 
-        <com.tadev.musicplayer.utils.design.TextViewTitle
+        <com.tadev.musicplayer.supports.design.TextViewTitle
             android:id="@+id/md_styled_dialog_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

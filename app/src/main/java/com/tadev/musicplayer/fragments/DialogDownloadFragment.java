@@ -21,8 +21,8 @@ import com.tadev.musicplayer.common.Api;
 import com.tadev.musicplayer.constant.Enums;
 import com.tadev.musicplayer.constant.Extras;
 import com.tadev.musicplayer.models.music.Download;
-import com.tadev.musicplayer.utils.design.support.StringUtils;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.utils.support.StringUtils;
+import com.tadev.musicplayer.utils.support.Utils;
 
 /**
  * Created by Iris Louis on 12/04/2016.

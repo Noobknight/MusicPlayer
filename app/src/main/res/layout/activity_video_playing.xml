@@ -119,7 +119,7 @@
 
             </android.support.v7.widget.CardView>
 
-            <com.tadev.musicplayer.utils.design.CustomVideoView
+            <com.tadev.musicplayer.supports.design.CustomVideoView
                 android:id="@+id/activity_video_playing_videoView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

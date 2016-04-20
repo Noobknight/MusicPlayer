@@ -9,8 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import com.squareup.otto.Bus;
 import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.R;
+import com.tadev.musicplayer.utils.networks.BusWrapper;
+import com.tadev.musicplayer.utils.networks.NetworkEvents;
 
 /**
  * Created by Iris Louis on 25/03/2016.
@@ -20,6 +23,8 @@ public abstract class BaseMenuActivity extends AppCompatActivity {
     public FragmentManager mFragmentManager;
     public FragmentTransaction transaction;
     protected MusicPlayerApplication application;
+    protected BusWrapper busWrapper;
+    protected NetworkEvents networkEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,9 @@ public abstract class BaseMenuActivity extends AppCompatActivity {
         setTranslucentStatusBar();
         mFragmentManager = getSupportFragmentManager();
         application = MusicPlayerApplication.getInstance();
+        busWrapper = getOttoBusWrapper(new Bus());
+        networkEvents = new NetworkEvents(getApplicationContext(), busWrapper);
+        networkEvents.enableInternetCheck();
         setTitle("");
         initToolbar();
         initView(savedInstanceState);
@@ -86,6 +94,22 @@ public abstract class BaseMenuActivity extends AppCompatActivity {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    private BusWrapper getOttoBusWrapper(final Bus bus) {
+        return new BusWrapper() {
+            @Override public void register(Object object) {
+                bus.register(object);
+            }
+
+            @Override public void unregister(Object object) {
+                bus.unregister(object);
+            }
+
+            @Override public void post(Object event) {
+                bus.post(event);
+            }
+        };
     }
 
 

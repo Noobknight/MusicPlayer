@@ -20,8 +20,8 @@ import com.tadev.musicplayer.interfaces.OnItemClickListener;
 import com.tadev.musicplayer.models.MusicOffline;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.services.loaders.MediaStoreLoader;
-import com.tadev.musicplayer.utils.design.actions.Actions;
-import com.tadev.musicplayer.utils.design.support.StringUtils;
+import com.tadev.musicplayer.utils.actions.Actions;
+import com.tadev.musicplayer.utils.support.StringUtils;
 
 import java.util.ArrayList;
 

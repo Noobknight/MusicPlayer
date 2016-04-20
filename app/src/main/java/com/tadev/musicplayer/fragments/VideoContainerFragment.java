@@ -15,7 +15,7 @@ import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.abstracts.BaseFragment;
 import com.tadev.musicplayer.adapters.BaseViewPagerAdapter;
 import com.tadev.musicplayer.interfaces.OnBackFragmentListener;
-import com.tadev.musicplayer.utils.design.viewpager.PagerSlidingTabStrip;
+import com.tadev.musicplayer.supports.design.viewpager.PagerSlidingTabStrip;
 
 /**
  * Created by Iris Louis on 13/04/2016.

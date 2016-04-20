@@ -1,10 +1,10 @@
-<com.tadev.musicplayer.utils.design.ScrimInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tadev.musicplayer.supports.design.ScrimInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_root"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    app:insetForeground="#4000"
-    android:layout_height="match_parent">
+    app:insetForeground="#4000">
 
     <View
         android:id="@+id/list_background"
@@ -14,7 +14,18 @@
 
     <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
         android:id="@+id/scroll"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:scrollbars="none" />
-</com.tadev.musicplayer.utils.design.ScrimInsetsFrameLayout>
+
+
+
+    <TextView
+        android:id="@+id/txtEmptyData"
+        android:gravity="center"
+        android:text="@string/no_data_available"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent" />
+
+</com.tadev.musicplayer.supports.design.ScrimInsetsFrameLayout>

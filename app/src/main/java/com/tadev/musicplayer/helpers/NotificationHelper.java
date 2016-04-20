@@ -10,8 +10,8 @@ import android.view.KeyEvent;
 
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.models.music.CurrentSongPlay;
-import com.tadev.musicplayer.utils.design.support.StringUtils;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.utils.support.StringUtils;
+import com.tadev.musicplayer.utils.support.Utils;
 
 /**
  * Created by Iris Louis on 08/04/2016.

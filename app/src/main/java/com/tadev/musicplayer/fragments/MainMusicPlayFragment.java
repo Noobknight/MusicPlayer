@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -40,11 +41,11 @@ import com.tadev.musicplayer.models.music.Song;
 import com.tadev.musicplayer.receivers.MainMusicPlayReceiver;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.services.loaders.MusicInfoLoaderTask;
-import com.tadev.musicplayer.utils.design.SwipeViewPager;
-import com.tadev.musicplayer.utils.design.actions.Actions;
-import com.tadev.musicplayer.utils.design.blurry.BlurImageUtils;
-import com.tadev.musicplayer.utils.design.support.Utils;
-import com.tadev.musicplayer.utils.design.viewpager.CircleIndicator;
+import com.tadev.musicplayer.supports.design.SwipeViewPager;
+import com.tadev.musicplayer.utils.actions.Actions;
+import com.tadev.musicplayer.supports.design.blurry.BlurImageUtils;
+import com.tadev.musicplayer.utils.support.Utils;
+import com.tadev.musicplayer.supports.design.viewpager.CircleIndicator;
 
 /**
  * Created by Iris Louis on 01/04/2016.
@@ -276,11 +277,19 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_playing_menu, menu);
-        isFavorite = dbFavoriteManager.isFavorite(modelMusic.getMusic_id());
-        if (isFavorite) {
-            menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_favorite_red_a700_24dp);
+        String id = "";
+        if (isStartFromBottom) {
+            id = String.valueOf(mService.getCurrentId());
         } else {
-            menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_favorite_border_red_700_24dp);
+            id = modelMusic.getMusic_id();
+        }
+        if (!TextUtils.isEmpty(id)) {
+            isFavorite = dbFavoriteManager.isFavorite(id);
+            if (isFavorite) {
+                menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_favorite_red_a700_24dp);
+            } else {
+                menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_favorite_border_red_700_24dp);
+            }
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -433,7 +442,13 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_favorite:
-                if (isFavorite && dbFavoriteManager.isDeleteSucess(modelMusic.getMusic_id())) {
+                String id = "";
+                if (isStartFromBottom) {
+                    id = String.valueOf(mService.getCurrentId());
+                } else {
+                    id = modelMusic.getMusic_id();
+                }
+                if (isFavorite && dbFavoriteManager.isDeleteSucess(id)) {
                     item.setIcon(R.drawable.ic_favorite_border_red_700_24dp);
                 } else {
                     if (buildFavorite() != null) {
@@ -447,10 +462,18 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     }
 
     private SongFavorite buildFavorite() {
-        if (music != null) {
-            return new SongFavorite(music.getMusicArtist(),
-                    music.getMusicId(), music.getMusicImg(),
-                    music.getMusicTitle(), music.getMusicTitleUrl());
+        if (isStartFromBottom) {
+            return new SongFavorite(mService.getCurrentSongPlay().song.getMusicArtist(),
+                    mService.getCurrentSongPlay().song.getMusicId(),
+                    mService.getCurrentSongPlay().song.getMusicImg(),
+                    mService.getCurrentSongPlay().song.getMusicTitle(),
+                    mService.getCurrentSongPlay().song.getMusicTitleUrl());
+        } else {
+            if (music != null) {
+                return new SongFavorite(music.getMusicArtist(),
+                        music.getMusicId(), music.getMusicImg(),
+                        music.getMusicTitle(), music.getMusicTitleUrl());
+            }
         }
         return null;
     }

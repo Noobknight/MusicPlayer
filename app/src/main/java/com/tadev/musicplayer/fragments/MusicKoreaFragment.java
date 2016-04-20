@@ -1,6 +1,5 @@
 package com.tadev.musicplayer.fragments;
 
-import android.util.Log;
 import android.view.View;
 
 import com.tadev.musicplayer.R;
@@ -9,7 +8,7 @@ import com.tadev.musicplayer.common.Api;
 import com.tadev.musicplayer.constant.Constants;
 import com.tadev.musicplayer.models.BaseModel;
 import com.tadev.musicplayer.services.loaders.MusicLoaderTask;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.utils.support.Utils;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,8 +41,12 @@ public class MusicKoreaFragment extends BaseMusicFragmentDrawer {
     protected void initLoadTask() {
         try {
             mListMusicKorea = application.getMusicContainer().getListNeed(Constants.KOREA_TAG);
-            Log.i(TAG, "initLoadTask " + mListMusicKorea.size());
-            boolean isListNull = mListMusicKorea.isEmpty();
+            boolean isListNull = false;
+            if (mListMusicKorea == null) {
+                isListNull = true;
+            } else if (mListMusicKorea != null && mListMusicKorea.isEmpty()) {
+                isListNull = true;
+            }
             if (isListNull) {
                 new MusicLoaderTask(this, Constants.KOREA_TAG).execute(Api.getApiMusicKorea());
             } else {

@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tadev.musicplayer.constant.Extras;
 import com.tadev.musicplayer.models.video.Video;
-import com.tadev.musicplayer.utils.design.support.JsonUtils;
+import com.tadev.musicplayer.utils.support.JsonUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

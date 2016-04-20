@@ -21,8 +21,8 @@ import com.tadev.musicplayer.constant.Extras;
 import com.tadev.musicplayer.models.video.Video;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.services.loaders.VideoLoaderTask;
-import com.tadev.musicplayer.utils.design.RecyclerItemClickListener;
-import com.tadev.musicplayer.utils.design.actions.Actions;
+import com.tadev.musicplayer.supports.design.RecyclerItemClickListener;
+import com.tadev.musicplayer.utils.actions.Actions;
 
 import java.util.ArrayList;
 import java.util.List;

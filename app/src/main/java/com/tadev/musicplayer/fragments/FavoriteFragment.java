@@ -17,7 +17,7 @@ import com.tadev.musicplayer.interfaces.RetrieveListener;
 import com.tadev.musicplayer.models.BaseModel;
 import com.tadev.musicplayer.models.SongFavorite;
 import com.tadev.musicplayer.provider.DBFavoriteManager;
-import com.tadev.musicplayer.utils.design.support.StringUtils;
+import com.tadev.musicplayer.utils.support.StringUtils;
 
 import java.util.ArrayList;
 

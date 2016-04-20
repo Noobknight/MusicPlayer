@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.tadev.musicplayer.models.MusicOffline;
-import com.tadev.musicplayer.utils.design.support.MusicUtils;
+import com.tadev.musicplayer.utils.support.MusicUtils;
 
 import java.util.ArrayList;
 
@@ -46,4 +46,6 @@ public class MediaStoreLoader extends AsyncTask<Void, Void, ArrayList<MusicOffli
             mLoaderListener.onLoadFailed();
         }
     }
+
+
 }

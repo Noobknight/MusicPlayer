@@ -28,10 +28,10 @@ import com.tadev.musicplayer.models.music.Song;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.services.DownloaderService;
 import com.tadev.musicplayer.services.MusicPlayService;
-import com.tadev.musicplayer.utils.design.PlayPauseDrawable;
-import com.tadev.musicplayer.utils.design.TextViewTitle;
-import com.tadev.musicplayer.utils.design.actions.Actions;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.supports.design.PlayPauseDrawable;
+import com.tadev.musicplayer.supports.design.TextViewTitle;
+import com.tadev.musicplayer.utils.actions.Actions;
+import com.tadev.musicplayer.utils.support.Utils;
 
 import java.util.HashMap;
 

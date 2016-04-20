@@ -25,11 +25,11 @@ import com.tadev.musicplayer.constant.MusicTypeEnum;
 import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.services.MusicPlayService;
-import com.tadev.musicplayer.utils.design.PlayPauseButton;
-import com.tadev.musicplayer.utils.design.SquareImageView;
-import com.tadev.musicplayer.utils.design.actions.Actions;
-import com.tadev.musicplayer.utils.design.support.CoverLoader;
-import com.tadev.musicplayer.utils.design.support.Utils;
+import com.tadev.musicplayer.supports.design.PlayPauseButton;
+import com.tadev.musicplayer.supports.design.SquareImageView;
+import com.tadev.musicplayer.utils.actions.Actions;
+import com.tadev.musicplayer.utils.support.CoverLoader;
+import com.tadev.musicplayer.utils.support.Utils;
 
 import java.io.File;
 

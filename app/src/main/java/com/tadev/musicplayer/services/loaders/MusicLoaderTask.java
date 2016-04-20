@@ -10,7 +10,7 @@ import com.tadev.musicplayer.models.BaseModel;
 import com.tadev.musicplayer.models.music.MusicKorea;
 import com.tadev.musicplayer.models.music.MusicUSUK;
 import com.tadev.musicplayer.models.music.MusicVietNam;
-import com.tadev.musicplayer.utils.design.support.JsonUtils;
+import com.tadev.musicplayer.utils.support.JsonUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +29,7 @@ public class MusicLoaderTask extends AsyncTask<String, Void, List<BaseModel>> {
     //Store Data
     private MusicPlayerApplication application;
     private String tag;
+    private Exception exception;
 
     //Method Callback
     public interface OnTaskLoading {
@@ -64,7 +65,7 @@ public class MusicLoaderTask extends AsyncTask<String, Void, List<BaseModel>> {
             JSONArray objects = root.getJSONArray(KEY_OBJECT);
             return toGsonBaseModel(objects.toString(), tag);
         } catch (IOException | JSONException e) {
-            mTaskLoading.onTaskLoadFailed(e);
+            exception = e;
             return null;
         }
     }
@@ -74,6 +75,8 @@ public class MusicLoaderTask extends AsyncTask<String, Void, List<BaseModel>> {
         if (baseModels != null) {
             application.getMusicContainer().setBaseModelsMusic(baseModels);
             mTaskLoading.onTaskLoadCompleted(baseModels);
+        } else {
+            mTaskLoading.onTaskLoadFailed(exception);
         }
     }
 
