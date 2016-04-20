@@ -18,7 +18,6 @@ import java.util.List;
  */
 public class MusicVietNamFragment extends BaseMusicFragmentDrawer {
     public static final String TAG = "MusicVietNamFragment";
-    private List mListMusicVn;
 
     public static MusicVietNamFragment newInstance() {
         return new MusicVietNamFragment();
@@ -39,7 +38,7 @@ public class MusicVietNamFragment extends BaseMusicFragmentDrawer {
     @Override
     protected void initLoadTask() {
         try {
-            mListMusicVn = application.getMusicContainer().getListNeed(Constants.VIETNAM_TAG);
+            List mListMusicVn = application.getMusicContainer().getListNeed(Constants.VIETNAM_TAG);
             boolean isListNull = false;
             if (mListMusicVn == null) {
                 isListNull = true;

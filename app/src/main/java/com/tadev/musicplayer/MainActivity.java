@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
@@ -38,6 +39,7 @@ import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.supports.design.statusbar.StatusBarCompat;
 import com.tadev.musicplayer.utils.networks.event.ConnectivityChanged;
+import com.tadev.musicplayer.utils.support.StringUtils;
 
 public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         , IServicePlayer, OnBackFragmentListener, OnPlayBarBottomListener,
@@ -175,12 +177,6 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
                         VideoContainerFragment.TAG)
                         .addToBackStack(VideoContainerFragment.TAG);
                 break;
-            case R.id.music_artist:
-                Toast.makeText(MainActivity.this, "Music Artist", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.music_ranking:
-                Toast.makeText(MainActivity.this, "Music Rankings", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.music_favorite:
                 transaction.replace(R.id.container, FavoriteFragment.newInstance(),
                         FavoriteFragment.TAG)
@@ -221,7 +217,6 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
             mDrawer.closeDrawer(mNavigationView);
             return;
         }
-        Log.i(TAG, "onBackPressed " + mFragmentManager.getBackStackEntryCount());
         if (getFragmentManager().getBackStackEntryCount() == 1) {
             this.finish();
         }
@@ -268,6 +263,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     @Override
     public void onServicePreparing(Intent intent) {
         intentRegistedService = intent;
+        Log.i(TAG, "onServicePreparing " + intent.getAction());
         startService(intent);
     }
 
@@ -377,7 +373,6 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Override
     public void currentSongPlay(CurrentSongPlay currentSongPlay) {
-        Log.i(TAG, "currentSongPlay abc");
         sendMessage(currentSongPlay);
     }
 
@@ -454,9 +449,22 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Subscribe
     public void onEvent(ConnectivityChanged event) {
-        Log.i(TAG, "onEvent ConnectivityStatus " + event.getConnectivityStatus());
-        Log.i(TAG, "onEvent getMobileNetworkType " + event.getMobileNetworkType());
+        switch (event.getConnectivityStatus()){
+            case OFFLINE:
+                dialogUtils.showDialog(MainActivity.this, StringUtils.getStringRes(R.string.title_dialog_network),
+                        StringUtils.getStringRes(R.string.msg_network_not_found));
+                break;
+            case MOBILE_CONNECTED:
+                dialogUtils.showDialog(MainActivity.this, StringUtils.getStringRes(R.string.title_dialog_warning),
+                        StringUtils.getStringRes(R.string.msg_network_change));
+                break;
+        }
     }
 
 
+    @Override
+    public void onPositiveClick() {
+        startActivityForResult(new Intent(Settings.ACTION_SETTINGS), 0);
+        overridePendingTransition(R.anim.slide_in_bottom, 0);
+    }
 }

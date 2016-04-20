@@ -14,17 +14,19 @@ import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.utils.networks.BusWrapper;
 import com.tadev.musicplayer.utils.networks.NetworkEvents;
+import com.tadev.musicplayer.utils.support.DialogUtils;
 
 /**
  * Created by Iris Louis on 25/03/2016.
  */
-public abstract class BaseMenuActivity extends AppCompatActivity {
+public abstract class BaseMenuActivity extends AppCompatActivity implements DialogUtils.DialogListener{
     private Toolbar toolbar;
     public FragmentManager mFragmentManager;
     public FragmentTransaction transaction;
     protected MusicPlayerApplication application;
     protected BusWrapper busWrapper;
     protected NetworkEvents networkEvents;
+    protected DialogUtils dialogUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public abstract class BaseMenuActivity extends AppCompatActivity {
         busWrapper = getOttoBusWrapper(new Bus());
         networkEvents = new NetworkEvents(getApplicationContext(), busWrapper);
         networkEvents.enableInternetCheck();
+        dialogUtils = new DialogUtils(this);
         setTitle("");
         initToolbar();
         initView(savedInstanceState);

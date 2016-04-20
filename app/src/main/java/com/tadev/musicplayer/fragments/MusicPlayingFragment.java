@@ -74,6 +74,13 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
         Log.i(TAG, "onCreate ");
         mService = mActivityMain.getService();
         currentPlay = application.getMusicContainer().getmCurrentSongPlay();
+        localBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MusicPlayService.BUFFER_UPDATE);
+        intentFilter.addAction(Actions.ACTION_PLAYPAUSE_NOTIFICATION);
+        intentFilter.addAction(Actions.ACTION_PLAY);
+        localBroadcastManager.registerReceiver(updateSeekbar,
+                intentFilter);
     }
 
     @Override
@@ -81,9 +88,18 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
         if (mService != null &&
                 mService.getCurrentId() != Integer.parseInt(mSong.getMusicId())
                 ) {
+            Intent intent = new Intent(getActivity(), MusicPlayService.class);
+            if (mSong.getType() == MusicTypeEnum.ONLINE) {
+                intent.setAction(Actions.ACTION_TOGGLE);
+                intent.putExtras(initDataCurrentPlay());
+            } else {
+                intent.setAction(Actions.ACTION_PLAY_PAUSE);
+                intent.putExtra(Extras.KEY_MODE_OFFLINE, true);
+            }
+            mOnRegisterCallback.onServicePreparing(intent);
             //Service has register and musicID not equal
-            playPauseDrawable.transformToPlay(true);
-            isPlayState = false;
+            playPauseDrawable.transformToPause(true);
+            isPlayState = true;
         } else {
             int duration = application.getMusicContainer().getmCurrentSongPlay().duration;
             int position = application.getMusicContainer().getmCurrentSongPlay().position;
@@ -110,21 +126,20 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
 
     @Override
     public void onResume() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MusicPlayService.BUFFER_UPDATE);
-        intentFilter.addAction(Actions.ACTION_PLAYPAUSE_NOTIFICATION);
-        intentFilter.addAction(Actions.ACTION_PLAY);
-        localBroadcastManager.registerReceiver(updateSeekbar,
-                intentFilter);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        localBroadcastManager.unregisterReceiver(updateSeekbar);
+//        localBroadcastManager.unregisterReceiver(updateSeekbar);
         super.onPause();
     }
 
+    @Override
+    public void onDestroy() {
+        localBroadcastManager.unregisterReceiver(updateSeekbar);
+        super.onDestroy();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -149,7 +164,6 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
 
     @Override
     protected void initView(View rootView) {
-        localBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
         txtTitle = (TextViewTitle) rootView.findViewById(R.id.fragment_music_playing_txtMusicName);
         txtArtist = (TextViewTitle) rootView.findViewById(R.id.fragment_music_playing_txtMusicArtist);
         imgNext = (ImageView) rootView.findViewById(R.id.fragment_music_playing_imgNext);
@@ -175,6 +189,7 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
                 imgDownoad.setVisibility(View.VISIBLE);
                 break;
         }
+
     }
 
     @Override
@@ -204,7 +219,11 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
                         updateStatePlayPause();
                         break;
                     case Actions.ACTION_PLAY:
-//                        updateStatePlayPause();
+                        if (!isPlayState) {
+                            Intent pause = new Intent(context, MusicPlayService.class);
+                            pause.setAction(Actions.ACTION_PAUSE);
+                            mOnRegisterCallback.onServicePreparing(pause);
+                        }
                         break;
                 }
 
@@ -233,8 +252,7 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
         public void onClick(View v) {
             Intent intent = new Intent(getActivity(), MusicPlayService.class);
             if (mSong.getType() == MusicTypeEnum.ONLINE) {
-                intent.setAction(Actions.ACTION_TOGGLE);
-                intent.putExtras(initDataCurrentPlay());
+                intent.setAction(Actions.ACTION_PLAY_PAUSE);
             } else {
                 intent.setAction(Actions.ACTION_PLAY_PAUSE);
                 intent.putExtra(Extras.KEY_MODE_OFFLINE, true);
@@ -243,9 +261,11 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
             if (isPlayState) {
                 playPauseDrawable.transformToPause(true);
                 playPauseDrawable.transformToPlay(true);
+                isPlayState = false;
             } else {
                 playPauseDrawable.transformToPlay(true);
                 playPauseDrawable.transformToPause(true);
+                isPlayState = true;
             }
         }
     };

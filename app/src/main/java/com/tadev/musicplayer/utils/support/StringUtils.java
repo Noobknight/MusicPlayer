@@ -15,4 +15,8 @@ public class StringUtils {
     public static String getStringRes(int idStringRes) {
         return sContext.getResources().getString(idStringRes);
     }
+
+    public static String[] getStringArray(int idStringArray){
+        return sContext.getResources().getStringArray(idStringArray);
+    }
 }

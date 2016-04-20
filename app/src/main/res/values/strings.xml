@@ -77,4 +77,22 @@
     <string name="unknown">Unknow</string>
     <string name="cancel_dialog">Hủy Bỏ</string>
 
+    <string name="positive_dialog">Cài Đặt</string>
+    <string name="negative_dialog">Hủy Bỏ</string>
+
+    <string name="title_dialog_network">Mạng</string>
+    <string name="title_dialog_warning">Cảnh Báo</string>
+    <string name="msg_network_not_found">Không tìm thấy Internet</string>
+    <string name="msg_network_change">Bạn vừa chuyển mạng về 3G</string>
+    <string name="vietnam_region">VIỆT NAM</string>
+    <string name="us_region">CHÂU ÂU</string>
+    <string name="korea_region">HÀN QUỐC</string>
+
+
+    <string-array name="category_video">
+        <item>@string/vietnam_region</item>
+        <item>@string/us_region</item>
+        <item>@string/korea_region</item>
+    </string-array>
+
 </resources>

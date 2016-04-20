@@ -20,22 +20,14 @@
                         android:id="@+id/music_us_uk"
                         android:icon="@drawable/ic_three"
                         android:title="@string/drawer_us_uk_music" />
+
+                    <item
+                        android:id="@+id/music_video"
+                        android:icon="@drawable/ic_music_video_black_24dp"
+                        android:title="@string/drawer_video" />
                 </group>
             </menu>
         </item>
-        <item
-            android:id="@+id/music_video"
-            android:icon="@drawable/ic_music_video_black_24dp"
-            android:title="@string/drawer_video" />
-        <item
-            android:id="@+id/music_artist"
-            android:icon="@drawable/icon_artist"
-            android:title="@string/drawer_artist" />
-        <item
-            android:id="@+id/music_ranking"
-            android:icon="@drawable/icon_rankings"
-            android:title="@string/drawer_rankings" />
-
         <item android:title="@string/drawer_header_of_me">
             <menu>
                 <group android:checkableBehavior="single">

@@ -4,18 +4,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.common.Api;
 import com.tadev.musicplayer.fragments.VideoFragment;
+import com.tadev.musicplayer.utils.support.StringUtils;
 
 /**
  * Created by Iris Louis on 13/04/2016.
  */
 public class BaseViewPagerAdapter extends FragmentStatePagerAdapter {
     private final String TAG = "BaseViewPagerAdapter";
-    private final String[] title = {"VIỆT NAM", "CHÂU ÂU", "HÀN QUỐC"};
+    private String[] title = null;
 
     public BaseViewPagerAdapter(FragmentManager fm) {
         super(fm);
+        title = StringUtils.getStringArray(R.array.category_video);
     }
 
     @Override
