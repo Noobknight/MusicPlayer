@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/lrlSetting"
+    android:background="@drawable/ic_play_page_default_bg"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:gravity="center_horizontal"
+        android:text="@string/app_settings"
+        android:textColor="@color/material_white"
+        android:textSize="@dimen/md_styled_text_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/list_type_music"
+            android:textColor="@color/material_white"
+            android:textSize="@dimen/text_size_common" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/fragment_setting_spnQuality"
+            android:layout_width="fill_parent"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="@string/app_language"
+        android:textColor="@color/material_white"
+        android:textSize="@dimen/language_title_setting" />
+
+    <RadioGroup
+        android:id="@+id/fragment_setting_rdgLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/fragment_setting_rdbVietNam"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:checked="true"
+            android:text="@string/language_vi"
+            android:textColor="@color/material_red_500" />
+
+        <RadioButton
+            android:id="@+id/fragment_setting_rdbEnglish"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/language_en"
+            android:textColor="@color/material_red_500" />
+    </RadioGroup>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/fragment_setting_btnApply"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@color/material_lightBlue_500"
+        android:text="@string/apply_setting" />
+</LinearLayout>

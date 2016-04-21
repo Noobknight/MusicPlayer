@@ -24,5 +24,7 @@
     <dimen name="card_elevation">10dp</dimen>
 
     <dimen name="padding_sliding_tab">7dp</dimen>
+
+    <dimen name="language_title_setting">17sp</dimen>
     
 </resources>

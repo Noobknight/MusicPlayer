@@ -11,6 +11,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.tadev.musicplayer.utils.support.Utils;
+
 /**
  * Created by Iris Louis on 17/04/2016.
  */
@@ -87,6 +89,10 @@ public class StatusBarCompat {
         translucentStatusBar(activity, false);
     }
 
+    public static void translucentStatusBar(Activity activity, int colorTransparent, int percent) {
+        translucentStatusBar(activity, false, colorTransparent, percent);
+    }
+
     /**
      * change to full screen mode
      *
@@ -115,6 +121,53 @@ public class StatusBarCompat {
                     window.setStatusBarColor(Color.parseColor("#00000000"));
                 } else {
                     window.setStatusBarColor(Color.parseColor("#55000000"));
+                }
+                //must call requestLayout, otherwise it will have space in screen bottom
+                if (mChildView != null) {
+                    ViewCompat.requestApplyInsets(mChildView);
+                }
+            } else {
+                if (mChildView != null && mChildView.getLayoutParams() != null && mChildView.getLayoutParams().height == statusBarHeight) {
+                    //Before LOLLIPOP need remove fake status bar view.
+                    mContentView.removeView(mChildView);
+                    mChildView = mContentView.getChildAt(0);
+                }
+                if (mChildView != null) {
+                    FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mChildView.getLayoutParams();
+                    //cancel the margin top
+                    if (lp != null && lp.topMargin >= statusBarHeight) {
+                        lp.topMargin -= statusBarHeight;
+                        mChildView.setLayoutParams(lp);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void translucentStatusBar(Activity activity, boolean hideStatusBarBackground,
+                                            int colorTransparent, int percent) {
+        Window window = activity.getWindow();
+        ViewGroup mContentView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
+
+        //set child View not fill the system window
+        View mChildView = mContentView.getChildAt(0);
+        if (mChildView != null) {
+            ViewCompat.setFitsSystemWindows(mChildView, false);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int statusBarHeight = getStatusBarHeight(activity);
+
+            //First translucent status bar.
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                //After LOLLIPOP just set LayoutParams.
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                if (hideStatusBarBackground) {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    window.setStatusBarColor(Color.parseColor("#00000000"));
+                } else {
+                    window.setStatusBarColor(Color.parseColor(Utils.getColorTransparent(colorTransparent, percent)));
                 }
                 //must call requestLayout, otherwise it will have space in screen bottom
                 if (mChildView != null) {

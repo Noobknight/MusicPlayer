@@ -2,6 +2,7 @@ package com.tadev.musicplayer.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,6 +22,7 @@ import com.tadev.musicplayer.models.MusicOffline;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.services.loaders.MediaStoreLoader;
 import com.tadev.musicplayer.utils.actions.Actions;
+import com.tadev.musicplayer.utils.support.ScreenUtils;
 import com.tadev.musicplayer.utils.support.StringUtils;
 
 import java.util.ArrayList;
@@ -74,6 +76,11 @@ public class MusicOfflineFragment extends BaseFragment implements
     private void initToolbar() {
         mActivityMain.getToolbar().setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
         mActivityMain.getToolbar().setTitle(StringUtils.getStringRes(R.string.category_music_offline));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int statusBarHeight = ScreenUtils.getSystemBarHeight(getActivity());
+            mRecyclerView.setPadding(0, statusBarHeight, 0, 0);
+
+        }
     }
 
     @Override

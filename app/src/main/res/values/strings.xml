@@ -8,47 +8,47 @@
 
     <string name="video_rate">HD 1080p</string>
 
-    <string name="drawer_header_of_me">Của Tôi</string>
-    <string name="drawer_favorite">Yêu Thích</string>
+    <string name="drawer_header_of_me">My Category</string>
+    <string name="drawer_favorite">Favorite</string>
 
-    <string name="drawer_header_music">Thể Loại</string>
-    <string name="drawer_vietnam_music">Việt Nam</string>
+    <string name="drawer_header_music">Kind Of Music</string>
+    <string name="drawer_vietnam_music">Viet Nam</string>
     <string name="drawer_us_uk_music">US-UK</string>
-    <string name="drawer_korea_music">Hàn Quốc</string>
+    <string name="drawer_korea_music">Korea</string>
     <string name="drawer_china_music">Trung Quốc</string>
-    <string name="drawer_artist">Nghệ Sĩ</string>
-    <string name="drawer_rankings">Bảng Xếp Hạng</string>
-    <string name="drawer_offline">Nhạc Offline</string>
-    <string name="drawer_settings">Cài Đặt</string>
+    <string name="drawer_artist">Artist</string>
+    <string name="drawer_rankings">Rankings</string>
+    <string name="drawer_offline">Music Offline</string>
+    <string name="drawer_settings">Settings</string>
     <string name="drawer_video">Video</string>
-    <string name="no_data_available">Không có dữ liệu</string>
+    <string name="no_data_available">Data not found !!!</string>
 
     <string name="action_favorite">Favorite</string>
 
-    <string name="txtLoading">Đang tải&#8230;</string>
-    <string name="category_vietnam">Nhạc Việt</string>
-    <string name="category_korea">Nhạc Hàn</string>
+    <string name="txtLoading">Downloading…</string>
+    <string name="category_vietnam">VietNam</string>
+    <string name="category_korea">Korea</string>
     <string name="time_update">00:00:00</string>
-    <string name="category_us_uk">Nhạc Châu Âu</string>
-    <string name="music_year">Năm phát hành: 2016</string>
+    <string name="category_us_uk">Europe</string>
+    <string name="music_year">Year published : 2016</string>
 
-    <string name="lyric_empty">Bài hát hiện tại chưa hỗ trợ lời !!!</string>
+    <string name="lyric_empty">Lyric not found !!!</string>
 
-    <string name="msg_lyric_not_found">Không tìm thấy lời bài hát !!</string>
+    <string name="msg_lyric_not_found">Lyric not found !!</string>
 
-    <string name="msg_lyric_artist">Nghệ Sĩ : </string>
-    <string name="msg_lyric_year">Năm phát hành : </string>
+    <string name="msg_lyric_artist">Artist :</string>
+    <string name="msg_lyric_year">Year published :</string>
 
-    <string name="msg_composer">Sáng tác : </string>
+    <string name="msg_composer">Composer :</string>
 
     <string name="action_pause">pause</string>
     <string name="action_play_pause">play_pause</string>
     <string name="action_next">action_next</string>
     <string name="action_previous">action_previous</string>
 
-    <string name="action_download_comfirm">Chọn</string>
+    <string name="action_download_comfirm">Choose</string>
     <string name="action_download_close">x</string>
-    <string name="dialog_title_download">Tải Nhạc</string>
+    <string name="dialog_title_download">Download Music</string>
     <string name="dialog_close">@android:string/cancel</string>
 
 
@@ -61,7 +61,7 @@
     <string name="txt320FileSize">MP3&#8211;320 size : </string>
     <string name="txt500FileSize">M4A size : </string>
     <string name="txt1000FileSize">LOSSLESS size : </string>
-    <string name="txtEmptyFileSizeDownload">Chưa hỗ trợ</string>
+    <string name="txtEmptyFileSizeDownload">Not supported</string>
 
 
     <dimen name="md_styled_text_title">30sp</dimen>
@@ -69,30 +69,57 @@
     <dimen name="md_styled_dialog_header">120dp</dimen>
     <dimen name="md_styled_pic_size">44dp</dimen>
 
-    <string name="delete_selected">Xóa Mục Đã Chọn</string>
-    <string name="favorite_delete">Xóa</string>
-    <string name="category_favorite">Yêu Thích</string>
-    <string name="category_music_offline">Nhạc Của Bạn</string>
+    <string name="delete_selected">Delete rows selected</string>
+    <string name="favorite_delete">Delete</string>
+    <string name="category_favorite">Favorite</string>
+    <string name="category_music_offline">Offline</string>
 
     <string name="unknown">Unknow</string>
-    <string name="cancel_dialog">Hủy Bỏ</string>
+    <string name="cancel_dialog">Cancel</string>
 
-    <string name="positive_dialog">Cài Đặt</string>
-    <string name="negative_dialog">Hủy Bỏ</string>
+    <string name="positive_dialog">Settings</string>
+    <string name="negative_dialog">Cancel</string>
 
-    <string name="title_dialog_network">Mạng</string>
-    <string name="title_dialog_warning">Cảnh Báo</string>
-    <string name="msg_network_not_found">Không tìm thấy Internet</string>
-    <string name="msg_network_change">Bạn vừa chuyển mạng về 3G</string>
-    <string name="vietnam_region">VIỆT NAM</string>
-    <string name="us_region">CHÂU ÂU</string>
-    <string name="korea_region">HÀN QUỐC</string>
+    <string name="title_dialog_network">Network</string>
+    <string name="title_dialog_warning">Warning</string>
+    <string name="msg_network_not_found">Network not found !!!</string>
+    <string name="msg_network_change">You\'ve changed Network to 3G </string>
+    <string name="vietnam_region">VIET NAM</string>
+    <string name="us_region">EUROPE</string>
+    <string name="korea_region">KOREA</string>
 
+    <string name="list_type_music">Music Quality : </string>
+    <string name="app_settings">Application Settings</string>
+    <string name="language_vi">Việt Nam</string>
+    <string name="language_en">English</string>
+    <string name="app_language">Language For Application</string>
+    <string name="apply_setting">Apply Settings</string>
+
+    <string name="music_128">128Kbps</string>
+    <string name="music_320">320Kbps</string>
+    <string name="music_m4a">500Kbps</string>
+    <string name="music_lossless">1000Kbps</string>
+
+    <string name="save_setting_success">Saved Success</string>
+
+    <string name="dialog_loading">Loading&#8230;</string>
+
+    <string name="fragment_setting">Settings</string>
+
+    <string name="back_press_status">Double Back press to exit App !!!</string>
 
     <string-array name="category_video">
         <item>@string/vietnam_region</item>
         <item>@string/us_region</item>
         <item>@string/korea_region</item>
     </string-array>
+    <string-array name="music_quality">
+        <item>@string/music_128</item>
+        <item>@string/music_320</item>
+        <item>@string/music_m4a</item>
+        <item>@string/music_lossless</item>
+    </string-array>
+
+
 
 </resources>

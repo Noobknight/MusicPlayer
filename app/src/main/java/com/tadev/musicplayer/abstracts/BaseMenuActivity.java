@@ -19,7 +19,7 @@ import com.tadev.musicplayer.utils.support.DialogUtils;
 /**
  * Created by Iris Louis on 25/03/2016.
  */
-public abstract class BaseMenuActivity extends AppCompatActivity implements DialogUtils.DialogListener{
+public abstract class BaseMenuActivity extends AppCompatActivity implements DialogUtils.DialogListener {
     private Toolbar toolbar;
     public FragmentManager mFragmentManager;
     public FragmentTransaction transaction;
@@ -101,15 +101,18 @@ public abstract class BaseMenuActivity extends AppCompatActivity implements Dial
 
     private BusWrapper getOttoBusWrapper(final Bus bus) {
         return new BusWrapper() {
-            @Override public void register(Object object) {
+            @Override
+            public void register(Object object) {
                 bus.register(object);
             }
 
-            @Override public void unregister(Object object) {
+            @Override
+            public void unregister(Object object) {
                 bus.unregister(object);
             }
 
-            @Override public void post(Object event) {
+            @Override
+            public void post(Object event) {
                 bus.post(event);
             }
         };

@@ -23,10 +23,10 @@ import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.nineoldandroids.view.ViewHelper;
 import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.R;
-import com.tadev.musicplayer.callbacks.OnRegisterCallback;
 import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
 import com.tadev.musicplayer.services.loaders.MusicLoaderTask;
 import com.tadev.musicplayer.supports.design.MaterialImageHeader;
+import com.tadev.musicplayer.utils.support.StringUtils;
 import com.tadev.musicplayer.utils.support.Utils;
 
 /**
@@ -48,7 +48,6 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
     protected BaseMenuActivity baseMenuActivity;
     protected OnPlayBarBottomListener mOnPlayBarBottomListener;
     private int flexibleSpaceImageHeight;
-    private OnRegisterCallback mOnRegisterCallback;
 
 
     @Override
@@ -127,7 +126,6 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
             try {
                 mOnPlayBarBottomListener = (OnPlayBarBottomListener) baseMenu;
                 baseMenuActivity = (BaseMenuActivity) baseMenu;
-                mOnRegisterCallback = (OnRegisterCallback) baseMenu;
             } catch (ClassCastException e) {
                 throw new ClassCastException(baseMenu.toString() + " must be implement OnPlayBarBottomListener");
             }
@@ -213,7 +211,7 @@ public abstract class BaseMusicFragmentDrawer extends FlexibleBaseFragment<Obser
 
     @Override
     public void onPreparing() {
-        mDialogLoading = ProgressDialog.show(getActivity(), "", "Loading...");
+        mDialogLoading = ProgressDialog.show(getActivity(), "", StringUtils.getStringRes(R.string.dialog_loading));
     }
 
     protected abstract String TAG();

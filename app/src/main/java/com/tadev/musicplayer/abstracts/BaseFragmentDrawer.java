@@ -16,7 +16,6 @@ import java.util.List;
  * Created by Iris Louis on 29/03/2016.
  */
 public abstract class BaseFragmentDrawer extends Fragment implements BaseMusicAdapter.OnItemClickListener{
-    private BaseMusicAdapter adapter;
 
     protected int getActionBarSize() {
         Activity activity = getActivity();
@@ -41,7 +40,7 @@ public abstract class BaseFragmentDrawer extends Fragment implements BaseMusicAd
     }
 
     protected void setDummyDataWithHeader(RecyclerView recyclerView, View headerView, List musics) {
-        adapter = new BaseMusicAdapter(getActivity(), musics, headerView, this);
+        BaseMusicAdapter adapter = new BaseMusicAdapter(getActivity(), musics, headerView, this);
         recyclerView.setAdapter(adapter);
     }
 

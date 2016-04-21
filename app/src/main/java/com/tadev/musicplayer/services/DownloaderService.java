@@ -139,10 +139,8 @@ public class DownloaderService extends Service {
         @Override
         public void handleMessage(Message msg) {
             DownloaderService mTarget = mService.get();
-            Log.i(TAG, "handleMessage msg " + msg);
             switch (msg.what) {
                 case Extras.MSG_UPDATING:
-                    Log.i(TAG, "handleMessage progress " + msg.arg1);
                     mTarget.updateNotification(NOTIFICATION_ID, msg.arg1);
                     break;
                 case Extras.MSG_SUCCESSED:

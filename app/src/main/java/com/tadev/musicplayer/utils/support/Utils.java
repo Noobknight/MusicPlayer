@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils;
 
 import com.tadev.musicplayer.MainActivity;
 import com.tadev.musicplayer.R;
+import com.tadev.musicplayer.activities.ExiterActivity;
 import com.tadev.musicplayer.constant.Constants;
 
 import java.text.DecimalFormat;
@@ -177,6 +178,93 @@ public class Utils {
             }
         });
         view.startAnimation(slideAnim);
+    }
+
+
+    public static String getColorTransparent(int baseColor, int percent) {
+        String colorPrimary = Integer.toHexString(ContextCompat.getColor(sContext, baseColor));
+        colorPrimary = colorPrimary.substring(2).toUpperCase();
+        String hexTransparent;
+        switch (percent) {
+            case 0:
+                hexTransparent = "#00";
+                break;
+            case 5:
+                hexTransparent = "#0D";
+                break;
+            case 10:
+                hexTransparent = "#1A";
+                break;
+            case 15:
+                hexTransparent = "#26";
+                break;
+            case 20:
+                hexTransparent = "#33";
+                break;
+            case 25:
+                hexTransparent = "#40";
+                break;
+            case 30:
+                hexTransparent = "#4D";
+                break;
+            case 35:
+                hexTransparent = "#59";
+                break;
+            case 40:
+                hexTransparent = "#66";
+                break;
+            case 45:
+                hexTransparent = "#73";
+                break;
+            case 50:
+                hexTransparent = "#80";
+                break;
+            case 55:
+                hexTransparent = "#8C";
+                break;
+            case 60:
+                hexTransparent = "#99";
+                break;
+            case 65:
+                hexTransparent = "#A6";
+                break;
+            case 70:
+                hexTransparent = "#B3";
+                break;
+            case 75:
+                hexTransparent = "#BF";
+                break;
+            case 80:
+                hexTransparent = "#CC";
+                break;
+            case 85:
+                hexTransparent = "#D9";
+                break;
+            case 90:
+                hexTransparent = "#E6";
+                break;
+            case 95:
+                hexTransparent = "#F2";
+                break;
+            case 100:
+                hexTransparent = "#FF";
+                break;
+            default:
+                hexTransparent = "#FF";
+                break;
+        }
+        return hexTransparent + colorPrimary;
+    }
+
+
+    public static void finishAndHide(Context context) {
+        final Intent relaunch = new Intent(context, ExiterActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK // CLEAR_TASK requires
+                        // this
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK // finish everything
+                        // else in the task
+                        | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS); // hide
+        context.startActivity(relaunch);
     }
 
 }

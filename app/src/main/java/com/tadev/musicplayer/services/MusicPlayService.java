@@ -33,6 +33,7 @@ import com.tadev.musicplayer.MusicPlayerApplication;
 import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.constant.Extras;
 import com.tadev.musicplayer.constant.MusicTypeEnum;
+import com.tadev.musicplayer.fragments.SettingFragment;
 import com.tadev.musicplayer.helpers.NotificationHelper;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
 import com.tadev.musicplayer.metadata.MusicContainer;
@@ -44,6 +45,7 @@ import com.tadev.musicplayer.receivers.RemoteControlReceiver;
 import com.tadev.musicplayer.receivers.UpdateSeekbarReceiver;
 import com.tadev.musicplayer.utils.actions.Actions;
 import com.tadev.musicplayer.utils.support.CoverLoader;
+import com.tadev.musicplayer.utils.support.SharedPrefsUtils;
 import com.tadev.musicplayer.utils.support.StringUtils;
 import com.tadev.musicplayer.utils.support.Utils;
 
@@ -117,12 +119,29 @@ public class MusicPlayService extends Service implements
 
     public PlaybackStateCompat playbackState(int state, long position, float playbackSpeed) {
         return new PlaybackStateCompat.Builder()
-                .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                        | PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
+//                .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+//                        | PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
+                .setActions(PlaybackStateCompat.ACTION_PLAY |
+                        PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
+                        PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
                 .setState(state, position, playbackSpeed)
                 .build();
     }
 
+    private long getAvailableActions() {
+        long actions =
+                PlaybackStateCompat.ACTION_PLAY |
+                        PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
+                        PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT;
+        if (isPlaying()) {
+            actions |= PlaybackStateCompat.ACTION_PAUSE;
+        }
+        return actions;
+    }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -317,20 +336,25 @@ public class MusicPlayService extends Service implements
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         isPlayOffline = mCurrentSongPlay.song.getType() == MusicTypeEnum.LOCAL;
         if (isPlayOffline) {
-            builder.addAction(R.drawable.ic_previous, StringUtils.getStringRes(R.string.action_previous),
+            builder.addAction(R.drawable.ic_skip_previous_white_36dp, StringUtils.getStringRes(R.string.action_previous),
                     NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_PREVIOUS));
             builder.addAction(stateButton, StringUtils.getStringRes(R.string.action_play_pause),
                     NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
-            builder.addAction(R.drawable.ic_next, StringUtils.getStringRes(R.string.action_next),
+            builder.addAction(R.drawable.ic_skip_next_white_36dp, StringUtils.getStringRes(R.string.action_next),
                     NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_NEXT));
         } else {
             builder.addAction(stateButton, StringUtils.getStringRes(R.string.action_play_pause),
                     NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
         }
-        builder.setStyle(new NotificationCompat.MediaStyle()
-                .setShowActionsInCompactView(0)
-                .setShowCancelButton(true)
-                .setCancelButtonIntent(NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_STOP)));
+        NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
+        if (isPlayOffline) {
+            style.setShowActionsInCompactView(0, 1, 2);
+        } else {
+            style.setShowActionsInCompactView(0);
+        }
+        style.setShowCancelButton(true)
+                .setCancelButtonIntent(NotificationHelper.getActionIntent(this, KeyEvent.KEYCODE_MEDIA_STOP));
+        builder.setStyle(style);
         return builder.build();
     }
 
@@ -401,7 +425,9 @@ public class MusicPlayService extends Service implements
                 hasDataSource = true;
                 isPlayOffline = false;
                 isPause = false;
-                mListener.currentSongPlay(mCurrentSongPlay);
+                if (mListener != null) {
+                    mListener.currentSongPlay(mCurrentSongPlay);
+                }
                 getDuration();
                 musicContainer.setCurrentSongPlay(mCurrentSongPlay);
             } catch (IOException e) {
@@ -581,6 +607,16 @@ public class MusicPlayService extends Service implements
         }
 
         @Override
+        public void onSkipToNext() {
+            next();
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            previous();
+        }
+
+        @Override
         public void onSeekTo(long pos) {
             seekTo((int) pos);
         }
@@ -629,7 +665,7 @@ public class MusicPlayService extends Service implements
                         if (isPlayOffline) {
                             playOffline(indexOfList);
                         } else {
-                            play(mCurrentSongPlay.song.getFileUrl());
+                            play(urlPlay());
                         }
                     }
                     break;
@@ -795,8 +831,21 @@ public class MusicPlayService extends Service implements
             mCurrentSongPlay.musicId = String.valueOf(offline.getId());
         } else {
             mCurrentSongPlay = intent.getExtras().getParcelable(Extras.KEY_PASS_DATA_SERVICE);
+
         }
     }
+
+    public String urlPlay() {
+        int index = SharedPrefsUtils.getIntegerPreference(this, SettingFragment.KEY_POSITION_QUALITY, 0);
+        String[] fileUrl = new String[]{mCurrentSongPlay.song.getFileUrl(), mCurrentSongPlay.song.getFile320Url(),
+                mCurrentSongPlay.song.getFileM4aUrl(), mCurrentSongPlay.song.getFileLossless()};
+        String url = fileUrl[index];
+        while (url.isEmpty()) {
+            url = fileUrl[index - 1];
+        }
+        return url;
+    }
+
 
     @Override
     public boolean onUnbind(Intent intent) {

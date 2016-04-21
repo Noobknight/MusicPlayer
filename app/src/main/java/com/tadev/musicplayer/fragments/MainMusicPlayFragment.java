@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
@@ -42,10 +43,12 @@ import com.tadev.musicplayer.receivers.MainMusicPlayReceiver;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.services.loaders.MusicInfoLoaderTask;
 import com.tadev.musicplayer.supports.design.SwipeViewPager;
-import com.tadev.musicplayer.utils.actions.Actions;
 import com.tadev.musicplayer.supports.design.blurry.BlurImageUtils;
-import com.tadev.musicplayer.utils.support.Utils;
 import com.tadev.musicplayer.supports.design.viewpager.CircleIndicator;
+import com.tadev.musicplayer.utils.actions.Actions;
+import com.tadev.musicplayer.utils.support.ScreenUtils;
+import com.tadev.musicplayer.utils.support.StringUtils;
+import com.tadev.musicplayer.utils.support.Utils;
 
 /**
  * Created by Iris Louis on 01/04/2016.
@@ -181,7 +184,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
                             boolean isImageEmpty = currentSongPlay.getMusicImg() == null
                                     || currentSongPlay.getMusicImg().isEmpty();
                             if (isImageEmpty) {
-                                Glide.with(context).load(R.drawable.ic_background_blur).asBitmap()
+                                Glide.with(context).load(R.drawable.bg_default_empty).asBitmap()
                                         .into(target);
                             } else {
                                 Glide.with(context.getApplicationContext()).load(currentSongPlay.getMusicImg())
@@ -255,7 +258,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
                                         boolean isImageEmpty = song.getMusicImg() == null
                                                 || song.getMusicImg().isEmpty();
                                         if (isImageEmpty) {
-                                            Glide.with(getActivity()).load(R.drawable.ic_background_blur).asBitmap()
+                                            Glide.with(getActivity()).load(R.drawable.bg_default_empty).asBitmap()
                                                     .into(target);
                                         } else {
                                             Glide.with(getActivity().getApplicationContext()).load(song.getMusicImg())
@@ -277,18 +280,22 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_playing_menu, menu);
-        String id = "";
-        if (isStartFromBottom) {
-            id = String.valueOf(mService.getCurrentId());
+        String id;
+        if (mService.isPlayOffline()) {
+            menu.findItem(R.id.action_favorite).setVisible(false);
         } else {
-            id = modelMusic.getMusic_id();
-        }
-        if (!TextUtils.isEmpty(id)) {
-            isFavorite = dbFavoriteManager.isFavorite(id);
-            if (isFavorite) {
-                menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_favorite_red_a700_24dp);
+            if (isStartFromBottom) {
+                id = String.valueOf(mService.getCurrentId());
             } else {
-                menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_favorite_border_red_700_24dp);
+                id = modelMusic.getMusic_id();
+            }
+            if (!TextUtils.isEmpty(id)) {
+                isFavorite = dbFavoriteManager.isFavorite(id);
+                if (isFavorite) {
+                    menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_favorite_red_a700_24dp);
+                } else {
+                    menu.findItem(R.id.action_favorite).setIcon(R.drawable.ic_favorite_border_red_700_24dp);
+                }
             }
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -300,6 +307,10 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
             ActionBar actionBar = baseMenuActivity.getSupportActionBar();
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int statusBarHeight = ScreenUtils.getStatusBarHeight(context);
+            toolbar.setPadding(0, statusBarHeight, 0, 0);
         }
     }
 
@@ -318,7 +329,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
                             boolean isImageEmpty = musicReponse.getMusicImg() == null
                                     || musicReponse.getMusicImg().isEmpty();
                             if (isImageEmpty) {
-                                Glide.with(context).load(R.drawable.ic_background_blur).asBitmap()
+                                Glide.with(context).load(R.drawable.bg_default_empty).asBitmap()
                                         .into(target);
                             } else {
                                 Glide.with(context.getApplicationContext()).load(musicReponse.getMusicImg())
@@ -348,7 +359,7 @@ public class MainMusicPlayFragment extends BaseFragment implements OnMusicInfoLo
 
     @Override
     public void onPreparing() {
-        dialogLoading = ProgressDialog.show(context, "", "Waiting...");
+        dialogLoading = ProgressDialog.show(context, "", StringUtils.getStringRes(R.string.dialog_loading));
     }
 
 

@@ -155,12 +155,6 @@ public class VideoFragment extends BaseFragment implements VideoLoaderTask.Video
         intent.putExtra(VideoPlayingActivity.KEY_URL_TITLE, urlTitle);
         context.startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-//        baseMenuActivity.transaction = baseMenuActivity.getSupportFragmentManager().beginTransaction();
-//        baseMenuActivity.transaction.setCustomAnimations(R.anim.transition_fade_in, R.anim.transition_fade_out,
-//                R.anim.transition_fade_in, R.anim.transition_fade_out);
-//        baseMenuActivity.transaction.replace(R.id.container, VideoPlayingFragment.newInstance(id, urlTitle))
-//                .addToBackStack(VideoPlayingFragment.TAG);
-//        baseMenuActivity.transaction.commit();
     }
 
     @Override

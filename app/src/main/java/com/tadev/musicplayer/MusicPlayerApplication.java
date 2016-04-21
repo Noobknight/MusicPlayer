@@ -1,16 +1,21 @@
 package com.tadev.musicplayer;
 
 import android.app.Application;
+import android.util.Log;
 
+import com.tadev.musicplayer.helpers.LocaleHelper;
+import com.tadev.musicplayer.interfaces.OnLanguageChangeListener;
 import com.tadev.musicplayer.metadata.MusicContainer;
 import com.tadev.musicplayer.provider.DBFavoriteManager;
 import com.tadev.musicplayer.utils.support.StringUtils;
 import com.tadev.musicplayer.utils.support.Utils;
 
+import java.util.Locale;
+
 /**
  * Created by Iris Louis on 30/03/2016.
  */
-public class MusicPlayerApplication extends Application {
+public class MusicPlayerApplication extends Application implements OnLanguageChangeListener {
     private final String TAG = "MusicPlayerApplication";
     private MusicContainer musicContainer;
     private DBFavoriteManager dbFavoriteManager;
@@ -23,11 +28,15 @@ public class MusicPlayerApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.i(TAG, "onCreate ");
         sInstance = this;
         sInstance.initMusicContainer();
         dbFavoriteManager = DBFavoriteManager.getInstance(sInstance);
         StringUtils.init(this);
         Utils.init(this);
+        String language = Locale.getDefault().getLanguage();
+        Log.i(TAG, "onCreate " + language);
+        LocaleHelper.onCreate(this, language);
     }
 
     private void initMusicContainer() {
@@ -42,4 +51,7 @@ public class MusicPlayerApplication extends Application {
         return dbFavoriteManager;
     }
 
+    @Override
+    public void onLanguageChanged() {
+    }
 }

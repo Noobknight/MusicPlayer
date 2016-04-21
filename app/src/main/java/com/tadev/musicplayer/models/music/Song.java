@@ -3,7 +3,10 @@ package com.tadev.musicplayer.models.music;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tadev.musicplayer.R;
 import com.tadev.musicplayer.constant.MusicTypeEnum;
+import com.tadev.musicplayer.utils.support.SharedPrefsUtils;
+import com.tadev.musicplayer.utils.support.StringUtils;
 
 /**
  * Created by Iris Louis on 02/04/2016.
@@ -116,6 +119,7 @@ public class Song implements Parcelable {
         this.musicLength = musicLength;
         return this;
     }
+
 
     public String getMusicFilesize() {
         return musicFilesize;

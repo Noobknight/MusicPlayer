@@ -1,6 +1,7 @@
 package com.tadev.musicplayer.fragments;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import com.tadev.musicplayer.interfaces.RetrieveListener;
 import com.tadev.musicplayer.models.BaseModel;
 import com.tadev.musicplayer.models.SongFavorite;
 import com.tadev.musicplayer.provider.DBFavoriteManager;
+import com.tadev.musicplayer.utils.support.ScreenUtils;
 import com.tadev.musicplayer.utils.support.StringUtils;
 
 import java.util.ArrayList;
@@ -80,6 +82,9 @@ public class FavoriteFragment extends BaseFragment implements RetrieveListener
     private void initToolbar() {
         mActivityMain.getToolbar().setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
         mActivityMain.getToolbar().setTitle(StringUtils.getStringRes(R.string.category_favorite));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mRecyclerView.setPadding(0, ScreenUtils.getStatusBarHeight(context), 0, 0);
+        }
     }
 
     @Override

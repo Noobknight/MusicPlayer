@@ -1,0 +1,108 @@
+<resources>
+    <string name="app_name">MusicPlayer</string>
+
+    <string name="music_name">Tình Yêu Chắp Vá</string>
+    <string name="music_singer">Mr Siro</string>
+    <string name="music_download">81.021</string>
+    <string name="music_type">Lossless</string>
+
+    <string name="video_rate">HD 1080p</string>
+
+    <string name="drawer_header_of_me">Của Tôi</string>
+    <string name="drawer_favorite">Yêu Thích</string>
+
+    <string name="drawer_header_music">Thể Loại</string>
+    <string name="drawer_vietnam_music">Việt Nam</string>
+    <string name="drawer_us_uk_music">US-UK</string>
+    <string name="drawer_korea_music">Hàn Quốc</string>
+    <string name="drawer_china_music">Trung Quốc</string>
+    <string name="drawer_artist">Nghệ Sĩ</string>
+    <string name="drawer_rankings">Bảng Xếp Hạng</string>
+    <string name="drawer_offline">Nhạc Offline</string>
+    <string name="drawer_settings">Cài Đặt</string>
+    <string name="drawer_video">Video</string>
+    <string name="no_data_available">Không có dữ liệu</string>
+
+    <string name="action_favorite">Yêu Thích</string>
+
+    <string name="txtLoading">Đang tải&#8230;</string>
+    <string name="category_vietnam">Nhạc Việt</string>
+    <string name="category_korea">Nhạc Hàn</string>
+    <string name="time_update">00:00:00</string>
+    <string name="category_us_uk">Nhạc Châu Âu</string>
+    <string name="music_year">Năm phát hành: 2016</string>
+
+    <string name="lyric_empty">Bài hát hiện tại chưa hỗ trợ lời !!!</string>
+
+    <string name="msg_lyric_not_found">Không tìm thấy lời bài hát !!</string>
+
+    <string name="msg_lyric_artist">Nghệ Sĩ : </string>
+    <string name="msg_lyric_year">Năm phát hành : </string>
+
+    <string name="msg_composer">Sáng tác : </string>
+
+    <string name="action_pause">pause</string>
+    <string name="action_play_pause">play_pause</string>
+    <string name="action_next">action_next</string>
+    <string name="action_previous">action_previous</string>
+
+    <string name="action_download_comfirm">Chọn</string>
+    <string name="action_download_close">x</string>
+    <string name="dialog_title_download">Tải Nhạc</string>
+    <string name="dialog_close">@android:string/cancel</string>
+
+
+    <string name="rdb_128">File MP3 128Kbps</string>
+    <string name="rdb_320">File MP3 320Kbps</string>
+    <string name="rdb_500">File M4A 500Kbps</string>
+    <string name="rdb_1000">File FLAC 1000Kbps</string>
+
+    <string name="txt128FileSize">MP3 size : </string>
+    <string name="txt320FileSize">MP3&#8211;320 size : </string>
+    <string name="txt500FileSize">M4A size : </string>
+    <string name="txt1000FileSize">LOSSLESS size : </string>
+    <string name="txtEmptyFileSizeDownload">Chưa hỗ trợ</string>
+
+
+    <dimen name="md_styled_text_title">30sp</dimen>
+    <dimen name="md_styled_text_description">18sp</dimen>
+    <dimen name="md_styled_dialog_header">120dp</dimen>
+    <dimen name="md_styled_pic_size">44dp</dimen>
+
+    <string name="delete_selected">Xóa Mục Đã Chọn</string>
+    <string name="favorite_delete">Xóa</string>
+    <string name="category_favorite">Yêu Thích</string>
+    <string name="category_music_offline">Nhạc Của Bạn</string>
+
+    <string name="unknown">Unknow</string>
+    <string name="cancel_dialog">Hủy Bỏ</string>
+
+    <string name="positive_dialog">Cài Đặt</string>
+    <string name="negative_dialog">Hủy Bỏ</string>
+
+    <string name="title_dialog_network">Mạng</string>
+    <string name="title_dialog_warning">Cảnh Báo</string>
+    <string name="msg_network_not_found">Không tìm thấy Internet</string>
+    <string name="msg_network_change">Bạn vừa chuyển mạng về 3G</string>
+    <string name="vietnam_region">VIỆT NAM</string>
+    <string name="us_region">CHÂU ÂU</string>
+    <string name="korea_region">HÀN QUỐC</string>
+
+
+    <string-array name="category_video">
+        <item>@string/vietnam_region</item>
+        <item>@string/us_region</item>
+        <item>@string/korea_region</item>
+    </string-array>
+    <string name="list_type_music">Chất Lượng</string>
+    <string name="app_settings">Cài Đặt Ứng Dụng</string>
+    <string name="app_language">Cài Đặt Ngôn Ngữ</string>
+    <string name="apply_setting">Lưu Cài Đặt</string>
+    <string name="language_en">English</string>
+    <string name="language_vi">Việt Nam</string>
+    <string name="save_setting_success">Lưu Thành Công</string>
+    <string name="dialog_loading">Đang tải#8230;</string>
+    <string name="fragment_setting">Cài Đặt</string>
+    <string name="back_press_status">Nhấn Back hai lần để thoát ứng dụng !!!</string>
+
+</resources>

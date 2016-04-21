@@ -3,13 +3,16 @@ package com.tadev.musicplayer.activities;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -17,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -38,15 +40,16 @@ public class VideoPlayingActivity extends BaseActivity implements VideoInfoLoade
     private final String TAG = "VideoPlayingActivity";
     public static final String KEY_ID = "_id";
     public static final String KEY_URL_TITLE = "url_title";
+    private final String KEY_POSITION = "position_video";
     private CustomVideoView mVideoView;
     private MediaController mMediaController;
     private VideoInfo mVideoInfo;
     private Toolbar toolbar;
     private ProgressBar mProgressBar;
     private LinearLayout viewLoading;
-    private RelativeLayout videoView;
+    private LinearLayout videoView;
     private FrameLayout flRoot;
-    private RelativeLayout.LayoutParams defaultVideoViewParams;
+    private FrameLayout.LayoutParams defaultVideoViewParams;
     private int defaultScreenOrientationMode;
     private TextView txtTitle, txtArtist, txtComposer, txtYear;
     private ImageView imgThumbnail;
@@ -56,11 +59,11 @@ public class VideoPlayingActivity extends BaseActivity implements VideoInfoLoade
 
     @Override
     protected void initView() {
-        StatusBarCompat.setStatusBarColor(this,Utils.getColorRes(R.color.colorPrimary));
+        StatusBarCompat.setStatusBarColor(this, Utils.getColorRes(R.color.colorPrimary));
         String[] data = getDataSent();
         mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         viewLoading = (LinearLayout) findViewById(R.id.activity_video_playing_loading);
-        videoView = (RelativeLayout) findViewById(R.id.lrl_videoView);
+        videoView = (LinearLayout) findViewById(R.id.lrl_videoView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mVideoView = (CustomVideoView) findViewById(R.id.activity_video_playing_videoView);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -75,6 +78,7 @@ public class VideoPlayingActivity extends BaseActivity implements VideoInfoLoade
         mMediaController.setAnchorView(mVideoView);
         mVideoView.setEnabled(false);
         initToolbar();
+
         new VideoInfoLoader(data[0], data[1], this).execute();
     }
 
@@ -90,19 +94,6 @@ public class VideoPlayingActivity extends BaseActivity implements VideoInfoLoade
         }
         txtArtist.setSelected(true);
         txtComposer.setSelected(true);
-//        mVideoView.setPlayPauseListener(new CustomVideoView.PlayPauseListener() {
-//            @Override
-//            public void onPlay() {
-//                mMediaController.hide();
-//                mVideoView.start();
-//            }
-//
-//            @Override
-//            public void onPause() {
-//                mMediaController.show();
-//                mVideoView.pause();
-//            }
-//        });
     }
 
     private void initToolbar() {
@@ -207,9 +198,6 @@ public class VideoPlayingActivity extends BaseActivity implements VideoInfoLoade
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mVideoView.isPlaying()) {
-                mVideoView.pause();
-            }
             makeVideoFullScreen();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             exitVideoFullScreen();
@@ -220,21 +208,20 @@ public class VideoPlayingActivity extends BaseActivity implements VideoInfoLoade
     // play video in fullscreen mode
     private void makeVideoFullScreen() {
         defaultScreenOrientationMode = getResources().getConfiguration().orientation;
-        defaultVideoViewParams = (RelativeLayout.LayoutParams) mVideoView.getLayoutParams();
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        defaultVideoViewParams = (FrameLayout.LayoutParams) mVideoView.getLayoutParams();
         toolbar.setVisibility(View.GONE);
         cardVideoDetail.setVisibility(View.GONE);
         mVideoView.postDelayed(new Runnable() {
 
             @Override
             public void run() {
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.MATCH_PARENT);
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT, Gravity.CENTER_VERTICAL);
                 mVideoView.setLayoutParams(params);
                 mVideoView.layout(10, 10, 10, 10);
             }
-        }, 700);
+        }, 200);
     }
 
 
@@ -243,7 +230,6 @@ public class VideoPlayingActivity extends BaseActivity implements VideoInfoLoade
         setRequestedOrientation(defaultScreenOrientationMode);
         toolbar.setVisibility(View.VISIBLE);
         cardVideoDetail.setVisibility(View.VISIBLE);
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         mVideoView.postDelayed(new Runnable() {
 
             @Override
@@ -251,7 +237,23 @@ public class VideoPlayingActivity extends BaseActivity implements VideoInfoLoade
                 mVideoView.setLayoutParams(defaultVideoViewParams);
                 mVideoView.layout(10, 10, 10, 10);
             }
-        }, 700);
+        }, 200);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_POSITION, mVideoView.getCurrentPosition());
+        mVideoView.pause();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            int position = savedInstanceState.getInt(KEY_POSITION);
+            mVideoView.seekTo(position);
+        }
     }
 
 
@@ -260,7 +262,7 @@ public class VideoPlayingActivity extends BaseActivity implements VideoInfoLoade
         public void onCallStateChanged(int state, String incomingNumber) {
             if (state == TelephonyManager.CALL_STATE_RINGING) {
                 //Incoming call: Pause music
-                if (mVideoView.isPlaying()&& mVideoView != null) {
+                if (mVideoView.isPlaying() && mVideoView != null) {
                     mVideoView.pause();
                 }
             } else if (state == TelephonyManager.CALL_STATE_IDLE) {
@@ -274,6 +276,7 @@ public class VideoPlayingActivity extends BaseActivity implements VideoInfoLoade
             super.onCallStateChanged(state, incomingNumber);
         }
     };
+
 
 
 }

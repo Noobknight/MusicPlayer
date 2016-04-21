@@ -4,14 +4,12 @@
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
 
     <style name="AppTheme" parent="AppBaseTheme">
-
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-
     </style>
 
 

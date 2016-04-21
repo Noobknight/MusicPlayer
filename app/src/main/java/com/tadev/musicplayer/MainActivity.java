@@ -31,19 +31,22 @@ import com.tadev.musicplayer.fragments.MusicOfflineFragment;
 import com.tadev.musicplayer.fragments.MusicUsUkFragment;
 import com.tadev.musicplayer.fragments.MusicVietNamFragment;
 import com.tadev.musicplayer.fragments.PlayBarBottomFragment;
+import com.tadev.musicplayer.fragments.SettingFragment;
 import com.tadev.musicplayer.fragments.VideoContainerFragment;
 import com.tadev.musicplayer.interfaces.IServicePlayer;
 import com.tadev.musicplayer.interfaces.OnBackFragmentListener;
+import com.tadev.musicplayer.interfaces.OnLanguageChangeListener;
 import com.tadev.musicplayer.interfaces.OnPlayBarBottomListener;
 import com.tadev.musicplayer.models.music.CurrentSongPlay;
 import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.supports.design.statusbar.StatusBarCompat;
 import com.tadev.musicplayer.utils.networks.event.ConnectivityChanged;
 import com.tadev.musicplayer.utils.support.StringUtils;
+import com.tadev.musicplayer.utils.support.Utils;
 
 public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         , IServicePlayer, OnBackFragmentListener, OnPlayBarBottomListener,
-        View.OnClickListener {
+        View.OnClickListener, OnLanguageChangeListener {
     private final String TAG = "MainActivity";
     public static final String UPDATE_MUSIC_PLAYBAR = "com.tadev.musicplayer.UPDATE_MUSIC_PLAYBAR";
     public static final String EXTRA_CURRENT_PLAY = "current_play";
@@ -59,6 +62,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     private Handler handler;
     private LocalBroadcastManager localBroadcastManager;
     private boolean isBound;
+    private boolean doubleBackToExitPressedOnce = false;
 
 
     @Override
@@ -159,35 +163,36 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
         switch (itemIds) {
             case R.id.music_vietnam:
                 transaction.replace(R.id.container, MusicVietNamFragment.newInstance(),
-                        MusicVietNamFragment.TAG)
-                        .addToBackStack(MusicVietNamFragment.TAG);
+                        MusicVietNamFragment.TAG);
+//                        .addToBackStack(MusicVietNamFragment.TAG);
                 break;
             case R.id.music_korea:
                 transaction.replace(R.id.container, MusicKoreaFragment.newInstance(),
                         MusicKoreaFragment.TAG);
-                transaction.addToBackStack(MusicKoreaFragment.TAG);
+//                transaction.addToBackStack(MusicKoreaFragment.TAG);
                 break;
             case R.id.music_us_uk:
                 transaction.replace(R.id.container, MusicUsUkFragment.newInstance(),
-                        MusicUsUkFragment.TAG)
-                        .addToBackStack(MusicUsUkFragment.TAG);
+                        MusicUsUkFragment.TAG);
+//                        .addToBackStack(MusicUsUkFragment.TAG);
                 break;
             case R.id.music_video:
                 transaction.replace(R.id.container, VideoContainerFragment.newInstance(),
-                        VideoContainerFragment.TAG)
-                        .addToBackStack(VideoContainerFragment.TAG);
+                        VideoContainerFragment.TAG);
+//                        .addToBackStack(VideoContainerFragment.TAG);
                 break;
             case R.id.music_favorite:
                 transaction.replace(R.id.container, FavoriteFragment.newInstance(),
-                        FavoriteFragment.TAG)
-                        .addToBackStack(FavoriteFragment.TAG);
+                        FavoriteFragment.TAG);
+//                        .addToBackStack(FavoriteFragment.TAG);
                 break;
             case R.id.music_offline:
                 transaction.replace(R.id.container, MusicOfflineFragment.newInstance(),
                         FavoriteFragment.TAG);
                 break;
             case R.id.music_setting:
-                Toast.makeText(MainActivity.this, "Music Settings", Toast.LENGTH_SHORT).show();
+                transaction.replace(R.id.container, SettingFragment.newInstance(),
+                        SettingFragment.TAG);
                 break;
         }
         if (navItemId != R.id.music_vietnam) {
@@ -217,29 +222,30 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
             mDrawer.closeDrawer(mNavigationView);
             return;
         }
-        if (getFragmentManager().getBackStackEntryCount() == 1) {
-            this.finish();
-        }
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            if (doubleBackToExitPressedOnce
+                    && !
+                    mDrawer.isDrawerOpen(mNavigationView)) {
+                Utils.finishAndHide(this);
+                super.onBackPressed();
+            } else {
+                this.doubleBackToExitPressedOnce = true;
+                Toast.makeText(MainActivity.this, StringUtils.getStringRes(R.string.back_press_status),
+                        Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
 
-//        if (mFragmentManager.getBackStackEntryCount() > 0) {
-//            mFragmentManager.popBackStackImmediate();
-//            Fragment fragment = mFragmentManager.findFragmentById(R.id.container);
-//            if (fragment instanceof MusicVietNamFragment) {
-//                mNavigationView.setCheckedItem(R.id.music_vietnam);
-//            } else if (fragment instanceof MusicKoreaFragment) {
-//                mNavigationView.setCheckedItem(R.id.music_korea);
-//            } else {
-//                mNavigationView.setCheckedItem(R.id.music_us_uk);
-//            }
-//        } else {
-//            super.onBackPressed();
-//        }
+                    @Override
+                    public void run() {
+                        doubleBackToExitPressedOnce = false;
+                    }
+                }, 2000);
+            }
+        }
     }
 
 
     @Override
     protected void setTranslucentStatusBar() {
-        super.setTranslucentStatusBar();
         StatusBarCompat.translucentStatusBar(MainActivity.this);
     }
 
@@ -263,7 +269,6 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     @Override
     public void onServicePreparing(Intent intent) {
         intentRegistedService = intent;
-        Log.i(TAG, "onServicePreparing " + intent.getAction());
         startService(intent);
     }
 
@@ -296,7 +301,9 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     private void bindService() {
         Intent intent = new Intent();
         intent.setClass(this, MusicPlayService.class);
-        bindService(intent, mPlayServiceConnection, Context.BIND_AUTO_CREATE);
+        if (mPlayServiceConnection != null) {
+            bindService(intent, mPlayServiceConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 
     public MusicPlayService getService() {
@@ -449,7 +456,7 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
 
     @Subscribe
     public void onEvent(ConnectivityChanged event) {
-        switch (event.getConnectivityStatus()){
+        switch (event.getConnectivityStatus()) {
             case OFFLINE:
                 dialogUtils.showDialog(MainActivity.this, StringUtils.getStringRes(R.string.title_dialog_network),
                         StringUtils.getStringRes(R.string.msg_network_not_found));
@@ -466,5 +473,9 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
     public void onPositiveClick() {
         startActivityForResult(new Intent(Settings.ACTION_SETTINGS), 0);
         overridePendingTransition(R.anim.slide_in_bottom, 0);
+    }
+
+    @Override
+    public void onLanguageChanged() {
     }
 }
