@@ -112,6 +112,7 @@ public class FavoriteFragment extends BaseFragment implements RetrieveListener
     public void onItemClick(View view, int position) {
         switch (view.getId()) {
             case R.id.card_favorite:
+                mOnPlayBarBottomListener.onPlayBarShowHide(true);
                 BaseModel baseModel = new BaseModel();
                 baseModel.setMusic_title_url(mListFavorites.get(position).getUrlTitle());
                 baseModel.setMusic_id(mListFavorites.get(position).getId());
@@ -122,6 +123,7 @@ public class FavoriteFragment extends BaseFragment implements RetrieveListener
                         .addToBackStack(MainMusicPlayFragment.TAG);
                 baseMenuActivity.transaction.commit();
                 mActivityMain.getToolbar().setVisibility(View.INVISIBLE);
+
                 break;
             case R.id.item_favorite_btnFavorite:
                 if (dbFavoriteManager.isDeleteSucess(mListFavorites.get(position).getId())) {
