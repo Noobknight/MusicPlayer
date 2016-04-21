@@ -56,7 +56,8 @@ import java.util.ArrayList;
  * Created by Iris Louis on 01/04/2016.
  */
 public class MusicPlayService extends Service implements
-        MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener {
+        MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener,
+        MediaPlayer.OnCompletionListener {
     private final String TAG = "MusicPlayService";
     public static final String BUFFER_UPDATE = "com.tadev.musicplayer.action.ACTION_UPDATE";
     public static final String PATH_URI = "/storage";
@@ -119,13 +120,8 @@ public class MusicPlayService extends Service implements
 
     public PlaybackStateCompat playbackState(int state, long position, float playbackSpeed) {
         return new PlaybackStateCompat.Builder()
-//                .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-//                        | PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
-                .setActions(PlaybackStateCompat.ACTION_PLAY |
-                        PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
-                        PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
-                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
+                .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                        | PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
                 .setState(state, position, playbackSpeed)
                 .build();
     }
@@ -165,7 +161,7 @@ public class MusicPlayService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
         isPlayOffline = enableModePlayOffline(intent);
         handleCommandIntent(intent);
-        return START_REDELIVER_INTENT;
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -365,6 +361,15 @@ public class MusicPlayService extends Service implements
         mNotificationPostTime = 0;
     }
 
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        if (isPlayOffline && getListOffline() != null && isMusicRepared) {
+            if (playingAtPosition < mListOffline.size()) {
+                next();
+            }
+        }
+    }
+
 
     public class PlayBinder extends Binder {
         public MusicPlayService getService() {
@@ -422,6 +427,7 @@ public class MusicPlayService extends Service implements
                 mMediaPlayer.reset();
                 mMediaPlayer.setDataSource(url);
                 mMediaPlayer.prepareAsync();
+                mMediaPlayer.setLooping(true);
                 hasDataSource = true;
                 isPlayOffline = false;
                 isPause = false;
@@ -430,6 +436,7 @@ public class MusicPlayService extends Service implements
                 }
                 getDuration();
                 musicContainer.setCurrentSongPlay(mCurrentSongPlay);
+                mMediaPlayer.setOnCompletionListener(this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -456,12 +463,9 @@ public class MusicPlayService extends Service implements
     }
 
     public void seekTo(int msec) {
-        if (isPlaying() || isPaused()) {
-            mMediaPlayer.seekTo(msec);
-            if (mListener != null) {
-                mListener.onPublish(msec);
-            }
-        }
+        int currentPosition = Utils.progressToTimer(msec,
+                getDuration());
+        mMediaPlayer.seekTo(currentPosition);
     }
 
     public int next() {
@@ -506,7 +510,7 @@ public class MusicPlayService extends Service implements
         try {
             mMediaPlayer.reset();
             mMediaPlayer.setDataSource(getListOffline().get(indexOfList).getUri());
-            mMediaPlayer.prepareAsync();
+            mMediaPlayer.prepare();
             hasDataSource = true;
             isPause = false;
             isPlayOffline = true;
@@ -516,6 +520,7 @@ public class MusicPlayService extends Service implements
             if (mListener != null) {
                 mListener.onChange((int) getListOffline().get(indexOfList).getId());
             }
+            mMediaPlayer.setOnCompletionListener(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -542,6 +547,7 @@ public class MusicPlayService extends Service implements
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
     }
 
     public void playOrPause() {
@@ -772,10 +778,7 @@ public class MusicPlayService extends Service implements
     }
 
     private boolean enableModePlayOffline(Intent intent) {
-        if (intent.hasExtra(Extras.KEY_MODE_OFFLINE)) {
-            return true;
-        }
-        return false;
+        return intent.hasExtra(Extras.KEY_MODE_OFFLINE);
     }
 
     public ArrayList<MusicOffline> getListOffline() {

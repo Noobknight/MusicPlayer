@@ -9,7 +9,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -39,7 +38,7 @@ import java.util.HashMap;
  * Created by Iris Louis on 01/04/2016.
  */
 public class MusicPlayingFragment extends BaseFragment implements View.OnClickListener,
-        UpdateableFragment {
+        UpdateableFragment, SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "MusicPlayingFragment";
     private static final String KEY_SONG = "song";
     private static final String KEY_LYRIC = "lyric";
@@ -57,7 +56,7 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
     private boolean isPlayState;
     //Service Callback To Activity
     private OnRegisterCallback mOnRegisterCallback;
-    private FrameLayout framePlaying;
+    private int mLastProgress;
 
     public static MusicPlayingFragment newInstance(Song song, Lyric lyric) {
         MusicPlayingFragment fragment = new MusicPlayingFragment();
@@ -175,7 +174,6 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
         txtTotalTime = (TextView) rootView.findViewById(R.id.fragment_music_playing_txtTotalTime);
         fabPlayPause = (FloatingActionButton) rootView.findViewById(R.id.fragment_music_playing_fabPlayPause);
         imgDownoad = (ImageView) rootView.findViewById(R.id.btnDownload);
-        framePlaying = (FrameLayout) rootView.findViewById(R.id.framePlaying);
     }
 
     @Override
@@ -198,6 +196,7 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
         imgDownoad.setOnClickListener(this);
         imgNext.setOnClickListener(this);
         imgPrevious.setOnClickListener(this);
+        seekBar.setOnSeekBarChangeListener(this);
     }
 
     private UpdateSeekbarReceiver updateSeekbar = new UpdateSeekbarReceiver() {
@@ -353,5 +352,21 @@ public class MusicPlayingFragment extends BaseFragment implements View.OnClickLi
         mSong = currentSongPlay.song;
         txtTitle.setText(currentSongPlay.song.getMusicTitle());
         txtArtist.setText(currentSongPlay.song.getMusicArtist());
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seek) {
+        int progress = seekBar.getProgress();
+        mService.seekTo(progress);
     }
 }
