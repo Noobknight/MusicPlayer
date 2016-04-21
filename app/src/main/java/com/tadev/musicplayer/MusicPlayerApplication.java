@@ -8,6 +8,7 @@ import com.tadev.musicplayer.interfaces.OnLanguageChangeListener;
 import com.tadev.musicplayer.metadata.MusicContainer;
 import com.tadev.musicplayer.provider.DBFavoriteManager;
 import com.tadev.musicplayer.utils.support.StringUtils;
+import com.tadev.musicplayer.utils.support.ToastUtils;
 import com.tadev.musicplayer.utils.support.Utils;
 
 import java.util.Locale;
@@ -35,8 +36,8 @@ public class MusicPlayerApplication extends Application implements OnLanguageCha
         StringUtils.init(this);
         Utils.init(this);
         String language = Locale.getDefault().getLanguage();
-        Log.i(TAG, "onCreate " + language);
         LocaleHelper.onCreate(this, language);
+        ToastUtils.init(this);
     }
 
     private void initMusicContainer() {

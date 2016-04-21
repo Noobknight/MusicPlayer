@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 import com.tadev.musicplayer.abstracts.BaseMenuActivity;
@@ -42,6 +41,7 @@ import com.tadev.musicplayer.services.MusicPlayService;
 import com.tadev.musicplayer.supports.design.statusbar.StatusBarCompat;
 import com.tadev.musicplayer.utils.networks.event.ConnectivityChanged;
 import com.tadev.musicplayer.utils.support.StringUtils;
+import com.tadev.musicplayer.utils.support.ToastUtils;
 import com.tadev.musicplayer.utils.support.Utils;
 
 public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
@@ -230,8 +230,8 @@ public class MainActivity extends BaseMenuActivity implements OnRegisterCallback
                 super.onBackPressed();
             } else {
                 this.doubleBackToExitPressedOnce = true;
-                Toast.makeText(MainActivity.this, StringUtils.getStringRes(R.string.back_press_status),
-                        Toast.LENGTH_SHORT).show();
+                ToastUtils.buildToast(R.drawable.ic_exit_to_app_white_18dp,
+                        StringUtils.getStringRes(R.string.back_press_status));
                 new Handler().postDelayed(new Runnable() {
 
                     @Override

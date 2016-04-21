@@ -26,5 +26,7 @@
     <dimen name="padding_sliding_tab">7dp</dimen>
 
     <dimen name="language_title_setting">17sp</dimen>
+
+    <dimen name="toast_height">48dp</dimen>
     
 </resources>

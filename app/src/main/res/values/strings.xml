@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MusicPlayer</string>
+    <string name="app_name">Music Player</string>
 
     <string name="music_name">Tình Yêu Chắp Vá</string>
     <string name="music_singer">Mr Siro</string>
@@ -106,7 +106,8 @@
 
     <string name="fragment_setting">Settings</string>
 
-    <string name="back_press_status">Double Back press to exit App !!!</string>
+
+    <string name="back_press_status">Press again to exit!!!</string>
 
     <string-array name="category_video">
         <item>@string/vietnam_region</item>
